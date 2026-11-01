@@ -6,11 +6,16 @@ import { PhotoGalleryComponent } from './photo-gallery.component';
 import { HeroBannerComponent } from './hero-banner.component';
 import { CampingScheduleComponent } from './camping-schedule.component';
 import { GoogleReviewsComponent } from './google-reviews.component';
+import { BookingGuideComponent } from './booking-guide.component';
+import { RestaurantComponent } from './restaurant.component';
+import { SiteFooterComponent } from './site-footer.component';
+import { ScrollTopComponent } from './scroll-top.component';
+import { SectionLinkDirective } from './section-link.directive';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, BookingComponent, StayOptionsComponent, PhotoGalleryComponent, HeroBannerComponent, CampingScheduleComponent, GoogleReviewsComponent],
+  imports: [RouterLink, SectionLinkDirective, BookingComponent, StayOptionsComponent, PhotoGalleryComponent, HeroBannerComponent, CampingScheduleComponent, GoogleReviewsComponent, BookingGuideComponent, RestaurantComponent, SiteFooterComponent, ScrollTopComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

@@ -1,5 +1,7 @@
 ﻿import { Component, EventEmitter, Output } from '@angular/core';
 
+import { STAY_PRICING } from './stay-pricing';
+
 @Component({
   selector: 'app-stay-options',
   standalone: true,
@@ -12,6 +14,7 @@ export class StayOptionsComponent {
   readonly stays = [
     {
       name: 'Tent Stay', heading: 'Tent Stay', capacity: '2-3 people', preference: 'Tent Stay (2-3 people)',
+      price: STAY_PRICING.tent,
       image: 'images/stay-options/tent-lake-front.jpg', alt: 'Open green tent with bedding overlooking Pawana Lake and the hills',
       tagline: 'A little adventure. A sky full of stars.',
       description: 'Slow down by the lake, settle into your cosy tent, and let the outdoors become your favourite escape.',
@@ -23,7 +26,8 @@ export class StayOptionsComponent {
       ]
     },
     {
-      name: 'Cottage Stay', heading: 'Luxury Cottages', capacity: '4-5 people', preference: 'Cottage Stay (4-5 people)',
+      name: 'Cottage Stay', heading: 'Cottage Stay', capacity: '4-5 people', preference: 'Cottage Stay (4-5 people)',
+      price: STAY_PRICING.cottage,
       image: 'images/stay-options/cottage-stay.jpg', alt: 'A-frame cottage exterior in daylight',
       tagline: 'Golden evenings. Cosy nights. Beautiful mornings.',
       description: 'Make room for togetherness in a charming A-frame cottage, with warm lights and space to unwind after sunset.',

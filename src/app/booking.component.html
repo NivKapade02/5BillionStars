@@ -2,14 +2,15 @@
   <section aria-labelledby="booking-heading">
     @if (reference) {
       <div role="status">
-        <h2 id="booking-heading">Your booking details are saved</h2>
+        <h2 id="booking-heading">Your request details are saved</h2>
         <p>Tap <strong>Send</strong> in WhatsApp to share your request with 5 Billion Stars.</p>
         <a class="action" [href]="whatsappUrl" target="_blank" rel="noopener noreferrer">Open booking in WhatsApp</a>
-        <p class="notice">If WhatsApp did not open, use the button above. Our team will confirm availability.</p>
+        <p class="notice">Your stay is not reserved yet. Confirm availability and the total with our team, then pay {{ terms.advancePercent }}% advance via Google Pay or PhonePe to {{ terms.paymentNumber }}. Share the payment reference with our team to receive confirmation.</p>
         <p>Booking reference: <strong>{{ reference }}</strong></p>
       </div>
     } @else {
-      <h2 id="booking-heading">Welcome To 5 Billion Stars</h2>
+      <h2 id="booking-heading">Check availability at 5 Billion Stars</h2>
+      <p class="notice">Tent Stay: ₹{{ pricing.tent.offer }} per person (regular ₹{{ pricing.tent.regular }}). Cottage Stay: ₹{{ pricing.cottage.offer }} per person (regular ₹{{ pricing.cottage.regular }}). All meals and taxes included. Under 5: free; ages 5–10: ₹{{ terms.childRate }} per child. A {{ terms.advancePercent }}% advance is required after availability is agreed with our team. This form requests availability and does not confirm a booking.</p>
       <img class="booking-banner" src="/images/booking-banner.png" width="851" height="315" alt="5 Billion Stars Camping and Agro Tourism, nestled between Pawana Lake and Tikona Fort">
       @if (stayPreference) { <p class="stay-choice">Selected stay: <strong>{{ stayPreference }}</strong></p> }
       @if (loading) { <p role="status">Loading booking form...</p> }
@@ -98,7 +99,12 @@
               </select>
             </label>
           </div>
-          <p class="helper">Adults + kids and veg + non-veg must each equal the member count.</p>
+          <label>Children under 5 (free)
+            <select name="underFive" [(ngModel)]="booking.underFive" required>
+              @for (count of counts; track count) { <option [ngValue]="count">{{ count }}</option> }
+            </select>
+          </label>
+          <p class="helper">Include everyone, including children under 5, in the member count. Adults + kids + children under 5 and veg + non-veg must each equal the member count.</p>
           <label>Comments
             <textarea name="notes" [(ngModel)]="booking.notes" maxlength="200" rows="3" placeholder="Enter Your Comments"></textarea>
           </label>
@@ -108,7 +114,7 @@
             <p>We cannot wait to help you plan your next great escape. Feel free to call us or message us.</p>
             <p>Visit us soon!</p>
           </div>
-          <p class="notice">Your details are saved in our booking sheet. WhatsApp will open with your message to +91 8624908808. Tap Send to complete your request.</p>
+          <p class="notice">Your details will be saved in the campsite's Google booking sheet and included in a message to +91 8624908808. Tap Send in WhatsApp to share your request. Our team will confirm availability and the final quote separately.</p>
           @if (error && available) { <p class="error" role="alert">{{ error }}</p> }
           <button class="submit" type="submit" [disabled]="form.invalid || submitting || loading || !available">{{ submitting ? 'Saving your details...' : 'Continue to WhatsApp' }}</button>
         </fieldset>
@@ -116,3 +122,4 @@
     }
   </section>
 </div>
+

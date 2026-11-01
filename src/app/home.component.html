@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="/css/bootstrap-icons.css">
 <link rel="stylesheet" href="/css/tooplate-barista.css">
 <main>
-  <nav class="navbar navbar-expand-lg">
+  <nav class="navbar navbar-expand-xxl">
       <div class="container">
           <a class="navbar-brand d-flex align-items-center" routerLink="/">
               
@@ -15,34 +15,20 @@
 
           <div class="collapse navbar-collapse" [class.show]="menuOpen" id="navbarNav">
               <ul class="navbar-nav ms-lg-auto">
-                  <li class="nav-item">
-                      <a class="nav-link click-scroll" (click)="menuOpen = false" href="#section_1">Home</a>
-                  </li>
-
-                  <li class="nav-item">
-                      <a class="nav-link click-scroll" (click)="menuOpen = false" href="#section_2">About</a>
-                  </li>
-
-                  <li class="nav-item">
-                      <a class="nav-link click-scroll" (click)="menuOpen = false" href="#section_3">Gallery</a>
-                  </li>
-
-                  <li class="nav-item">
-                      <a class="nav-link click-scroll" (click)="menuOpen = false" href="#stays">Stays</a>
-                  </li>
-
-                  <li class="nav-item">
-                      <a class="nav-link click-scroll" (click)="menuOpen = false" href="#section_4">Schedule</a>
-                  </li>
-
-                  <li class="nav-item">
-                      <a class="nav-link click-scroll" (click)="menuOpen = false" href="#section_5">Contact Us</a>
-                  </li>
+                  <li class="nav-item"><a appSectionLink class="nav-link" (click)="menuOpen = false" href="#section_1">Home</a></li>
+                  <li class="nav-item"><a appSectionLink class="nav-link" (click)="menuOpen = false" href="#stays">Stays</a></li>
+                  <li class="nav-item"><a appSectionLink class="nav-link" (click)="menuOpen = false" href="#section_2">About</a></li>
+                  <li class="nav-item"><a appSectionLink class="nav-link" (click)="menuOpen = false" href="#section_3">Gallery</a></li>
+                  <li class="nav-item"><a appSectionLink class="nav-link" (click)="menuOpen = false" href="#section_33">Restaurant</a></li>
+                  <li class="nav-item"><a appSectionLink class="nav-link" (click)="menuOpen = false" href="#section_4">Schedule</a></li>
+                  <li class="nav-item"><a appSectionLink class="nav-link" (click)="menuOpen = false" href="#booking-guide">FAQs</a></li>
+                  <li class="nav-item"><a appSectionLink class="nav-link" (click)="menuOpen = false" href="#google-reviews">Reviews</a></li>
+                  <li class="nav-item"><a appSectionLink class="nav-link" (click)="menuOpen = false" href="#section_5">Location &amp; Contact</a></li>
               </ul>
 
               <div class="ms-lg-3">
                   <button type="button" class="btn custom-btn custom-border-btn" (click)="openBooking()">
-                      Book Now
+                      Check Availability
                       <i class="bi-whatsapp ms-2"></i>
                   </button>
               </div>
@@ -63,7 +49,7 @@
                       Camping <em>&</em> Agro Tourism.
                   </p>
 
-                  <button type="button" class="btn custom-btn me-2 mb-2" (click)="openBooking()"><strong>Book Now</strong></button>
+                  <button type="button" class="btn custom-btn me-2 mb-2" (click)="openBooking()"><strong>Check Availability</strong></button>
               </div>
 
           </div>
@@ -83,9 +69,9 @@
                   <div class="ratio ratio-1x1">
 
                       <div class="about-video-info d-flex flex-column">
-                          <h4 class="mt-auto">We Started Since 2019.</h4>
+                          <h4 class="mt-auto">Camping by Pawana Lake.</h4>
 
-                          <h4>Best Camping in Pawana.</h4>
+                          <h4>Tents, cottages & time outdoors.</h4>
                       </div>
                   </div>
               </div>
@@ -95,12 +81,11 @@
 
                   <h2 class="text-white mb-3">5 Billion Stars</h2>
 
-                  <p class="text-white">Welcome to 5 Billion Stars Camping & Agro Tourism, a serene retreat nestled amidst the breathtaking natural beauty of Pawana Lake and Tikona Fort. We are passionate about offering an unforgettable escape where adventure meets tranquility under the starlit skies.</p>
-
-                  <p class="text-white">Our picturesque location provides the perfect blend of rustic charm and modern comfort, ideal for nature enthusiasts, adventure seekers, and anyone looking to rejuvenate their spirit. Whether you want to enjoy cozy nights by the campfire, explore scenic trails, or simply bask in the serenity of nature, weâ€™ve got it all covered.</p>
-                  <p class="text-white">At 5 Billion Stars, we take pride in curating unique experiences that celebrate sustainable tourism and local culture. From thrilling outdoor activities to warm hospitality, we ensure every guest leaves with cherished memories of their time under the infinite stars.</p>
-                  <p class="text-white">Discover a new way to celebrate life, connect with nature, and create lasting memories with us. Your next adventure awaits!</p>
-                  
+                  <p class="text-white">5 Billion Stars Camping &amp; Agro Tourism offers tent and cottage stays overlooking Pawana Lake, near Tikona Fort.</p>
+                  <p class="text-white">Browse real campsite photographs, see the overnight schedule, and choose a stay for your group. Tent accommodation is for 2–3 people; cottage accommodation is for 4–5 people. Prices are per person.</p>
+                  <p class="text-white">Our team welcomes you to a campsite with 11 clean and hygienic washrooms, hot water, fans in the cottages and ample parking. The approach is a 100-metre cement road from Paud–Lonavala Road.</p>
+                  <p class="text-white">All meals and taxes are included in your stay price. Confirm your dates and group total with our team, pay a 40% advance, and receive your booking confirmation.</p>
+                  <a href="tel:+918624908808" class="text-white">Speak with the campsite: +91 8624908808</a>
               </div>
 
           </div>
@@ -109,201 +94,10 @@
 
   <app-photo-gallery />
 
-  <section class="menu-section section-padding" id="section_33">
-      <div class="container">
-          <div class="row">
-
-              <div class="col-lg-6 col-12 mb-4 mb-lg-0">
-                  <div class="menu-block-wrap">
-                      <div class="text-center mb-4 pb-lg-2">
-                          <em class="text-white">Delicious Menu</em>
-                          <h4 class="text-white">Evening Snack</h4>
-                      </div>
-
-                      <div class="menu-block">
-                          <div class="d-flex">
-                              <h6>Welcome Spl.Tea
-                                <span class="badge ms-3">Included</span>
-                              </h6>
-                              <span class="underline"></span>
-                              <div class="ms-auto d-flex align-items-end">
-                                <i class="reviews-block-image activity-icon bi-cup-hot-fill" aria-hidden="true"></i>
-                            </div>
-                              
-                          </div>
-
-                          <div class="border-top mt-2 pt-2">
-                              
-                          </div>
-                      </div>
-
-                      <div class="menu-block my-4">
-                          <div class="d-flex">
-                              <h6>
-                                  Garam Pakode
-                                  <span class="badge ms-3">Included</span>
-                              </h6>
-                              <span class="underline"></span>
-                              <div class="ms-auto d-flex align-items-end">
-                                <i class="reviews-block-image activity-icon bi-basket" aria-hidden="true"></i>
-                            </div>
-
-                          </div>
-
-                          <div class="border-top mt-2 pt-2">
-                             
-                          </div>
-                      </div>
-
-                      <div class="menu-block">
-                          <div class="d-flex">
-                              <h6>Masala Maggi
-                                  
-                              </h6>
-                              <span class="underline"></span>
-                              <div class="ms-auto d-flex align-items-end">
-                                <i class="reviews-block-image activity-icon bi-basket" aria-hidden="true"></i>
-                            </div>
-
-                          </div>
-
-                          <div class="border-top mt-2 pt-2">
-                              
-                          </div>
-                      </div>
-
-                      <div class="menu-block my-4">
-                          <div class="d-flex">
-                              <h6>Hot Coffee</h6>
-                              <span class="underline"></span>
-                              <div class="ms-auto d-flex align-items-end">
-                                <i class="reviews-block-image activity-icon bi-cup-hot-fill" aria-hidden="true"></i>
-                            </div>
-
-                          </div>
-
-                          <div class="border-top mt-2 pt-2">
-                              
-                          </div>
-                      </div>
-
-                      <div class="menu-block">
-                          <div class="d-flex">
-                              <h6>Anda Burji</h6>
-                              <span class="underline"></span>
-                              <div class="ms-auto d-flex align-items-end">
-                                <i class="reviews-block-image activity-icon bi-egg-fried" aria-hidden="true"></i>
-                            </div>
-
-                          </div>
-
-                          <div class="border-top mt-2 pt-2">
-                              
-                          </div>
-                      </div>
-                  </div>
-              </div>
-
-              <div class="col-lg-6 col-12 mb-4 mb-lg-0">
-                <div class="menu-block-wrap">
-                    <div class="text-center mb-4 pb-lg-2">
-                        <em class="text-white">Delicious Menu</em>
-                        <h4 class="text-white">Morning Breakfast</h4>
-                    </div>
-
-                    <div class="menu-block">
-                        <div class="d-flex">
-                            <h6>Morning Spl.Tea
-                              <span class="badge ms-3">Included</span>
-                            </h6>
-                            <span class="underline"></span>
-                            <div class="ms-auto d-flex align-items-end">
-                              <i class="reviews-block-image activity-icon bi-cup-hot-fill" aria-hidden="true"></i>
-                          </div>
-                            
-                        </div>
-
-                        <div class="border-top mt-2 pt-2">
-                            
-                        </div>
-                    </div>
-
-                    <div class="menu-block my-4">
-                        <div class="d-flex">
-                            <h6>
-                                Jam Bread
-                                <span class="badge ms-3">Included</span>
-                            </h6>
-                            <span class="underline"></span>
-                            <div class="ms-auto d-flex align-items-end">
-                              <i class="reviews-block-image activity-icon bi-basket" aria-hidden="true"></i>
-                          </div>
-
-                        </div>
-
-                        <div class="border-top mt-2 pt-2">
-                           
-                        </div>
-                    </div>
-
-                    <div class="menu-block">
-                        <div class="d-flex">
-                            <h6>Boil Eggs
-                                <span class="badge ms-3">Optional</span>
-                            </h6>
-                            <span class="underline"></span>
-                            <div class="ms-auto d-flex align-items-end">
-                              <i class="reviews-block-image activity-icon bi-egg-fried" aria-hidden="true"></i>
-                          </div>
-
-                        </div>
-
-                        <div class="border-top mt-2 pt-2">
-                            
-                        </div>
-                    </div>
-
-                    <div class="menu-block my-4">
-                        <div class="d-flex">
-                            <h6>Hot Coffee</h6>
-                            <span class="underline"></span>
-                            <div class="ms-auto d-flex align-items-end">
-                              <i class="reviews-block-image activity-icon bi-cup-hot-fill" aria-hidden="true"></i>
-                          </div>
-
-                        </div>
-
-                        <div class="border-top mt-2 pt-2">
-                            
-                        </div>
-                    </div>
-
-                    <div class="menu-block">
-                        <div class="d-flex">
-                            <h6>Masala Maggi</h6>
-                            <span class="underline"></span>
-                            <div class="ms-auto d-flex align-items-end">
-                              <i class="reviews-block-image activity-icon bi-egg-fried" aria-hidden="true"></i>
-                          </div>
-
-                        </div>
-
-                        <div class="border-top mt-2 pt-2">
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-                          </div>
-
-                          <div class="border-top mt-2 pt-2">
-
-          </div>
-      </div>
-  </section>
+  <app-restaurant />
 
   <app-camping-schedule />
+  <app-booking-guide />
   <app-google-reviews />
 
   <section class="contact-section section-padding" id="section_5">
@@ -311,42 +105,12 @@
           <div class="row">
 
               <div class="col-lg-12 col-12">
-                  <em class="text-white">Say Hello</em>
-                  <h2 class="text-white mb-4 pb-lg-2">Contact</h2>
+                  <em class="text-white">Find us by Pawana Lake</em>
+                  <h2 class="text-white mb-4 pb-lg-2">Visit the campsite</h2>
               </div>
 
-              <div class="col-lg-6 col-12">
-                  <form  method="post" class="custom-form contact-form" role="form"  action="mailto:5billionstarsct@gmail.com" enctype="text/plain">
-
-                  <div class="row">
-                      <div class="col-lg-6 col-12">
-                          <label for="name" class="form-label">Name <sup class="text-danger">*</sup></label>
-
-                          <input type="text" name="name" id="name" class="form-control" placeholder="Jackson" required>
-                      </div>
-
-                      <div class="col-lg-6 col-12">
-                          <label for="email" class="form-label">Email Address</label>
-
-                          <input type="email" name="email" id="email" pattern="[^ @]*@[^ @]*" class="form-control" placeholder="Jack@gmail.com" required="">
-                      </div>
-
-                      <div class="col-12">
-                          <label for="message" class="form-label">How can we help?</label>
-
-                          <textarea name="message" rows="4" class="form-control" id="message" placeholder="Message" required=""></textarea>
-                      </div>
-                  </div>
-
-                  <div class="col-lg-5 col-12 mx-auto mt-3">
-                      <button type="submit" class="form-control">Send Message</button>
-                  </div>
-              </form>
-              </div>
-
-              <div class="col-lg-6 col-12 mx-auto mt-5 mt-lg-0 ps-lg-5">
-                  <a class="map-location" href="https://www.google.com/maps/search/?api=1&amp;query=5%20Billion%20Stars%20Camping%20%26%20Agro%20Tourism%20Pawana" target="_blank" rel="noopener noreferrer" aria-label="Open 5 Billion Stars location in Google Maps"><i class="bi-geo-alt-fill" aria-hidden="true"></i><span><strong>5 Billion Stars</strong><small>Camping &amp; Agro Tourism <span aria-hidden="true">&#8599;</span></small></span></a>
-                  <iframe title="5 Billion Stars campsite location on Google Maps" class="google-map" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3780.65929692232!2d73.503226!3d18.634388!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2a77c92f69653%3A0xa2e9f51509b0642!2s5%20Billion%20Stars%20Camping%20%26%20Agro%20Tourism!5e0!3m2!1sen!2sin!10v1732454024171!5m2!1sen!2sin" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>  
+              <div class="col-12 campsite-map-row">
+                  <iframe title="5 Billion Stars campsite location on Google Maps" class="google-map" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3780.65929692232!2d73.503226!3d18.634388!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2a77c92f69653%3A0xa2e9f51509b0642!2s5%20Billion%20Stars%20Camping%20%26%20Agro%20Tourism!5e0!3m2!1sen!2sin!10v1732454024171!5m2!1sen!2sin" width="100%" height="560" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>  
 
                 </div>
 
@@ -354,73 +118,8 @@
       </div>
   </section>
 
-  <footer class="site-footer">
-      <div class="container">
-          <div class="row">
-
-              <div class="col-lg-4 col-12 me-auto">
-                  <em class="text-white d-block mb-4">Where to find us?</em>
-
-                  <strong class="text-white">
-                      <i class="bi-geo-alt me-2"></i>
-                      Gevhande Vasahat,Paud - Lonavala Road, Nr.Old Reliance Tower, Pune, Maharashtra 410406, India
-                  </strong>
-
-                  <ul class="social-icon mt-4">
-                      <li class="social-icon-item">
-                          <a href="https://www.facebook.com/5billionstars" target="_blank" class="social-icon-link bi-facebook">
-                          </a>
-                      </li>
-
-                      <li class="social-icon-item">
-                          <a href="https://www.instagram.com/5_billion_stars?igsh=b2g1Y25wZ2Jvd2Uy" target="_new" class="social-icon-link bi-instagram">
-                          </a>
-                      </li>
-
-                      <li class="social-icon-item">
-                          <button type="button" class="social-icon-link bi-whatsapp" (click)="openBooking()" aria-label="Book on WhatsApp"></button>
-                      </li>
-                  </ul>
-              </div>
-
-              <div class="col-lg-3 col-12 mt-4 mb-3 mt-lg-0 mb-lg-0">
-                  <em class="text-white d-block mb-4">Contact</em>
-
-                  <p class="d-flex mb-1">
-                      <strong class="me-2">Phone:</strong>
-                      <a href="tel: 8624908808" class="site-footer-link">
-                          +(91) 8624-908-808
-                      </a>
-                  </p>
-
-                  <p class="d-flex">
-                      <strong class="me-2">Email:</strong>
-
-                      <a href="mailto: 5billionstarsct@gmail.com" class="site-footer-link">
-                          5billionstarsct&#64;gmail.com
-                      </a>
-                  </p>
-              </div>
-
-              <div class="col-lg-5 col-12">
-                  <em class="text-white d-block mb-4">Opening Hours.</em>
-
-                  <ul class="opening-hours-list">
-                      <li class="d-flex">
-                          All Days Open
-
-                      </li>
-
-                  </ul>
-              </div>
-
-              <div class="col-lg-8 col-12 mt-4">
-                  <p class="copyright-text mb-0">Copyright Â© 5 Billion Stars 
-                      - Design: <a rel="sponsored" href="https://www.tooplate.com" target="_blank">Niv</a></p>
-              </div>
-      </div>
-      </div>
-  </footer>
+  <app-site-footer />
+  <app-scroll-top />
 </main>
 
 
@@ -442,6 +141,13 @@
     <app-booking [embedded]="true" [stayPreference]="selectedStay" />
   }
 </dialog>
+
+
+
+
+
+
+
 
 
 

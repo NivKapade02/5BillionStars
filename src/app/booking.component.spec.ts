@@ -87,10 +87,26 @@ describe('Booking form WhatsApp and Sheets flow', () => {
     expect(component.available).toBeFalse();
   });
 
+  it('includes free children under five in the guest total, saved notes and WhatsApp request', async () => {
+    component.booking.underFive = 1;
+    component.booking.guests = 3;
+    component.booking.veg = 2;
+    fetchSpy.and.callFake(async (_url: string, options: RequestInit) => {
+      const payload = JSON.parse(options.body as string);
+      expect(payload.underFive).toBe(1);
+      expect(payload.notes).toContain('Under 5: 1');
+      return new Response(JSON.stringify({ ok: true, id: payload.id }));
+    });
+    await component.submit(validForm);
+    expect(component.error).toBe('');
+    expect(decodeURIComponent(component.whatsappUrl)).toContain('Children under 5 (free): 1');
+    expect(decodeURIComponent(component.whatsappUrl)).toContain('40% advance');
+  });
+
   it('rejects inconsistent member and meal counts before opening WhatsApp', async () => {
     component.booking.kids = 1;
     await component.submit(validForm);
-    expect(component.error).toContain('Adult and kid');
+    expect(component.error).toContain('Adults, kids aged 5–10 and children under 5');
     component.booking.kids = 0;
     component.booking.nonVeg = 0;
     await component.submit(validForm);

@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+﻿import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
+import { BOOKING_TERMS, STAY_PRICING } from './stay-pricing';
 
 interface BookingConfig {
   whatsappNumber: string;
@@ -15,6 +16,8 @@ interface BookingConfig {
   host: { '[class.embedded]': 'embedded' }
 })
 export class BookingComponent implements OnInit {
+  readonly pricing = STAY_PRICING;
+  readonly terms = BOOKING_TERMS;
   @Input() embedded = false;
   @Input() stayPreference = '';
   readonly today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
@@ -29,7 +32,7 @@ export class BookingComponent implements OnInit {
   alternateCountry = '+91';
   booking = {
     firstName: '', lastName: '', dob: '', phone: '', alternativePhone: '', email: '', checkIn: '', checkOut: '',
-    guests: null as number | null, adults: null as number | null, kids: null as number | null,
+    guests: null as number | null, adults: null as number | null, kids: null as number | null, underFive: 0,
     veg: null as number | null, nonVeg: null as number | null, notes: ''
   };
   submitting = false;
@@ -119,13 +122,13 @@ export class BookingComponent implements OnInit {
       this.error = 'Enter valid WhatsApp and alternate mobile numbers with country codes.';
       return;
     }
-    const breakdown = [b.adults, b.kids, b.veg, b.nonVeg];
+    const breakdown = [b.adults, b.kids, b.underFive, b.veg, b.nonVeg];
     if (breakdown.some(count => typeof count !== 'number' || !Number.isInteger(count) || count < 0 || count > 50) || !b.adults) {
       this.error = 'Select adult, kid, veg and non-veg counts. At least one adult is required.';
       return;
     }
-    if (Number(b.adults) + Number(b.kids) !== b.guests) {
-      this.error = 'Adult and kid counts must add up to the number of members.';
+    if (Number(b.adults) + Number(b.kids) + b.underFive !== b.guests) {
+      this.error = 'Adults, kids aged 5–10 and children under 5 must add up to the number of members.';
       return;
     }
     if (Number(b.veg) + Number(b.nonVeg) !== b.guests) {
@@ -142,6 +145,7 @@ export class BookingComponent implements OnInit {
       'DOB: ' + (b.dob || 'Not provided'),
       'Stay: ' + (this.stayPreference || 'Not specified'),
       'Adults: ' + b.adults, 'Kids: ' + b.kids, 'Veg: ' + b.veg, 'Non-veg: ' + b.nonVeg,
+      'Under 5: ' + b.underFive,
       'Comments: ' + (b.notes.trim() || 'None')
     ].join('\n');
     const payload = { ...b, name, stayPreference: this.stayPreference, phone, alternativePhone, email: b.email.trim(), notes: sheetNotes };
@@ -183,10 +187,11 @@ export class BookingComponent implements OnInit {
         `Guests: ${b.guests}`,
         `Adults (above 10 years): ${b.adults}`,
         `Kids (5-10 years): ${b.kids}`,
+        `Children under 5 (free): ${b.underFive}`,
         `Veg meals: ${b.veg}`,
         `Non-veg meals: ${b.nonVeg}`,
         `Special requests: ${b.notes.trim() || 'None'}`,
-        'Please confirm availability for my stay.'
+        'Please confirm availability and the total including meals and taxes. I understand a 40% advance is required after availability is agreed; our team confirms the booking.'
       ].join('\n');
       this.whatsappUrl = `https://wa.me/${this.config.whatsappNumber}?text=${encodeURIComponent(message)}`;
       if (whatsappTab && !whatsappTab.closed) whatsappTab.location.replace(this.whatsappUrl);
@@ -203,3 +208,4 @@ export class BookingComponent implements OnInit {
     return digits.startsWith('+') ? digits : country + digits;
   }
 }
+

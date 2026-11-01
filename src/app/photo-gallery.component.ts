@@ -1,4 +1,4 @@
-﻿import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
+﻿import { Component, ElementRef, NgZone, OnDestroy, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { GALLERY_PHOTOS, GalleryCategory } from './gallery-photos';
 
 @Component({
@@ -7,7 +7,44 @@ import { GALLERY_PHOTOS, GalleryCategory } from './gallery-photos';
   templateUrl: './photo-gallery.component.html',
   styleUrl: './photo-gallery.component.css'
 })
-export class PhotoGalleryComponent {
+export class PhotoGalleryComponent implements OnInit, OnDestroy {
+  private readonly zone = inject(NgZone);
+  private readonly element = inject(ElementRef<HTMLElement>);
+  private readonly motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  playing = !this.motionQuery.matches;
+  videoPlaying = false;
+  private timer?: number;
+  private readonly onMotionChange = (event: MediaQueryListEvent) => { if (event.matches) { this.playing = false; this.stopTimer(); } };
+
+  ngOnInit() {
+    this.motionQuery.addEventListener('change', this.onMotionChange);
+    if (this.playing) this.startTimer();
+  }
+
+  ngOnDestroy() {
+    this.stopTimer();
+    this.motionQuery.removeEventListener('change', this.onMotionChange);
+  }
+
+  togglePlayback() {
+    this.playing = !this.playing;
+    if (this.playing) this.startTimer(); else this.stopTimer();
+  }
+
+  private startTimer() {
+    this.stopTimer();
+    this.zone.runOutsideAngular(() => {
+      this.timer = window.setInterval(() => {
+        const bounds = this.element.nativeElement.getBoundingClientRect();
+        if (!document.hidden && !this.videoPlaying && bounds.bottom > 0 && bounds.top < window.innerHeight) this.zone.run(() => this.next());
+      }, 5000);
+    });
+  }
+
+  private stopTimer() {
+    if (this.timer !== undefined) window.clearInterval(this.timer);
+    this.timer = undefined;
+  }
   readonly allMedia = GALLERY_PHOTOS;
   filter: 'all' | 'photo' | 'video' | GalleryCategory = 'all';
   get photos() { return this.filter === 'all' ? this.allMedia : this.allMedia.filter(item => item.kind === this.filter || item.category === this.filter); }
@@ -21,6 +58,7 @@ export class PhotoGalleryComponent {
   get activePhoto() { return this.photos[this.activeIndex]; }
 
   show(index: number) {
+    this.videoPlaying = false;
     this.activeIndex = ((index % this.photos.length) + this.photos.length) % this.photos.length;
     queueMicrotask(() => {
       const thumbnail = this.thumbnails?.get(this.activeIndex)?.nativeElement;
@@ -60,3 +98,4 @@ export class PhotoGalleryComponent {
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.2) dx < 0 ? this.next() : this.previous();
   }
 }
+

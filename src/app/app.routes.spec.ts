@@ -15,6 +15,20 @@ describe('Camping website and booking dialog', () => {
     });
   });
 
+  it('links each header and footer menu item to an existing homepage section', async () => {
+    const harness = await RouterTestingHarness.create('/');
+    const root = harness.routeNativeElement!;
+    const links = root.querySelectorAll<HTMLAnchorElement>('nav a[href^="#"]');
+    expect(links.length).toBeGreaterThanOrEqual(9);
+    for (const link of Array.from(links)) {
+      expect(root.querySelector(link.getAttribute('href')!)).withContext(link.textContent || '').not.toBeNull();
+    }
+    const menu = root.querySelector('.navbar-nav')!;
+    expect(menu.querySelector('a[href="#section_33"]')?.textContent).toBe('Restaurant');
+    expect(menu.querySelector('a[href="#booking-guide"]')?.textContent).toBe('FAQs');
+    expect(menu.querySelector('a[href="#google-reviews"]')?.textContent).toBe('Reviews');
+  });
+
   it('opens and closes booking on the homepage without navigating away', async () => {
     const harness = await RouterTestingHarness.create('/');
     const home = harness.routeNativeElement!;

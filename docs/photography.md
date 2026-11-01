@@ -77,3 +77,7 @@ The source-to-output mapping for all 200 items is gallery-media-sources.json. Th
 ## Featured group activities
 
 Eight outdoor-game photos from Camera1 IMG_7120, IMG_7122, IMG_7123, IMG_7125, IMG_7126, IMG_7129, IMG_7130 and IMG_7131 replace similar cottage angles within the existing 200-item selection. Visual review confirms guests playing beside the tents. Dancing (six photos and five video previews), Outdoor Games (eight photos), and Group Moments (six photos and two videos) now have gallery filters. Per-item categories and sources are recorded in gallery-media-sources.json.
+
+## Gallery automatic slideshow
+
+The gallery advances every five seconds while visible, with a play/pause button. Hidden tabs and offscreen galleries do not advance. Playing videos hold the current item; videos still require the visitor to press Play. Reduced-motion preferences start the slideshow paused. Timers and motion listeners are removed when the component is destroyed.

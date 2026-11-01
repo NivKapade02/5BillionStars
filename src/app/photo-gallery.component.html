@@ -11,10 +11,11 @@
       <button type="button" [attr.aria-pressed]="filter === 'dance'" (click)="setFilter('dance')">Dancing</button>
       <button type="button" [attr.aria-pressed]="filter === 'games'" (click)="setFilter('games')">Outdoor Games</button>
       <button type="button" [attr.aria-pressed]="filter === 'groups'" (click)="setFilter('groups')">Group Moments</button>
+      <button type="button" class="gallery-playback" [attr.aria-label]="playing ? 'Pause gallery slideshow' : 'Play gallery slideshow'" (click)="togglePlayback()"><span aria-hidden="true">{{ playing ? '⏸' : '▶' }}</span> {{ playing ? 'Pause slideshow' : 'Play slideshow' }}</button>
     </div>
     <div class="photo-stage" tabindex="0" aria-label="Photo and video gallery. Use left and right arrow keys to browse." (keydown)="onKeydown($event)" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
       @if (activePhoto.kind === 'video') {
-        <video class="main-photo" [src]="activePhoto.src" [poster]="activePhoto.poster ?? activePhoto.thumbnail" [attr.aria-label]="activePhoto.alt" controls playsinline preload="none"></video>
+        <video class="main-photo" [src]="activePhoto.src" [poster]="activePhoto.poster ?? activePhoto.thumbnail" [attr.aria-label]="activePhoto.alt" (play)="videoPlaying = true" (pause)="videoPlaying = false" (ended)="videoPlaying = false" controls playsinline preload="none"></video>
       } @else {
         <img class="main-photo" [src]="activePhoto.src" [alt]="activePhoto.alt" width="1200" height="800" loading="lazy" decoding="async" draggable="false">
       }
@@ -22,7 +23,7 @@
       <button type="button" class="gallery-arrow next" (click)="next()" aria-label="Next gallery item">&#8250;</button>
       @if (activePhoto.kind !== 'video') { <div class="photo-caption"><h3>{{ activePhoto.title }}</h3></div> }
     </div>
-    <p class="gallery-status" role="status">{{ activeIndex + 1 }} / {{ photos.length }} <span>{{ activePhoto.title }}</span></p>
+    <p class="gallery-status" role="status" [attr.aria-live]="playing ? 'off' : 'polite'">{{ activeIndex + 1 }} / {{ photos.length }} <span>{{ activePhoto.title }}</span></p>
     <div class="thumbnail-rail" aria-label="Choose a gallery photo or video">
       @for (photo of photos; track photo.src; let index = $index) {
         <button #thumbnail type="button" class="thumbnail" [class.selected]="index === activeIndex" [attr.aria-current]="index === activeIndex ? 'true' : null" [attr.aria-label]="'Show ' + (photo.kind === 'video' ? 'video ' : 'photo ') + (index + 1) + ': ' + photo.title" (click)="show(index)">

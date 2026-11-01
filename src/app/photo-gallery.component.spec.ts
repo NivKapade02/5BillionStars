@@ -48,6 +48,30 @@ describe('Photo gallery slider', () => {
     expect(key('ArrowDown').defaultPrevented).toBeFalse();
   });
 
+  it('advances every five seconds, waits for playing videos, and supports pause and cleanup', () => {
+    let tick = () => {};
+    spyOn(window, 'matchMedia').and.returnValue({ matches: false, addEventListener() {}, removeEventListener() {} } as unknown as MediaQueryList);
+    const interval = spyOn(window, 'setInterval').and.callFake((handler: TimerHandler) => { tick = handler as () => void; return 81; });
+    const clear = spyOn(window, 'clearInterval');
+    spyOnProperty(document, 'hidden', 'get').and.returnValue(false);
+    const fixture = TestBed.createComponent(PhotoGalleryComponent);
+    spyOn(fixture.nativeElement, 'getBoundingClientRect').and.returnValue({ top: 0, bottom: 500 });
+    fixture.detectChanges();
+    expect(interval.calls.mostRecent().args[1]).toBe(5000);
+    tick(); expect(fixture.componentInstance.activeIndex).toBe(1);
+    fixture.componentInstance.videoPlaying = true;
+    tick(); expect(fixture.componentInstance.activeIndex).toBe(1);
+    fixture.componentInstance.videoPlaying = false;
+    tick(); expect(fixture.componentInstance.activeIndex).toBe(2);
+    fixture.componentInstance.togglePlayback();
+    expect(fixture.componentInstance.playing).toBeFalse();
+    expect(clear).toHaveBeenCalledWith(81);
+    fixture.componentInstance.togglePlayback();
+    expect(fixture.componentInstance.playing).toBeTrue();
+    fixture.destroy();
+    expect(clear).toHaveBeenCalledWith(81);
+  });
+
   it('responds to horizontal swipes and ignores vertical scrolling gestures', () => {
     const fixture = TestBed.createComponent(PhotoGalleryComponent);
     fixture.detectChanges();
