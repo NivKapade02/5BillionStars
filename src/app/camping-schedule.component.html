@@ -1,0 +1,56 @@
+<section id="section_4" class="camping-schedule" aria-labelledby="schedule-heading">
+  <div class="schedule-shell">
+    <header class="schedule-heading">
+      <p>A little adventure. A lot of memories.</p>
+      <h2 id="schedule-heading">Your camping schedule</h2>
+      <span>From lakeside sunsets to slow mornings</span>
+    </header>
+    <h3 class="day-label"><i class="bi-sunset" aria-hidden="true"></i> Day one <span>Arrive, explore &amp; unwind</span></h3>
+    <ol class="schedule-grid">
+      <li class="schedule-card">
+        <div class="event-top"><time datetime="16:30">4:30 PM</time><i class="bi-tree" aria-hidden="true"></i></div>
+        <h4>Welcome to the campsite</h4>
+        <p>Settle into your stay, breathe in the fresh air, and explore the nature around you.</p>
+        <ul class="event-points"><li>Get your tent and explore the campsite</li><li>Enjoy indoor and outdoor games</li></ul>
+      </li>
+      <li class="schedule-card">
+        <div class="event-top"><time datetime="17:00">5:00 PM</time><i class="bi-cup-hot" aria-hidden="true"></i></div>
+        <h4>Welcome tea &amp; snacks</h4>
+        <p>A warm welcome, a tasty bite, and a golden-hour view worth slowing down for.</p>
+        <ul class="event-points"><li>Welcome tea and evening snacks</li><li>Sunset views and nature photography</li></ul>
+      </li>
+      <li class="schedule-card">
+        <div class="event-top"><time datetime="20:00">8:00 PM</time><i class="bi-fire" aria-hidden="true"></i></div>
+        <h4>BBQ, campfire &amp; DJ music</h4>
+        <p>Gather around the campfire, enjoy smoky barbecue, and dance under the stars.</p>
+        <div class="meal-options"><div><h5><span class="food-dot veg" aria-hidden="true"></span> Veg BBQ</h5><p>Paneer, potato, capsicum &amp; salad</p></div><div><h5><span class="food-dot nonveg" aria-hidden="true"></span> Non-veg BBQ</h5><p>Chicken &amp; salad</p></div></div>
+      </li>
+      <li class="schedule-card">
+        <div class="event-top"><time datetime="22:00">10:00 PM</time><i class="bi-basket" aria-hidden="true"></i></div>
+        <h4>Unlimited dinner</h4>
+        <p>Come together for a hearty dinner after an evening of music and memories.</p>
+        <div class="meal-options"><div><h5><span class="food-dot veg" aria-hidden="true"></span> Vegetarian</h5><p>Mix veg, dal, rice, chapati or rice bhakari, papad, pickle, sweet &amp; salad</p></div><div><h5><span class="food-dot nonveg" aria-hidden="true"></span> Non-vegetarian</h5><p>Gravy chicken, dry chicken, rice, chapati or rice bhakari, papad, sweet &amp; salad</p></div></div>
+      </li>
+    </ol>
+    <h3 class="day-label"><i class="bi-sunrise" aria-hidden="true"></i> Next morning <span>Wake up to nature</span></h3>
+    <ol class="schedule-grid" start="5">
+      <li class="schedule-card">
+        <div class="event-top"><time datetime="09:30">9:30 AM</time><i class="bi-cup-hot" aria-hidden="true"></i></div>
+        <h4>Morning bliss</h4>
+        <p>Start the day with morning tea and poha, fresh air, and a few more beautiful moments together.</p>
+        <ul class="event-points"><li>Morning tea &amp; poha</li><li>Relax and make lasting memories</li></ul>
+      </li>
+      <li class="schedule-card">
+        <div class="event-top"><time datetime="11:00">11:00 AM</time><i class="bi-camera" aria-hidden="true"></i></div>
+        <h4>Check out with memories</h4>
+        <p>Enjoy the surrounding trails and capture your favourite nature photographs before heading home.</p>
+        <ul class="event-points"><li>Explore nearby trails and nature</li><li>Take home photographs and happy memories</li></ul>
+      </li>
+    </ol>
+    <aside class="games-panel" aria-labelledby="games-heading">
+      <div><p class="games-eyebrow">Make time for a little friendly competition</p><h3 id="games-heading">Let the games begin</h3><p>Bring your group together for outdoor play and indoor favourites.</p></div>
+      <div class="game-list"><h4><i class="bi-dribbble" aria-hidden="true"></i> Outdoor games</h4><ul>@for (game of outdoorGames; track game) { <li>{{ game }}</li> }</ul></div>
+      <div class="game-list"><h4><i class="bi-dice-5" aria-hidden="true"></i> Indoor games</h4><ul>@for (game of indoorGames; track game) { <li>{{ game }}</li> }</ul></div>
+    </aside>
+  </div>
+</section>

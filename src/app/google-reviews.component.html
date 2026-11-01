@@ -1,0 +1,26 @@
+<section id="google-reviews" class="guest-reviews" aria-labelledby="google-reviews-heading">
+  <div class="reviews-shell">
+    <header class="reviews-header">
+      <div><h2 id="google-reviews-heading">Customer testimonials on Google</h2>
+        @if (rating !== null) { <p class="rating-summary"><span class="summary-stars" aria-hidden="true"><span class="empty-stars">★★★★★</span><span class="filled-stars" [style.width.%]="rating * 20">★★★★★</span></span><span>{{ rating }} rating of {{ totalReviews }} reviews</span></p> }
+      </div>
+      <a class="review-button" [href]="mapsUrl" target="_blank" rel="noopener noreferrer">Review us on Google</a>
+    </header>
+    @if (reviews.length) {
+      <div class="review-grid">
+        @for (review of reviews; track review) {
+          <article class="review-card">
+            <div class="review-author"><span class="avatar" aria-hidden="true">{{ review.author.charAt(0).toUpperCase() }}</span><div class="author-details"><h3>{{ review.author }}</h3><p>{{ review.dateLabel || 'Google review' }}</p></div><span class="google-mark" aria-label="Google review">G</span></div>
+            <p class="review-stars" [attr.aria-label]="review.rating + ' out of 5 stars'"><span aria-hidden="true">{{ stars(review.rating) }}</span></p>
+            <div class="review-body"><p class="review-text">{{ excerpt(review) }}</p>
+            @if (review.text.length > 220) { <button type="button" class="read-more" [attr.aria-expanded]="expanded.has(review)" (click)="toggle(review)">{{ expanded.has(review) ? 'See less' : 'See more' }}</button> }
+            </div><a class="review-source" [href]="mapsUrl" target="_blank" rel="noopener noreferrer">Read on Google <span aria-hidden="true">↗</span></a>
+          </article>
+        }
+      </div>
+      <p class="selection-note">Featured 4- and 5-star guest reviews. <a [href]="mapsUrl" target="_blank" rel="noopener noreferrer">See all reviews on Google</a>.</p>
+    } @else {
+      <div class="google-invitation"><span class="google-circle" aria-hidden="true"><i class="bi-google"></i></span><div><h3>A stay worth sharing</h3><p>Read our guests' experiences on Google Maps, or share a memory from your visit.</p></div><a [href]="mapsUrl" target="_blank" rel="noopener noreferrer">Read Google reviews <span aria-hidden="true">↗</span></a></div>
+    }
+  </div>
+</section>

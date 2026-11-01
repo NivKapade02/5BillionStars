@@ -1,0 +1,118 @@
+﻿<div class="booking-content">
+  <section aria-labelledby="booking-heading">
+    @if (reference) {
+      <div role="status">
+        <h2 id="booking-heading">Your booking details are saved</h2>
+        <p>Tap <strong>Send</strong> in WhatsApp to share your request with 5 Billion Stars.</p>
+        <a class="action" [href]="whatsappUrl" target="_blank" rel="noopener noreferrer">Open booking in WhatsApp</a>
+        <p class="notice">If WhatsApp did not open, use the button above. Our team will confirm availability.</p>
+        <p>Booking reference: <strong>{{ reference }}</strong></p>
+      </div>
+    } @else {
+      <h2 id="booking-heading">Welcome To 5 Billion Stars</h2>
+      <img class="booking-banner" src="/images/booking-banner.png" width="851" height="315" alt="5 Billion Stars Camping and Agro Tourism, nestled between Pawana Lake and Tikona Fort">
+      @if (stayPreference) { <p class="stay-choice">Selected stay: <strong>{{ stayPreference }}</strong></p> }
+      @if (loading) { <p role="status">Loading booking form...</p> }
+      @if (!loading && !available) {
+        <p class="error" role="alert">{{ error }}</p>
+        <a class="action" [href]="contactUrl" target="_blank" rel="noopener noreferrer">Contact campsite on WhatsApp</a>
+      }
+      <form #form="ngForm" (ngSubmit)="submit(form)">
+        <fieldset [disabled]="submitting || loading || !available">
+          <div class="date-row">
+            <label><span>*</span> First Name
+              <input name="firstName" [(ngModel)]="booking.firstName" required maxlength="49" placeholder="First name" autocomplete="given-name">
+            </label>
+            <label><span>*</span> Last Name
+              <input name="lastName" [(ngModel)]="booking.lastName" required maxlength="50" placeholder="Last name" autocomplete="family-name">
+            </label>
+          </div>
+          <div class="date-row phone-row">
+          <label for="booking-whatsapp"><span>*</span> Your WhatsApp number
+            <div class="phone-field">
+              <img class="country-flag" [src]="'/flags/' + countryForCode(whatsappCountry).flag + '.svg'" [alt]="countryForCode(whatsappCountry).name + ' flag'" width="22" height="16">
+              <select name="whatsappCountry" [(ngModel)]="whatsappCountry" aria-label="WhatsApp country code">
+                @for (country of countries; track country.code) { <option [value]="country.code">{{ country.code }} {{ country.name }}</option> }
+              </select>
+              <input id="booking-whatsapp" name="phone" type="tel" [(ngModel)]="booking.phone" required pattern="\+?[0-9]{7,15}" maxlength="16" placeholder="WhatsApp number" autocomplete="tel-national" aria-describedby="whatsapp-help">
+            </div>
+          </label>
+          <label for="booking-alternate"><span>*</span> Alternate Mobile Number
+            <div class="phone-field">
+              <img class="country-flag" [src]="'/flags/' + countryForCode(alternateCountry).flag + '.svg'" [alt]="countryForCode(alternateCountry).name + ' flag'" width="22" height="16">
+              <select name="alternateCountry" [(ngModel)]="alternateCountry" aria-label="Alternate mobile country code">
+                @for (country of countries; track country.code) { <option [value]="country.code">{{ country.code }} {{ country.name }}</option> }
+              </select>
+              <input id="booking-alternate" name="alternativePhone" type="tel" [(ngModel)]="booking.alternativePhone" required pattern="\+?[0-9]{7,15}" maxlength="16" placeholder="Alternate mobile number" autocomplete="off">
+            </div>
+          </label>
+          </div>
+          <p class="helper" id="whatsapp-help">Enter your WhatsApp number in the first mobile field.</p>
+          <div class="date-row">
+            <label><span>*</span> Date of Birth
+              <input #dobInput name="dob" type="date" [(ngModel)]="booking.dob" [max]="today" (click)="openDatePicker(dobInput)" autocomplete="bday" required>
+            </label>
+            <label><span>*</span> Email
+              <input name="email" type="email" [(ngModel)]="booking.email" email maxlength="100" placeholder="Enter E-Mail Address" autocomplete="email" required>
+            </label>
+          </div>
+          <div class="date-row stay-dates">
+            <label><span>*</span> Check In Date
+              <input #checkInInput name="checkIn" type="date" [ngModel]="booking.checkIn" (ngModelChange)="setCheckIn($event)" [min]="today" (click)="openDatePicker(checkInInput)" required>
+            </label>
+            <label><span>*</span> Check Out Date
+              <input #checkOutInput name="checkOut" type="date" [(ngModel)]="booking.checkOut" [min]="minimumCheckOut" (click)="openDatePicker(checkOutInput)" required>
+            </label>
+          </div>
+          <label><span>*</span> Number of Members
+            <select name="guests" [(ngModel)]="booking.guests" required>
+              <option [ngValue]="null" disabled>Select Member Count</option>
+              @for (count of memberCounts; track count) { <option [ngValue]="count">{{ count }}</option> }
+            </select>
+          </label>
+          <div class="date-row">
+            <label><span>*</span> Adult (above 10 years)
+              <select name="adults" [(ngModel)]="booking.adults" required>
+                <option [ngValue]="null" disabled>Select Adult Count</option>
+                @for (count of memberCounts; track count) { <option [ngValue]="count">{{ count }}</option> }
+              </select>
+            </label>
+            <label><span>*</span> Kids (5-10 years)
+              <select name="kids" [(ngModel)]="booking.kids" required>
+                <option [ngValue]="null" disabled>Select Kids Count</option>
+                @for (count of counts; track count) { <option [ngValue]="count">{{ count }}</option> }
+              </select>
+            </label>
+          </div>
+          <div class="date-row">
+            <label><span>*</span> Veg Count
+              <select name="veg" [(ngModel)]="booking.veg" required>
+                <option [ngValue]="null" disabled>Select Veg Count</option>
+                @for (count of counts; track count) { <option [ngValue]="count">{{ count }}</option> }
+              </select>
+            </label>
+            <label><span>*</span> Non-Veg Count
+              <select name="nonVeg" [(ngModel)]="booking.nonVeg" required>
+                <option [ngValue]="null" disabled>Select Non-Veg Count</option>
+                @for (count of counts; track count) { <option [ngValue]="count">{{ count }}</option> }
+              </select>
+            </label>
+          </div>
+          <p class="helper">Adults + kids and veg + non-veg must each equal the member count.</p>
+          <label>Comments
+            <textarea name="notes" [(ngModel)]="booking.notes" maxlength="200" rows="3" placeholder="Enter Your Comments"></textarea>
+          </label>
+          <div class="closing">
+            <h3>&#127756; Create Lasting Memories at 5 Billion Stars! &#9728;</h3>
+            <p>Thank you for choosing 5 Billion Stars Camping &amp; Agro Tourism!</p>
+            <p>We cannot wait to help you plan your next great escape. Feel free to call us or message us.</p>
+            <p>Visit us soon!</p>
+          </div>
+          <p class="notice">Your details are saved in our booking sheet. WhatsApp will open with your message to +91 8624908808. Tap Send to complete your request.</p>
+          @if (error && available) { <p class="error" role="alert">{{ error }}</p> }
+          <button class="submit" type="submit" [disabled]="form.invalid || submitting || loading || !available">{{ submitting ? 'Saving your details...' : 'Continue to WhatsApp' }}</button>
+        </fieldset>
+      </form>
+    }
+  </section>
+</div>

@@ -1,0 +1,16 @@
+﻿:host{display:block;font-family:var(--body-font-family,Arial,sans-serif)}
+.stay-section{padding:72px 32px 84px;background:linear-gradient(#24190e38,#24190e66),url('/images/banner/gazebo.jpg') center/cover;scroll-margin-top:132px}
+.stay-heading{text-align:center;margin-bottom:36px;color:white}.stay-heading>p{font-size:16px;font-style:italic;margin:0 0 10px;color:white}.stay-heading h2{font-size:clamp(32px,4vw,46px);font-weight:700;color:white;margin:0}
+.stay-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;max-width:1320px;margin:auto}.stay-card{min-width:0;overflow:hidden;display:flex;flex-direction:column;background:#000a;border-radius:20px;color:white}
+.stay-cover{display:block;width:100%;height:280px;object-fit:cover;object-position:center}.stay-details{flex:1;padding:0 40px 36px;text-align:center}
+.stay-previews{display:flex;justify-content:center;gap:10px;position:relative;margin:-32px 0 22px}.stay-previews img{width:64px;height:64px;object-fit:cover;border:3px solid #ffffffba;border-radius:50%;background:#392a1e}
+.stay-details .stay-eyebrow{font-size:16px;font-style:italic;color:white;margin:0 0 4px}.stay-details h3{color:white;font-size:28px;font-weight:700;line-height:1.3;margin:0 0 14px}
+.stay-capacity{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:6px;background:var(--primary-color,#bc6c25);color:white;font-size:13px;font-weight:700;margin:0}
+.stay-details .stay-tagline{color:white;font-size:17px;font-weight:600;line-height:1.6;margin:20px 0 10px}.stay-description{color:#fffd;font-size:14px;line-height:1.8;margin:0;min-height:76px}
+.included-heading{color:#fffc;font-size:13px;font-weight:500;font-style:italic;margin:20px 0 0;text-align:left}.stay-amenities{list-style:none;padding:0;margin:0;text-align:left}.stay-amenities li{display:flex;align-items:center;gap:12px;min-height:84px;border-bottom:1px solid #ffffff59}
+.amenity-name{color:white;font-size:20px;font-weight:700;line-height:1.4}.included-badge{flex:none;padding:4px 7px;background:var(--primary-color,#bc6c25);border-radius:5px;color:white;font-size:10px;font-weight:700;line-height:1.3}
+.amenity-icon{flex:none;display:grid;place-items:center;width:48px;height:48px;margin-left:auto;border-radius:50%;background:#ffffff1c;color:white;font-size:24px}
+.stay-book{display:block;width:100%;margin-top:28px;padding:13px 20px;border:1px solid #fff9;border-radius:100px;background:var(--primary-color,#bc6c25);color:white;font:700 16px var(--body-font-family,Arial,sans-serif);cursor:pointer}.stay-book span{margin-left:12px}.stay-book:hover{background:#99531a}.stay-book:focus-visible{outline:3px solid white;outline-offset:4px}
+@media(max-width:1000px){.stay-details{padding:0 24px 28px}.amenity-name{font-size:17px}.stay-amenities li{gap:8px}.amenity-icon{width:40px;height:40px;font-size:21px}}
+@media(max-width:700px){.stay-section{padding:48px 16px;scroll-margin-top:100px}.stay-grid{grid-template-columns:1fr}.stay-cover{height:260px}.stay-description{min-height:0}.stay-amenities li{min-height:76px}}
+

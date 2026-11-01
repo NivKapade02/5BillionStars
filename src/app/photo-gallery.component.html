@@ -1,0 +1,36 @@
+﻿<section id="section_3" class="photo-gallery" aria-labelledby="gallery-heading" aria-roledescription="carousel">
+  <div class="gallery-shell">
+    <header class="gallery-heading">
+      <p>Moments at 5 Billion Stars</p>
+      <h2 id="gallery-heading">Gallery</h2>
+    </header>
+    <div class="gallery-filters" role="group" aria-label="Gallery media type">
+      <button type="button" [attr.aria-pressed]="filter === 'all'" (click)="setFilter('all')">All {{ allMedia.length }}</button>
+      <button type="button" [attr.aria-pressed]="filter === 'photo'" (click)="setFilter('photo')">Photos {{ photoCount }}</button>
+      <button type="button" [attr.aria-pressed]="filter === 'video'" (click)="setFilter('video')">Videos {{ videoCount }}</button>
+      <button type="button" [attr.aria-pressed]="filter === 'dance'" (click)="setFilter('dance')">Dancing</button>
+      <button type="button" [attr.aria-pressed]="filter === 'games'" (click)="setFilter('games')">Outdoor Games</button>
+      <button type="button" [attr.aria-pressed]="filter === 'groups'" (click)="setFilter('groups')">Group Moments</button>
+    </div>
+    <div class="photo-stage" tabindex="0" aria-label="Photo and video gallery. Use left and right arrow keys to browse." (keydown)="onKeydown($event)" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+      @if (activePhoto.kind === 'video') {
+        <video class="main-photo" [src]="activePhoto.src" [poster]="activePhoto.poster ?? activePhoto.thumbnail" [attr.aria-label]="activePhoto.alt" controls playsinline preload="none"></video>
+      } @else {
+        <img class="main-photo" [src]="activePhoto.src" [alt]="activePhoto.alt" width="1200" height="800" loading="lazy" decoding="async" draggable="false">
+      }
+      <button type="button" class="gallery-arrow previous" (click)="previous()" aria-label="Previous gallery item">&#8249;</button>
+      <button type="button" class="gallery-arrow next" (click)="next()" aria-label="Next gallery item">&#8250;</button>
+      @if (activePhoto.kind !== 'video') { <div class="photo-caption"><h3>{{ activePhoto.title }}</h3></div> }
+    </div>
+    <p class="gallery-status" role="status">{{ activeIndex + 1 }} / {{ photos.length }} <span>{{ activePhoto.title }}</span></p>
+    <div class="thumbnail-rail" aria-label="Choose a gallery photo or video">
+      @for (photo of photos; track photo.src; let index = $index) {
+        <button #thumbnail type="button" class="thumbnail" [class.selected]="index === activeIndex" [attr.aria-current]="index === activeIndex ? 'true' : null" [attr.aria-label]="'Show ' + (photo.kind === 'video' ? 'video ' : 'photo ') + (index + 1) + ': ' + photo.title" (click)="show(index)">
+          <img [src]="photo.thumbnail" alt="" width="96" height="64" loading="lazy" decoding="async">
+          @if (photo.kind === 'video') { <span class="video-badge" aria-hidden="true">&#9654;</span> }
+        </button>
+      }
+    </div>
+    <p class="gallery-hint">Swipe, use the arrows, or choose a moment below. Tap play to watch a video.</p>
+  </div>
+</section>

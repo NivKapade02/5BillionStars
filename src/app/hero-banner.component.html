@@ -1,0 +1,16 @@
+﻿<div class="banner-images" aria-hidden="true">
+  @for (slide of slides; track slide.src; let index = $index) {
+    <div class="banner-frame" [class.active]="index === activeIndex" [class.previous]="index === previousIndex" [class.zooming]="index === activeIndex || index === previousIndex">
+      <img [src]="slide.src" alt="" width="1920" height="1080" [attr.fetchpriority]="index === 0 ? 'high' : 'low'" decoding="async">
+    </div>
+  }
+  <div class="banner-shade"></div>
+</div>
+<div class="banner-controls" role="group" aria-label="Banner slideshow controls">
+  <button type="button" class="playback" (click)="togglePlayback()" [attr.aria-label]="playing ? 'Pause banner slideshow' : 'Play banner slideshow'" [attr.title]="playing ? 'Pause slideshow' : 'Play slideshow'">
+    <span aria-hidden="true">{{ playing ? '⏸' : '▶' }}</span>
+  </button>
+  @for (slide of slides; track slide.src; let index = $index) {
+    <button type="button" class="banner-dot" [class.selected]="index === activeIndex" [attr.aria-label]="'Show banner: ' + slide.label" [attr.aria-pressed]="index === activeIndex" (click)="select(index)"></button>
+  }
+</div>

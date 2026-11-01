@@ -1,0 +1,32 @@
+﻿<section id="stays" class="stay-section" aria-labelledby="stays-heading">
+  <div class="stay-heading">
+    <p>REST UNDER THE STARS</p>
+    <h2 id="stays-heading">Choose your stay</h2>
+  </div>
+  <div class="stay-grid">
+    @for (stay of stays; track stay.name) {
+      <article class="stay-card">
+        <img class="stay-cover" [src]="stay.image" [alt]="stay.alt" width="1200" height="800" loading="lazy" decoding="async">
+        <div class="stay-details">
+          <div class="stay-previews">
+            @for (detail of stay.details; track detail.image) {
+              <img [src]="detail.image" [alt]="detail.alt" width="90" height="90" loading="lazy" decoding="async">
+            }
+          </div>
+          <p class="stay-eyebrow">Rest under the stars</p>
+          <h3>{{ stay.heading }}</h3>
+          <p class="stay-capacity"><i class="bi-people" aria-hidden="true"></i> {{ stay.capacity }}</p>
+          <p class="stay-tagline">{{ stay.tagline }}</p>
+          <p class="stay-description">{{ stay.description }}</p>
+          <h4 class="included-heading">Included with your stay</h4>
+          <ul class="stay-amenities">
+            @for (amenity of stay.amenities; track amenity; let index = $index) {
+              <li><span class="amenity-name">{{ amenity }}</span><span class="included-badge">Included</span><span class="amenity-icon" aria-hidden="true"><i [class]="'bi ' + amenityIcons[index]"></i></span></li>
+            }
+          </ul>
+          <button type="button" class="stay-book" (click)="bookStay.emit(stay.preference)" [attr.aria-label]="'Book ' + stay.name">Book {{ stay.name }} <span aria-hidden="true">&nearr;</span></button>
+        </div>
+      </article>
+    }
+  </div>
+</section>
