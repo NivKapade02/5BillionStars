@@ -46,3 +46,7 @@ Thumbs.db
 .env.*
 !.env.example
 /data/
+
+# Firebase local deployment cache and logs
+/.firebase/
+firebase-debug*.log

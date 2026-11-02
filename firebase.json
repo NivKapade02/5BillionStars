@@ -1,0 +1,12 @@
+{
+  "hosting": {
+    "public": "dist/5-billion-stars/browser",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "**/*.md"],
+    "rewrites": [{ "source": "**", "destination": "/index.html" }],
+    "headers": [
+      { "source": "**", "headers": [{ "key": "X-Content-Type-Options", "value": "nosniff" }] },
+      { "source": "**/*.json", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
+      { "source": "/index.html", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] }
+    ]
+  }
+}
