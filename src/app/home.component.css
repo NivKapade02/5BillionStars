@@ -35,7 +35,8 @@ button.social-icon-link { border: 0; cursor: pointer; }
 .hero-section::after { display: none; }
 
 @media(max-width:991px){.hero-section{height:min(720px,100svh);min-height:580px}}
-.google-map{display:block;width:100%;filter:none;background:#d1f5df}.map-location{display:flex;align-items:center;gap:12px;margin-bottom:14px;color:white;text-decoration:none}.map-location>i{font-size:48px;line-height:1;color:#ea4335;filter:drop-shadow(0 2px 3px #0004)}.map-location strong{display:block;color:white;font-size:19px}.map-location small{display:block;color:#fff;font-size:13px;margin-top:3px}.map-location:focus-visible{outline:2px solid white;outline-offset:5px;border-radius:6px}
+.google-map{display:block;width:100%;filter:none;background:#d1f5df}
 .campsite-map-row .google-map{height:560px}@media(max-width:600px){.campsite-map-row .google-map{height:420px}}
 
 .navbar-nav .nav-link{font-size:13px;padding:10px 8px;white-space:nowrap}@media(max-width:1399px){.navbar .container{width:calc(100% - 24px);max-height:calc(100dvh - 24px);overflow-y:auto;padding:12px 18px}}
+.campsite-call{display:inline-flex;align-items:center;gap:12px;max-width:100%;box-sizing:border-box;padding:12px 20px;margin-top:8px;border:1px solid #ffffff80;border-radius:100px;background:#bc6c25;color:#fff;text-decoration:none;box-shadow:0 4px 14px #0003;font-size:14px;line-height:1.5}.campsite-call i{font-size:23px}.campsite-call strong{display:block;color:#fff;font-size:19px;white-space:nowrap}.campsite-call:hover{background:#98551d;color:#fff}.campsite-call:focus-visible{outline:3px solid #fff;outline-offset:4px}

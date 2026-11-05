@@ -8,10 +8,10 @@ import { BookingComponent } from './booking.component';
 
 describe('Camping website and booking dialog', () => {
   beforeEach(() => {
+    sessionStorage.clear();
     TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
     spyOn(window, 'fetch').and.callFake(async (_url: RequestInfo | URL, options?: RequestInit) => {
-      if (options?.method === 'POST') return new Response(JSON.stringify({ ok: true, id: JSON.parse(options.body as string).id }));
-      return new Response(JSON.stringify({ whatsappNumber: '918624908808', googleSheetsWebAppUrl: 'https://script.google.com/macros/s/test-deployment/exec' }));
+      return new Response(JSON.stringify({ whatsappNumber: '918624908808' }));
     });
   });
 
@@ -50,22 +50,18 @@ describe('Camping website and booking dialog', () => {
     const lastName = dialog.querySelector<HTMLInputElement>('[name="lastName"]')!;
     expect(firstName.required && lastName.required).toBeTrue();
     expect(firstName.closest('.date-row')).toBe(lastName.closest('.date-row'));
-    expect(dialog.querySelector('[name="phone"]')?.closest('.phone-row')).toBe(dialog.querySelector('[name="alternativePhone"]')?.closest('.phone-row'));
-    const dob = dialog.querySelector<HTMLInputElement>('input[name="dob"]')!;
-    const email = dialog.querySelector<HTMLInputElement>('input[name="email"]')!;
-    expect(dob.required).toBeTrue();
-    expect(email.required).toBeTrue();
-    expect(dob.closest('.date-row')).toBe(email.closest('.date-row'));
-    expect(dob.max).toBe(new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }));
+    expect(dialog.querySelector('[name="phone"]')?.closest('.phone-row')).toBe(dialog.querySelector('[name="guests"]')?.closest('.phone-row'));
+    expect(dialog.querySelector('[name="alternativePhone"]')).toBeNull();
+    expect(dialog.querySelector('[name="underFive"]')).toBeNull();
+    expect(dialog.querySelector('[name="dob"]')).toBeNull();
+    expect(dialog.querySelector('[name="email"]')).toBeNull();
     const flags = dialog.querySelectorAll<HTMLImageElement>('.country-flag');
-    expect(flags.length).toBe(2);
+    expect(flags.length).toBe(1);
     expect(flags[0].getAttribute('src')).toBe('/flags/in.svg');
     const component = harness.routeDebugElement!.componentInstance as HomeComponent;
     component.bookingForm!.whatsappCountry = '+44';
-    component.bookingForm!.alternateCountry = '+61';
     harness.detectChanges();
     expect(flags[0].getAttribute('src')).toBe('/flags/gb.svg');
-    expect(flags[1].getAttribute('src')).toBe('/flags/au.svg');
     expect(home.querySelector('.booking-close')?.textContent?.trim()).toBe('\u00d7');
     expect(getComputedStyle(home.querySelector('.booking-close')!).borderTopStyle).toBe('none');
     expect(getComputedStyle(dialog).scrollbarWidth).toBe('none');
@@ -76,7 +72,7 @@ describe('Camping website and booking dialog', () => {
       input.value = '2000-01-01';
       expect(input.validity.rangeUnderflow).toBeTrue();
     }
-    for (const field of ['alternativePhone', 'email', 'guests', 'adults', 'kids', 'veg', 'nonVeg', 'notes']) {
+    for (const field of ['guests', 'adults', 'kids', 'veg', 'nonVeg', 'notes']) {
       expect(dialog.querySelector(`[name="${field}"]`)).not.toBeNull();
     }
     expect(dialog.querySelector('.intro')).toBeNull();
@@ -86,7 +82,7 @@ describe('Camping website and booking dialog', () => {
     expect(home.querySelector('#section_1')).not.toBeNull();
   });
 
-  it('includes the visitor WhatsApp number in the message to the admin and in the sheet save', async () => {
+  it('includes the visitor WhatsApp number without saving to a backend', async () => {
 
     const replace = jasmine.createSpy('replace');
     spyOn(window, 'open').and.returnValue({ opener: null, closed: false, location: { replace }, close: () => {} } as unknown as Window);
@@ -96,16 +92,15 @@ describe('Camping website and booking dialog', () => {
     await harness.fixture.whenStable();
     const home = harness.routeDebugElement!.componentInstance as HomeComponent;
     const form = home.bookingForm!;
-    for (let attempt = 0; form.loading && attempt < 50; attempt++) await new Promise(resolve => setTimeout(resolve, 10));
-    expect(form.available).toBeTrue();
-    form.booking = { ...form.booking, dob: '1995-05-15', alternativePhone: '+919876543211', email: 'guest@example.com', adults: 2, kids: 0, veg: 1, nonVeg: 1, firstName: 'Website', lastName: 'Guest', phone: '+919876543210', checkIn: '2099-01-01', checkOut: '2099-01-02', guests: 2, notes: 'Test request' };
+    form.stayPreference = 'Tent Stay (2-3 people)';
+    form.booking = { ...form.booking, adults: 2, kids: 0, veg: 1, nonVeg: 1, firstName: 'Website', lastName: 'Guest', phone: '+919876543210', checkIn: '2099-01-01', checkOut: '2099-01-02', guests: 2, notes: 'Test request' };
     await form.submit({ invalid: false } as NgForm);
     const url = new URL(form.whatsappUrl);
     expect(url.pathname).toBe('/918624908808');
-    expect(url.searchParams.get('text')).toContain('Guest WhatsApp: +919876543210');
-    expect(replace).toHaveBeenCalledWith(form.whatsappUrl);
-    const post = (window.fetch as jasmine.Spy).calls.allArgs().find(args => args[1]?.method === 'POST')!;
-    expect(JSON.parse(post[1].body).phone).toBe('+919876543210');
+    expect(url.searchParams.get('text')?.replace(/ +/g, ' ')).toContain('Guest WhatsApp: +919876543210');
+    expect(window.open).not.toHaveBeenCalled();
+    const posts = (window.fetch as jasmine.Spy).calls.allArgs().filter(args => args[1]?.method === 'POST');
+    expect(posts.length).toBe(0);
     expect(TestBed.inject(Router).url).toBe('/');
   });
 
@@ -115,6 +110,25 @@ describe('Camping website and booking dialog', () => {
     expect(harness.routeNativeElement?.querySelector('#section_1')).toBeNull();
     await harness.navigateByUrl('/', HomeComponent);
     expect(harness.routeNativeElement?.querySelector('#section_1')).not.toBeNull();
+  });
+
+  it('removes admin access and redirects old status links to the booking form', async () => {
+    const harness = await RouterTestingHarness.create('/admin');
+    expect(TestBed.inject(Router).url).toBe('/');
+    expect(harness.routeNativeElement?.querySelector('a[href="/admin"]')).toBeNull();
+    await harness.navigateByUrl('/booking/old-reference', BookingComponent);
+    expect(TestBed.inject(Router).url).toBe('/book');
+    expect(harness.routeNativeElement?.textContent).not.toContain('Team sign-in');
+  });
+
+  it('starts the explicitly selected stay after the dropdown changed an earlier request',async()=>{
+    const harness=await RouterTestingHarness.create('/');
+    const home=harness.routeDebugElement!.componentInstance as HomeComponent;
+    home.openBooking('Tent Stay (2-3 people)');harness.detectChanges();
+    const form=home.bookingForm!;
+    form.stayPreference='Cottage Stay (4-5 people)';form.whatsappUrl='https://wa.me/918624908808?text=earlier';
+    home.openBooking('Tent Stay (2-3 people)');harness.detectChanges();
+    expect(form.whatsappUrl).toBe('');expect(form.stayPreference).toBe('Tent Stay (2-3 people)');
   });
 
   it('opens each stay option in the booking dialog and clears an earlier submission when switching stays', async () => {

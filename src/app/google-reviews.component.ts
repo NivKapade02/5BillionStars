@@ -13,6 +13,7 @@ export class GoogleReviewsComponent implements OnInit {
   reviews: GuestReview[] = [];
   rating: number | null = null;
   totalReviews: number | null = null;
+  verifiedAt = '';
   readonly expanded = new Set<GuestReview>();
 
   async ngOnInit() {
@@ -26,7 +27,9 @@ export class GoogleReviewsComponent implements OnInit {
         typeof review.author === 'string' && review.author.trim().length > 0 &&
         typeof review.text === 'string' && review.text.trim().length > 0
       ).slice(0, 8).map((review: GuestReview) => ({ author: review.author.trim(), rating: review.rating, text: review.text.trim(), dateLabel: typeof review.dateLabel === 'string' ? review.dateLabel : undefined }));
-      if (typeof data.rating === 'number' && data.rating >= 1 && data.rating <= 5 && Number.isInteger(data.totalReviews) && data.totalReviews > 0) {
+      const verified = typeof data.verifiedAt === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(data.verifiedAt) && Number.isFinite(Date.parse(data.verifiedAt)) && new Date(data.verifiedAt).toISOString().slice(0,10) === data.verifiedAt && data.verifiedAt <= new Date().toISOString().slice(0,10);
+      if (verified && typeof data.rating === 'number' && data.rating >= 1 && data.rating <= 5 && Number.isInteger(data.totalReviews) && data.totalReviews > 0) {
+        this.verifiedAt = data.verifiedAt;
         this.rating = data.rating;
         this.totalReviews = data.totalReviews;
       }

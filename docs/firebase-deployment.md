@@ -2,8 +2,10 @@
 
 firebase.json publishes only dist/5-billion-stars/browser and rewrites Angular
 routes to index.html. It does not upload .env, server files, or booking records.
-The existing booking flow uses the deployed Google Apps Script endpoint and
-visitor-sent WhatsApp messages; the optional Node server is not hosted here.
+The booking flow prepares visitor-sent WhatsApp messages entirely in the browser.
+Firebase Hosting is retained; Firebase Authentication, the admin dashboard and
+Google Sheets/Drive integration have been removed. The optional Node server is
+not used by this flow and is not hosted here.
 
 The globally installed Firebase CLI was incomplete. Use the temporary npm CLI:
 

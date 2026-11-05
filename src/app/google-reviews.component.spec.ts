@@ -33,8 +33,14 @@ describe('Google guest reviews', () => {
     expect(link.href).toContain('google.com/maps?cid=');
   });
 
+  it('hides aggregate rating/count when the verification date has not been supplied',async()=>{
+    spyOn(window,'fetch').and.callFake(async()=>new Response(JSON.stringify({rating:4.8,totalReviews:138,verifiedAt:null,reviews:[]})));
+    const fixture=TestBed.createComponent(GoogleReviewsComponent);await fixture.componentInstance.ngOnInit();fixture.detectChanges();
+    expect(fixture.componentInstance.rating).toBeNull();expect(fixture.nativeElement.querySelector('.rating-summary')).toBeNull();
+  });
+
   it('expands long reviews and displays only an explicitly supplied overall rating', async () => {
-    spyOn(window, 'fetch').and.resolveTo(new Response(JSON.stringify({ rating: 4.2, totalReviews: 10, reviews: [
+    spyOn(window, 'fetch').and.resolveTo(new Response(JSON.stringify({ rating: 4.2, totalReviews: 10, verifiedAt:'2026-01-01', reviews: [
       { author: 'Test reviewer', rating: 4, text: 'A long review fixture. '.repeat(20) }
     ] })));
     const fixture = TestBed.createComponent(GoogleReviewsComponent);

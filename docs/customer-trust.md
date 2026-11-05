@@ -1,31 +1,11 @@
-# Customer trust updates
+# Customer booking flow
 
-Owner-supplied per-person rates: Tent regular INR1199, offer INR999; Cottage
-regular INR1699, offer INR1499. The shared stay-pricing.ts values drive stay
-cards, booking introduction and FAQ. No whole-unit or child total is calculated
-without an agreed pricing rule. No offer deadline or availability is invented.
+The form works entirely in the browser. It validates required details, prices every stay per night, and prepares a WhatsApp message addressed to the campsite. Guests must tap Send in WhatsApp. The website does not save bookings, upload receipts, verify bank transactions or claim message delivery.
 
-Primary CTAs request availability. The guide explains sending the WhatsApp
-message, receiving a full quote and obtaining written confirmation. A stored
-reference does not mean accommodation is reserved. Contact enquiries now prepare
-a WhatsApp message with a fallback link instead of relying on mailto submissions.
-Breakfast is consistent with the supplied camping schedule (tea and poha).
-Unverified superlatives and the Luxury label were replaced with factual wording.
+The team checks availability and the final total in WhatsApp before requesting a 40% advance. The guest sends the payment screenshot directly in that chat. The team verifies actual funds received and sends booking confirmation manually. Client-generated references and estimates are not confirmed reservations or proof of payment.
 
-Owner confirmed: all meals/taxes included; under 5 free; ages 5–10 INR700 per
-child; 40% advance; Google Pay/PhonePe on 8624908808; booking confirmation by
-Nivrutti. Hosts Akshay/Nivrutti, 11 clean/hygienic washrooms, hot water, cottage
-fans, ample parking, 100-metre cement approach from Paud–Lonavala Road.
+The published terms retain cancellation percentages based on the advance paid and hours before 4:30 PM India time: at least 72 hours 5%; 48 to under 72 hours 7%; 24 to under 48 hours 10%; under 24 hours no refund. Approved refunds are initiated within seven working days. One reschedule at least 72 hours before check-in is subject to availability and price differences. Campsite cancellations receive a full advance refund.
 
-Cancellation wording received: 3 days 5%, 2 days 7%, 1 day 10%, same day no
-refund. The owner referred clarification to Nivrutti; deduction basis (advance
-versus total), exact day cutoffs and the meaning of one-day-before-check-in are
-still unspecified. Only the unambiguous same-day no-refund term is published;
-earlier deductions are to be confirmed with Nivrutti in writing before payment.
-Weekend differences, rescheduling/weather rules, shared/attached arrangements,
-AC availability and response-time commitments have not been invented.
+The website's privacy notice describes browser preparation and visitor-selected WhatsApp sharing. There is no Firebase administration, Google Sheets/Drive integration or online guest status page. Removing the integration does not erase previously saved records in external Google services. Hosting remains on Firebase.
 
-To complete the policy/facility section, replace the relevant FAQ answers with
-the owner's actual terms, and add authentic host and facility photos. The basic
-data-use explanation describes the existing Sheet/WhatsApp flow; it is not a
-complete privacy policy or a claim of legal compliance.
+Genuine featured Google reviews and source links remain. Aggregate rating/count stays hidden until a verified last-checked date is supplied.

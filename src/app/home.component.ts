@@ -11,11 +11,12 @@ import { RestaurantComponent } from './restaurant.component';
 import { SiteFooterComponent } from './site-footer.component';
 import { ScrollTopComponent } from './scroll-top.component';
 import { SectionLinkDirective } from './section-link.directive';
+import { AboutVideoComponent } from './about-video.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, SectionLinkDirective, BookingComponent, StayOptionsComponent, PhotoGalleryComponent, HeroBannerComponent, CampingScheduleComponent, GoogleReviewsComponent, BookingGuideComponent, RestaurantComponent, SiteFooterComponent, ScrollTopComponent],
+  imports: [RouterLink, AboutVideoComponent, SectionLinkDirective, BookingComponent, StayOptionsComponent, PhotoGalleryComponent, HeroBannerComponent, CampingScheduleComponent, GoogleReviewsComponent, BookingGuideComponent, RestaurantComponent, SiteFooterComponent, ScrollTopComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -28,13 +29,14 @@ export class HomeComponent {
 
   openBooking(stay?: string) {
     if (this.bookingForm?.submitting) return;
-    if (stay && stay !== this.selectedStay) {
+    const currentStay=this.bookingForm?.stayPreference || this.selectedStay;
+    if (stay && stay !== currentStay) {
       this.selectedStay = stay;
       if (this.bookingForm) {
-        this.bookingForm.reference = '';
-        this.bookingForm.whatsappUrl = '';
+        this.bookingForm.startNewRequest(stay);
       }
     }
+    if(stay)this.selectedStay=stay;
     this.menuOpen = false;
     this.bookingOpened = true;
     this.bookingDialog.nativeElement.showModal();

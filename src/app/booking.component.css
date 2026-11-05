@@ -2,4 +2,6 @@
 
 .country-flag{flex:none;width:22px;height:16px;margin-left:10px;object-fit:cover}
 
-.phone-row .phone-field select{flex:0 0 72px;width:72px;padding:8px 2px;font-size:12px}.phone-row .phone-field input{padding:8px 4px}.phone-row .country-flag{width:18px;margin-left:6px}@media(max-width:480px){.phone-row .phone-field{flex-wrap:wrap}.phone-row .phone-field select{flex:1;width:auto;border:0}.phone-row .phone-field input{flex:0 0 100%;border-top:1px solid #ddd}}
+.booking-content{box-sizing:border-box;width:100%}.date-row>label{min-width:0}input,select,textarea{max-width:100%}.submit{min-height:48px}.submit:not(:disabled):hover{background:#117c3f}@media(max-width:600px){input,select,textarea{font-size:16px}label{margin-top:18px}.date-row{gap:12px}.phone-row{grid-template-columns:1fr}.phone-row .phone-field{flex-wrap:nowrap}.phone-row .phone-field select{flex:0 0 80px;width:80px;border-right:1px solid #ddd}.phone-row .phone-field input{flex:1;min-width:0;border-top:0}.booking-banner{margin-bottom:18px}}@media(max-width:360px){.booking-content{padding:16px 12px}.date-row{grid-template-columns:1fr}}
+
+.phone-row .phone-field select{flex:0 0 72px;width:72px;padding:8px 2px;font-size:12px}.phone-row .phone-field input{padding:8px 4px}.phone-row .country-flag{width:18px;margin-left:6px}

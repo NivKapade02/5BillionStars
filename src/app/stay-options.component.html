@@ -16,7 +16,7 @@
           <p class="stay-eyebrow">Rest under the stars</p>
           <h3>{{ stay.heading }}</h3>
           <p class="stay-capacity"><i class="bi-people" aria-hidden="true"></i> {{ stay.capacity }}</p>
-          <div class="stay-price"><span class="regular-price"><span class="visually-hidden">Regular price </span><s>&#8377;{{ stay.price.regular }}</s></span> <strong>&#8377;{{ stay.price.offer }}</strong><span class="price-unit">per person</span><span class="price-saving">Save &#8377;{{ stay.price.regular - stay.price.offer }}</span></div>
+          <div class="stay-price"><span class="regular-price"><span class="visually-hidden">Regular price </span><s>&#8377;{{ stay.price.regular }}</s></span> <strong>&#8377;{{ stay.price.offer }}</strong><span class="price-unit">per person per night</span><span class="price-saving">Save &#8377;{{ stay.price.regular - stay.price.offer }}</span></div>
           <p class="stay-tagline">{{ stay.tagline }}</p>
           <p class="stay-description">{{ stay.description }}</p>
           <h4 class="included-heading">Included with your stay</h4>
@@ -25,7 +25,7 @@
               <li><span class="amenity-name">{{ amenity }}</span><span class="included-badge">Included</span><span class="amenity-icon" aria-hidden="true"><i [class]="'bi ' + amenityIcons[index]"></i></span></li>
             }
           </ul>
-          <p class="price-note">All meals &amp; taxes included. Under 5: free. Ages 5–10: &#8377;700 per child. A 40% advance confirms your booking after availability is agreed with our team.</p>
+          <p class="price-note">All meals &amp; taxes included. Under 5: free. Ages 5–10: &#8377;700 per child per night. A 40% advance confirms your booking after availability is agreed with our team.</p>
           <button type="button" class="stay-book" (click)="bookStay.emit(stay.preference)" [attr.aria-label]="'Check availability for ' + stay.name">Check availability <span aria-hidden="true">&nearr;</span></button>
         </div>
       </article>

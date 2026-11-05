@@ -1,25 +1,24 @@
 ﻿<div class="booking-content">
   <section aria-labelledby="booking-heading">
-    @if (reference) {
-      <div role="status">
-        <h2 id="booking-heading">Your request details are saved</h2>
-        <p>Tap <strong>Send</strong> in WhatsApp to share your request with 5 Billion Stars.</p>
-        <a class="action" [href]="whatsappUrl" target="_blank" rel="noopener noreferrer">Open booking in WhatsApp</a>
-        <p class="notice">Your stay is not reserved yet. Confirm availability and the total with our team, then pay {{ terms.advancePercent }}% advance via Google Pay or PhonePe to {{ terms.paymentNumber }}. Share the payment reference with our team to receive confirmation.</p>
-        <p>Booking reference: <strong>{{ reference }}</strong></p>
-      </div>
+    @if (whatsappUrl) {
+      <h2 #paymentHeading tabindex="-1" id="booking-heading">Your WhatsApp request is ready</h2>
+      <p class="notice">Your request has not been sent yet. Open WhatsApp and tap Send to share your details with our team. Availability and payment are confirmed by the team in WhatsApp.</p>
+      <p>Request reference: {{ reference }}</p>
+      <a class="action" [href]="whatsappUrl" target="_blank" rel="noopener noreferrer">Open booking request in WhatsApp</a>
+      <p class="helper">On desktop, use WhatsApp Web or the desktop app. This website does not save your booking or upload payment receipts. If you have already sent this request, wait for the team's reply before paying.</p>
+      <button type="button" class="submit" (click)="startNewRequest()">Edit booking details</button>
     } @else {
       <h2 id="booking-heading">Check availability at 5 Billion Stars</h2>
-      <p class="notice">Tent Stay: ₹{{ pricing.tent.offer }} per person (regular ₹{{ pricing.tent.regular }}). Cottage Stay: ₹{{ pricing.cottage.offer }} per person (regular ₹{{ pricing.cottage.regular }}). All meals and taxes included. Under 5: free; ages 5–10: ₹{{ terms.childRate }} per child. A {{ terms.advancePercent }}% advance is required after availability is agreed with our team. This form requests availability and does not confirm a booking.</p>
+      <p class="notice"><strong>Tent Stay: ₹{{ pricing.tent.offer }}</strong> per person per night (regular ₹{{ pricing.tent.regular }}). <strong>Cottage Stay: ₹{{ pricing.cottage.offer }}</strong> per person per night (regular ₹{{ pricing.cottage.regular }}). Rates are per night. All meals and taxes included. Under 5: free; ages 5–10: ₹{{ terms.childRate }} per child per night. A {{ terms.advancePercent }}% advance is required after availability is agreed with our team. This form requests availability and does not confirm a booking.</p>
       <img class="booking-banner" src="/images/booking-banner.png" width="851" height="315" alt="5 Billion Stars Camping and Agro Tourism, nestled between Pawana Lake and Tikona Fort">
-      @if (stayPreference) { <p class="stay-choice">Selected stay: <strong>{{ stayPreference }}</strong></p> }
-      @if (loading) { <p role="status">Loading booking form...</p> }
-      @if (!loading && !available) {
-        <p class="error" role="alert">{{ error }}</p>
-        <a class="action" [href]="contactUrl" target="_blank" rel="noopener noreferrer">Contact campsite on WhatsApp</a>
-      }
       <form #form="ngForm" (ngSubmit)="submit(form)">
-        <fieldset [disabled]="submitting || loading || !available">
+        <fieldset [disabled]="submitting">
+          <label><span>*</span> Stay option
+            <select name="stayPreference" [(ngModel)]="stayPreference" required>
+              <option value="" disabled>Select Tent or Cottage</option>
+              @for (stay of stayOptions; track stay.value) { <option [value]="stay.value">{{ stay.label }}</option> }
+            </select>
+          </label>
           <div class="date-row">
             <label><span>*</span> First Name
               <input name="firstName" [(ngModel)]="booking.firstName" required maxlength="49" placeholder="First name" autocomplete="given-name">
@@ -38,25 +37,14 @@
               <input id="booking-whatsapp" name="phone" type="tel" [(ngModel)]="booking.phone" required pattern="\+?[0-9]{7,15}" maxlength="16" placeholder="WhatsApp number" autocomplete="tel-national" aria-describedby="whatsapp-help">
             </div>
           </label>
-          <label for="booking-alternate"><span>*</span> Alternate Mobile Number
-            <div class="phone-field">
-              <img class="country-flag" [src]="'/flags/' + countryForCode(alternateCountry).flag + '.svg'" [alt]="countryForCode(alternateCountry).name + ' flag'" width="22" height="16">
-              <select name="alternateCountry" [(ngModel)]="alternateCountry" aria-label="Alternate mobile country code">
-                @for (country of countries; track country.code) { <option [value]="country.code">{{ country.code }} {{ country.name }}</option> }
-              </select>
-              <input id="booking-alternate" name="alternativePhone" type="tel" [(ngModel)]="booking.alternativePhone" required pattern="\+?[0-9]{7,15}" maxlength="16" placeholder="Alternate mobile number" autocomplete="off">
-            </div>
+          <label for="booking-members"><span>*</span> Number of Members
+            <select id="booking-members" name="guests" [(ngModel)]="booking.guests" required>
+              <option [ngValue]="null" disabled>Select Member Count</option>
+              @for (count of memberCounts; track count) { <option [ngValue]="count">{{ count }}</option> }
+            </select>
           </label>
           </div>
-          <p class="helper" id="whatsapp-help">Enter your WhatsApp number in the first mobile field.</p>
-          <div class="date-row">
-            <label><span>*</span> Date of Birth
-              <input #dobInput name="dob" type="date" [(ngModel)]="booking.dob" [max]="today" (click)="openDatePicker(dobInput)" autocomplete="bday" required>
-            </label>
-            <label><span>*</span> Email
-              <input name="email" type="email" [(ngModel)]="booking.email" email maxlength="100" placeholder="Enter E-Mail Address" autocomplete="email" required>
-            </label>
-          </div>
+          <p class="helper" id="whatsapp-help">Enter your WhatsApp number with country code.</p>
           <div class="date-row stay-dates">
             <label><span>*</span> Check In Date
               <input #checkInInput name="checkIn" type="date" [ngModel]="booking.checkIn" (ngModelChange)="setCheckIn($event)" [min]="today" (click)="openDatePicker(checkInInput)" required>
@@ -65,12 +53,6 @@
               <input #checkOutInput name="checkOut" type="date" [(ngModel)]="booking.checkOut" [min]="minimumCheckOut" (click)="openDatePicker(checkOutInput)" required>
             </label>
           </div>
-          <label><span>*</span> Number of Members
-            <select name="guests" [(ngModel)]="booking.guests" required>
-              <option [ngValue]="null" disabled>Select Member Count</option>
-              @for (count of memberCounts; track count) { <option [ngValue]="count">{{ count }}</option> }
-            </select>
-          </label>
           <div class="date-row">
             <label><span>*</span> Adult (above 10 years)
               <select name="adults" [(ngModel)]="booking.adults" required>
@@ -99,24 +81,23 @@
               </select>
             </label>
           </div>
-          <label>Children under 5 (free)
-            <select name="underFive" [(ngModel)]="booking.underFive" required>
-              @for (count of counts; track count) { <option [ngValue]="count">{{ count }}</option> }
-            </select>
-          </label>
-          <p class="helper">Include everyone, including children under 5, in the member count. Adults + kids + children under 5 and veg + non-veg must each equal the member count.</p>
+          <p class="helper"><strong>Children under 5 years stay free.</strong> Include everyone in Number of Members. Members beyond your adult and kids (5–10 years) counts are treated as children under 5. Veg + non-veg must equal the member count.</p>
           <label>Comments
             <textarea name="notes" [(ngModel)]="booking.notes" maxlength="200" rows="3" placeholder="Enter Your Comments"></textarea>
           </label>
+          @if (quote; as estimate) {
+          <app-booking-receipt [quote]="estimate" [name]="booking.firstName + ' ' + booking.lastName" [stay]="stayPreference" [checkIn]="booking.checkIn" [checkOut]="booking.checkOut" [adults]="booking.adults" [kids]="booking.kids" [underFive]="underFive" [reference]="reference" [bookingMessage]="savedBookingMessage" [guestPhone]="normalizedGuestPhone" />
+        }
           <div class="closing">
-            <h3>&#127756; Create Lasting Memories at 5 Billion Stars! &#9728;</h3>
+            <h3> Create Lasting Memories at 5 Billion Stars!</h3>
             <p>Thank you for choosing 5 Billion Stars Camping &amp; Agro Tourism!</p>
             <p>We cannot wait to help you plan your next great escape. Feel free to call us or message us.</p>
             <p>Visit us soon!</p>
           </div>
-          <p class="notice">Your details will be saved in the campsite's Google booking sheet and included in a message to +91 8624908808. Tap Send in WhatsApp to share your request. Our team will confirm availability and the final quote separately.</p>
-          @if (error && available) { <p class="error" role="alert">{{ error }}</p> }
-          <button class="submit" type="submit" [disabled]="form.invalid || submitting || loading || !available">{{ submitting ? 'Saving your details...' : 'Continue to WhatsApp' }}</button>
+          <p class="notice">Prepare <b>a WhatsApp message to +91 8624908808</b> with your booking details and price estimate. Tap Send in WhatsApp to request availability. Our team will confirm the final quote and payment instructions. No booking data is saved by this website.</p>
+          @if (error) { <p class="error" role="alert">{{ error }}</p> }
+          @if (form.valid && validationError) { <p class="helper" role="status">{{ validationError }}</p> }
+          <button class="submit" type="submit" [disabled]="!form.valid || !!validationError || submitting">Prepare WhatsApp booking request</button>
         </fieldset>
       </form>
     }

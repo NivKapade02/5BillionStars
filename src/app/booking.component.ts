@@ -1,25 +1,25 @@
-﻿import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { BOOKING_TERMS, STAY_PRICING } from './stay-pricing';
-
-interface BookingConfig {
-  whatsappNumber: string;
-  googleSheetsWebAppUrl: string;
-}
+import { calculateBookingQuote } from './booking-quote';
+import { BookingReceiptComponent } from './booking-receipt.component';
 
 @Component({
-  selector: 'app-booking',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './booking.component.html',
-  styleUrl: './booking.component.css',
+  selector: 'app-booking', standalone: true,
+  imports: [FormsModule, BookingReceiptComponent],
+  templateUrl: './booking.component.html', styleUrl: './booking.component.css',
   host: { '[class.embedded]': 'embedded' }
 })
-export class BookingComponent implements OnInit {
+export class BookingComponent {
   readonly pricing = STAY_PRICING;
   readonly terms = BOOKING_TERMS;
+  @ViewChild('paymentHeading') paymentHeading?: ElementRef<HTMLHeadingElement>;
   @Input() embedded = false;
   @Input() stayPreference = '';
+  readonly stayOptions = [
+    { value: 'Tent Stay (2-3 people)', label: 'Tent Stay · 2–3 people · ₹999/person/night' },
+    { value: 'Cottage Stay (4-5 people)', label: 'Cottage Stay · 4–5 people · ₹1499/person/night' }
+  ];
   readonly today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
   readonly memberCounts = Array.from({ length: 50 }, (_, index) => index + 1);
   readonly counts = Array.from({ length: 51 }, (_, index) => index);
@@ -29,27 +29,23 @@ export class BookingComponent implements OnInit {
     { code: '+61', name: 'Australia', flag: 'au' }, { code: '+65', name: 'Singapore', flag: 'sg' }
   ];
   whatsappCountry = '+91';
-  alternateCountry = '+91';
   booking = {
-    firstName: '', lastName: '', dob: '', phone: '', alternativePhone: '', email: '', checkIn: '', checkOut: '',
-    guests: null as number | null, adults: null as number | null, kids: null as number | null, underFive: 0,
+    firstName: '', lastName: '', phone: '', checkIn: '', checkOut: '',
+    guests: null as number | null, adults: null as number | null, kids: null as number | null,
     veg: null as number | null, nonVeg: null as number | null, notes: ''
   };
   submitting = false;
-  loading = true;
-  available = false;
   error = '';
   reference = '';
   whatsappUrl = '';
-  contactUrl = 'https://wa.me/918624908808';
-  private config?: BookingConfig;
-  private requestKey = '';
+  readonly contactUrl = 'https://wa.me/918624908808';
   private submittedDetails = '';
 
-  countryForCode(code: string) {
-    return this.countries.find(country => country.code === code) || this.countries[0];
-  }
-
+  countryForCode(code: string) { return this.countries.find(country => country.code === code) || this.countries[0]; }
+  get normalizedGuestPhone() { return this.phoneWithCountry(this.booking.phone, this.whatsappCountry); }
+  get underFive() { return Math.max(0, Number(this.booking.guests) - Number(this.booking.adults) - Number(this.booking.kids)); }
+  get savedBookingMessage() { return this.whatsappUrl ? new URL(this.whatsappUrl).searchParams.get('text') || '' : ''; }
+  get quote() { const b = this.booking; return calculateBookingQuote(this.stayPreference, b.checkIn, b.checkOut, b.adults, b.kids); }
   get minimumCheckOut() {
     if (!this.booking.checkIn || this.booking.checkIn < this.today) return this.today;
     const date = new Date(this.booking.checkIn + 'T00:00:00Z');
@@ -57,155 +53,58 @@ export class BookingComponent implements OnInit {
     date.setUTCDate(date.getUTCDate() + 1);
     return date.toISOString().slice(0, 10);
   }
-
   setCheckIn(value: string) {
     this.booking.checkIn = value;
     if (this.booking.checkOut && this.booking.checkOut < this.minimumCheckOut) this.booking.checkOut = '';
   }
-
-  openDatePicker(input: HTMLInputElement) {
-    // Keep the browser's normal date input on browsers without showPicker support.
-    try { input.showPicker?.(); } catch { input.focus(); }
-  }
-
-  async ngOnInit() {
-    this.loading = true;
-    this.available = false;
-    this.config = undefined;
-    try {
-      const response = await fetch('/booking-config.json', { cache: 'no-store' });
-      if (!response.ok) throw new Error('Configuration unavailable');
-      const config: BookingConfig = await response.json();
-      if (!/^[1-9][0-9]{7,14}$/.test(config.whatsappNumber)) throw new Error('Invalid number');
-      this.contactUrl = `https://wa.me/${config.whatsappNumber}`;
-      if (!/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(config.googleSheetsWebAppUrl)) throw new Error('Sheet not configured');
-      this.config = config;
-      this.available = true;
-    } catch {
-      this.error = 'Online booking is temporarily unavailable. Please contact the campsite on WhatsApp.';
-    } finally {
-      this.loading = false;
-    }
-  }
-
-  async submit(form: NgForm) {
-    if (this.submitting || form.invalid || !this.config) return;
-    this.error = '';
-    if (this.booking.checkIn < this.today || this.booking.checkOut <= this.booking.checkIn) {
-      this.error = 'Choose check-in today or later, and check-out after check-in.';
-      return;
-    }
-    if (!Number.isInteger(this.booking.guests) || typeof this.booking.guests !== 'number' || this.booking.guests < 1 || this.booking.guests > 50) {
-      this.error = 'Choose a whole number of guests between 1 and 50.';
-      return;
-    }
+  openDatePicker(input: HTMLInputElement) { try { input.showPicker?.(); } catch { input.focus(); } }
+  get validationError(): string {
     const b = this.booking;
-    if (!b.firstName.trim() || !b.lastName.trim() || b.firstName.length > 49 || b.lastName.length > 50) {
-      this.error = 'Enter your first name and last name.';
-      return;
-    }
-    const name = b.firstName.trim() + ' ' + b.lastName.trim();
-    if (!b.dob) {
-      this.error = 'Date of birth is required.';
-      return;
-    }
-    if (b.dob) {
-      const date = new Date(b.dob);
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(b.dob) || !Number.isFinite(date.getTime()) || date.toISOString().slice(0, 10) !== b.dob || b.dob > this.today) {
-        this.error = 'Date of birth must be a valid date today or earlier.';
-        return;
-      }
-    }
-    const phone = this.phoneWithCountry(b.phone, this.whatsappCountry);
-    const alternativePhone = this.phoneWithCountry(b.alternativePhone, this.alternateCountry);
-    if (!/^\+[1-9][0-9]{7,14}$/.test(phone) || !/^\+[1-9][0-9]{7,14}$/.test(alternativePhone)) {
-      this.error = 'Enter valid WhatsApp and alternate mobile numbers with country codes.';
-      return;
-    }
-    const breakdown = [b.adults, b.kids, b.underFive, b.veg, b.nonVeg];
-    if (breakdown.some(count => typeof count !== 'number' || !Number.isInteger(count) || count < 0 || count > 50) || !b.adults) {
-      this.error = 'Select adult, kid, veg and non-veg counts. At least one adult is required.';
-      return;
-    }
-    if (Number(b.adults) + Number(b.kids) + b.underFive !== b.guests) {
-      this.error = 'Adults, kids aged 5–10 and children under 5 must add up to the number of members.';
-      return;
-    }
-    if (Number(b.veg) + Number(b.nonVeg) !== b.guests) {
-      this.error = 'Veg and non-veg counts must add up to the number of members.';
-      return;
-    }
-    if (b.email.length > 100 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.email.trim()) || b.notes.length > 200) {
-      this.error = 'Enter a valid email address and keep comments within 200 characters.';
-      return;
-    }
-    // Keep all new fields in the deployed sheet's existing notes column as well.
-    const sheetNotes = [
-      'Alternate mobile: ' + alternativePhone, 'Email: ' + (b.email.trim() || 'Not provided'),
-      'DOB: ' + (b.dob || 'Not provided'),
-      'Stay: ' + (this.stayPreference || 'Not specified'),
-      'Adults: ' + b.adults, 'Kids: ' + b.kids, 'Veg: ' + b.veg, 'Non-veg: ' + b.nonVeg,
-      'Under 5: ' + b.underFive,
-      'Comments: ' + (b.notes.trim() || 'None')
+    if (!this.stayOptions.some(stay => stay.value === this.stayPreference)) return 'Choose Tent Stay or Cottage Stay.';
+    if (!b.checkIn || !b.checkOut || b.checkIn < this.today || b.checkOut <= b.checkIn) return 'Choose check-in today or later, and check-out after check-in.';
+    if (!Number.isInteger(b.guests) || typeof b.guests !== 'number' || b.guests < 1 || b.guests > 50) return 'Choose a whole number of guests between 1 and 50.';
+    if (!b.firstName.trim() || !b.lastName.trim() || b.firstName.length > 49 || b.lastName.length > 50) return 'Enter your first name and last name.';
+    if (!/^\+[1-9][0-9]{7,14}$/.test(this.normalizedGuestPhone)) return 'Enter a valid WhatsApp mobile number with country code.';
+    if (!this.quote) return 'Choose valid stay dates and guest counts to calculate the amount.';
+    if ([b.adults, b.kids, b.veg, b.nonVeg].some(count => typeof count !== 'number' || !Number.isInteger(count) || count < 0 || count > 50) || !b.adults) return 'Select adult, kid, veg and non-veg counts. At least one adult is required.';
+    if (Number(b.adults) + Number(b.kids) > b.guests) return 'Adult and kid counts cannot exceed the number of members.';
+    if (Number(b.veg) + Number(b.nonVeg) !== b.guests) return 'Veg and non-veg counts must add up to the number of members.';
+    if (b.notes.length > 200) return 'Keep comments within 200 characters.';
+    return '';
+  }
+  submit(form: NgForm) {
+    if (this.submitting || form.invalid) return;
+    this.error = this.validationError;
+    if (this.error) return;
+    const b = this.booking, q = this.quote!;
+    const details = JSON.stringify({ ...b, stay: this.stayPreference, whatsappCountry: this.whatsappCountry });
+    if (!this.reference || details !== this.submittedDetails) this.reference = crypto.randomUUID();
+    this.submittedDetails = details;
+    const money = (amount: number) => 'INR ' + amount.toFixed(2);
+    const message = [
+      '*5 Billion Stars - Booking request*', 'Request reference: ' + this.reference,
+      '', '*Guest details*', 'Name: ' + b.firstName.trim() + ' ' + b.lastName.trim(),
+      'Guest WhatsApp: ' + this.normalizedGuestPhone,
+      '', '*Stay details*', 'Stay: ' + this.stayPreference, 'Check-in: ' + b.checkIn, 'Check-out: ' + b.checkOut,
+      'Nights: ' + q.nights, 'Guests: ' + b.guests, 'Adults (above 10): ' + b.adults,
+      'Kids (5-10): ' + b.kids, 'Children under 5 (free): ' + this.underFive,
+      'Veg meals: ' + b.veg, 'Non-veg meals: ' + b.nonVeg, 'Special requests: ' + (b.notes.trim() || 'None'),
+      '', '*Price estimate - subject to team confirmation*',
+      'Adults: ' + b.adults + ' x ' + money(q.adultRate) + ' x ' + q.nights + ' night(s) = ' + money(q.adultTotal),
+      'Children 5-10: ' + b.kids + ' x ' + money(q.childRate) + ' x ' + q.nights + ' night(s) = ' + money(q.childTotal),
+      'Total including meals and taxes: ' + money(q.total),
+      '40% advance after availability is agreed: ' + money(q.advance), 'Remaining balance: ' + money(q.balance),
+      '', 'Please confirm availability, the final total and booking terms before I pay. Our team confirms the booking after verifying payment.'
     ].join('\n');
-    const payload = { ...b, name, stayPreference: this.stayPreference, phone, alternativePhone, email: b.email.trim(), notes: sheetNotes };
-    const details = JSON.stringify(payload);
-    if (!this.requestKey || details !== this.submittedDetails) {
-      this.requestKey = crypto.randomUUID();
-      this.submittedDetails = details;
-    }
-    // Reserve the tab during the user's click so mobile popup blockers allow it.
-    const whatsappTab = window.open('about:blank', '_blank');
-    if (whatsappTab) whatsappTab.opener = null;
-    this.submitting = true;
-    try {
-      const response = await fetch(this.config.googleSheetsWebAppUrl, {
-        method: 'POST',
-        // A simple text request avoids an unsupported Apps Script OPTIONS preflight.
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        credentials: 'omit',
-        redirect: 'follow',
-        body: JSON.stringify({ ...payload, id: this.requestKey }),
-        signal: AbortSignal.timeout(30000)
-      });
-      const result = await response.json();
-      if (!response.ok || result.ok !== true || result.id !== this.requestKey) {
-        throw new Error('We could not confirm that your booking was saved. Please retry or contact the campsite.');
-      }
-      this.reference = result.id;
-      const message = [
-        '*5 Billion Stars - Booking request*',
-        `Reference: ${this.reference}`,
-        `Name: ${name}`,
-        `Stay: ${this.stayPreference || 'Not specified'}`,
-        `Date of birth: ${b.dob || 'Not provided'}`,
-        `Guest WhatsApp: ${phone}`,
-        `Alternate mobile: ${alternativePhone}`,
-        `Email: ${b.email.trim() || 'Not provided'}`,
-        `Check-in: ${b.checkIn}`,
-        `Check-out: ${b.checkOut}`,
-        `Guests: ${b.guests}`,
-        `Adults (above 10 years): ${b.adults}`,
-        `Kids (5-10 years): ${b.kids}`,
-        `Children under 5 (free): ${b.underFive}`,
-        `Veg meals: ${b.veg}`,
-        `Non-veg meals: ${b.nonVeg}`,
-        `Special requests: ${b.notes.trim() || 'None'}`,
-        'Please confirm availability and the total including meals and taxes. I understand a 40% advance is required after availability is agreed; our team confirms the booking.'
-      ].join('\n');
-      this.whatsappUrl = `https://wa.me/${this.config.whatsappNumber}?text=${encodeURIComponent(message)}`;
-      if (whatsappTab && !whatsappTab.closed) whatsappTab.location.replace(this.whatsappUrl);
-    } catch (error) {
-      whatsappTab?.close();
-      this.error = error instanceof Error && error.name !== 'TimeoutError' && error.name !== 'TypeError'
-        ? error.message : 'We could not confirm your booking was saved. Please retry; the same request will not create another row.';
-    } finally {
-      this.submitting = false;
-    }
+    this.whatsappUrl = this.contactUrl + '?text=' + encodeURIComponent(message);
+    setTimeout(() => this.paymentHeading?.nativeElement.focus(), 0);
+  }
+  startNewRequest(stay?: string) {
+    this.reference = ''; this.whatsappUrl = ''; this.submittedDetails = ''; this.error = '';
+    if (stay) this.stayPreference = stay;
   }
   private phoneWithCountry(value: string, country: string) {
     const digits = value.replace(/[\s()-]/g, '');
     return digits.startsWith('+') ? digits : country + digits;
   }
 }
-

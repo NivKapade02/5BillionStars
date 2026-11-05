@@ -11,7 +11,7 @@ describe('Clear stay prices', () => {
     expect(cards[0].querySelector('s')!.textContent).toContain('1199');
     expect(cards[1].querySelector('.stay-price strong')!.textContent).toContain('1499');
     expect(cards[1].querySelector('s')!.textContent).toContain('1699');
-    expect(cards[0].querySelector('.price-unit')!.textContent).toBe('per person');
+    expect(cards[0].querySelector('.price-unit')!.textContent).toBe('per person per night');
     const select = spyOn(fixture.componentInstance.bookStay, 'emit');
     cards[1].querySelector<HTMLButtonElement>('button')!.click();
     expect(select).toHaveBeenCalledWith('Cottage Stay (4-5 people)');
