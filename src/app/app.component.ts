@@ -1,3 +1,4 @@
+import { VisitorTrackingService } from './visitor-tracking.service';
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
@@ -15,10 +16,12 @@ import { Ripple } from 'primeng/ripple';
     styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
-  title = '5BillionStars';
+  constructor(private readonly tracking: VisitorTrackingService) {}
+  title = '5 Billion Stars';
   showForm: boolean = false;
    items: MenuItem[] | undefined;
    ngOnInit(): void {
+    this.tracking.start();
     this.items = [
             {
                 label: 'Home',

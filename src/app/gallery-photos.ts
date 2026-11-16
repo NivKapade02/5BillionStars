@@ -241,7 +241,7 @@ const ROOT = '/images/gallery/collection/';
 export const GALLERY_PHOTOS: readonly GalleryPhoto[] = [
   ...PHOTO_TITLES.map((title, index): GalleryPhoto => {
     const number = String(index + 1).padStart(3, '0');
-    return { kind: 'photo', category: ACTIVITIES['photo-' + number], src: ROOT + 'photo-' + number + '.jpg', thumbnail: ROOT + 'thumbs/photo-' + number + '.jpg', title, alt: title + ' at 5 Billion Stars, Pawana Lake' };
+    return { kind: 'photo', category: ACTIVITIES['photo-' + number], src: ROOT + 'display/photo-' + number + '.jpg', thumbnail: ROOT + 'thumbs/photo-' + number + '.jpg', title, alt: title + ' at 5 Billion Stars, Pawana Lake' };
   }),
   ...VIDEO_TITLES.map((title, index): GalleryPhoto => {
     const number = String(index + 1).padStart(2, '0');

@@ -1,0 +1,131 @@
+<div class="dashboard-shell" [class.light-theme]="theme === 'light'">
+  <aside class="sidebar">
+    <div class="brand-wrap"><div class="brand-mark">5B</div><div><div class="eyebrow">Camp management</div><div class="brand-name">5 Billion Stars</div></div></div>
+    <nav class="nav-menu" aria-label="Admin navigation">
+      <button *ngFor="let view of views" class="nav-item" [class.active]="selectedView === view[0]" [attr.aria-current]="selectedView === view[0] ? 'page' : null" (click)="selectedView = view[0]">{{ view[1] }}</button>
+    </nav>
+    <div class="sidebar-footer"><button class="logout-btn" (click)="toggleTheme()">{{ theme === 'dark' ? 'Light Mode' : 'Dark Mode' }}</button></div>
+  </aside>
+  <main class="main-panel">
+    <header class="topbar"><div><p class="eyebrow">Dashboard</p><h1>{{ viewTitle }}</h1><p class="page-description">Bookings, guest follow-up and recorded website activity.</p></div>
+      <div class="topbar-actions"><button class="ghost-btn" (click)="exportPdfReport()">Print / Save PDF</button><button class="primary-btn" (click)="loadBookings(); loadActivity()">Refresh all</button></div>
+    </header>
+    <p class="live-status" role="status">{{ statusLabel }} <span *ngIf="lastSync">/ Last snapshot: {{ lastSync | date:'mediumTime' }}</span></p>
+    <p class="error-message" *ngIf="bookingsError" role="alert">{{ bookingsError }}</p>
+    <p class="error-message" *ngIf="activityError" role="alert">{{ activityError }}</p>
+    <p>Reports use up to the latest 1,000 booking requests, 2,000 usage events from the last 90 days and 100 admin actions. Counts describe this loaded data, not lifetime totals. Tracking starts after deployment.</p>
+    <section class="filters-panel" *ngIf="selectedView !== 'settings'" aria-label="Report filters">
+      <label>Date range<select [(ngModel)]="filters.dateRange" (change)="applyFilters()"><option value="7d">Last 7 days</option><option value="30d">Last 30 days</option><option value="90d">Last 90 days</option></select></label>
+      <label>Search<input [(ngModel)]="filters.search" (input)="applyFilters()" placeholder="Guest, reference, phone or session"></label>
+      <label *ngIf="selectedView === 'bookings' || selectedView === 'leads'">Booking decision<select [(ngModel)]="filters.decision" (change)="applyFilters()"><option value="All">All</option><option value="pending">Pending</option><option value="confirmed">Availability approved</option><option value="not_confirmed">Not confirmed</option></select></label>
+      <ng-container *ngIf="selectedView !== 'bookings' && selectedView !== 'leads'">
+        <label>Browser time zone<select [(ngModel)]="filters.timezone" (change)="applyFilters()"><option>All</option><option *ngFor="let timezone of timezones">{{ timezone }}</option></select></label>
+        <label>Device<select [(ngModel)]="filters.device" (change)="applyFilters()"><option>All</option><option>Mobile</option><option>Desktop</option><option>Tablet</option></select></label>
+        <label>Referrer domain<select [(ngModel)]="filters.source" (change)="applyFilters()"><option>All</option><option *ngFor="let source of sources">{{ source }}</option></select></label>
+      </ng-container>
+      <ng-container *ngIf="selectedView === 'leads'">
+        <label>Follow-up status<select [(ngModel)]="filters.leadStatus" (change)="applyFilters()"><option>All</option><option>Pending</option><option>Contacted</option><option>Approved</option><option>Closed</option></select></label>
+        <label>WhatsApp link<select [(ngModel)]="filters.whatsappStatus" (change)="applyFilters()"><option value="All">All</option><option value="Clicked">Click observed</option><option value="Not Clicked">No click observed</option></select></label>
+      </ng-container>
+    </section>
+    <section class="stats-grid" *ngIf="selectedView !== 'settings' && selectedView !== 'activity'">
+      <article class="stat-card" *ngFor="let stat of stats"><div class="stat-header"><span class="stat-label">{{ stat.label }}</span><span class="stat-accent accent-{{ stat.accent }}"></span></div><h2>{{ stat.value }}</h2><small>{{ stat.detail }}</small></article>
+    </section>
+    <section class="table-section" *ngIf="selectedView === 'overview' || selectedView === 'bookings'">
+      <div class="section-header">
+        <h3>Booking Requests ({{ filteredBookings.length }})</h3>
+        <button class="ghost-btn" (click)="exportBookingsCsv()">Export CSV</button>
+        <button class="primary-btn small" (click)="loadBookings()" [disabled]="bookingsLoading">{{ bookingsLoading ? 'Loading...' : 'Refresh' }}</button>
+      </div>
+      <p>Submitted website requests. Sending the WhatsApp message and confirming the booking are separate steps.</p>
+
+      <app-admin-booking-editor *ngIf="editingBooking as booking" [booking]="booking" (saved)="editingBooking = null" (cancelled)="editingBooking = null" />
+      <app-admin-payment *ngIf="paymentBooking as booking" [booking]="booking" (saved)="paymentBooking = null" (cancelled)="paymentBooking = null" />
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Reference</th><th>Submitted</th><th>Guest</th><th>WhatsApp</th><th>Stay</th><th>Check-in</th><th>Check-out</th><th>Members</th><th>Adults</th><th>Kids (5-10)</th><th>Veg</th><th>Non-veg</th><th>Total</th><th>40% advance</th><th>Balance</th><th>Comments</th><th>Booking decision</th><th>Payments recorded by admin</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let booking of page(filteredBookings, bookingPage)">
+              <td data-label="Reference">{{ booking.reference }}</td><td data-label="Submitted">{{ booking.createdAt | date:'medium' }}</td>
+              <td data-label="Guest">{{ booking.name }}</td><td data-label="WhatsApp">{{ booking.phone }}</td><td data-label="Stay">{{ booking.stay || 'N/A' }}</td>
+              <td data-label="Check-in">{{ booking.checkIn }}</td><td data-label="Check-out">{{ booking.checkOut }}</td><td data-label="Members">{{ booking.guests }}</td>
+              <td data-label="Adults">{{ booking.adults }}</td><td data-label="Kids (5-10)">{{ booking.kids }}</td><td data-label="Veg">{{ booking.veg }}</td><td data-label="Non-veg">{{ booking.nonVeg }}</td>
+              <td data-label="Total">{{ booking.quote ? (booking.quote.total | currency:'INR') : 'N/A' }}</td>
+              <td data-label="40% advance">{{ booking.quote ? (booking.quote.advance | currency:'INR') : 'N/A' }}</td>
+              <td data-label="Balance">{{ booking.quote ? (booking.quote.balance | currency:'INR') : 'N/A' }}</td><td data-label="Comments">{{ booking.notes || 'None' }}</td>
+              <td data-label="Booking decision" class="booking-decision">
+                <span class="status-badge">{{ booking.decision === 'confirmed' ? 'Availability confirmed - awaiting payment' : booking.decision === 'not_confirmed' ? 'Not confirmed' : 'Pending' }}</span>
+                <button type="button" class="approve-btn" [disabled]="deletingBookings.has(booking.id) || editingBooking?.id === booking.id || savingDecisions.has(booking.id) || !booking.quote || booking.decision === 'confirmed'" (click)="setBookingDecision(booking, 'confirmed')">Confirm booking</button>
+                <button type="button" class="ghost-btn" [disabled]="deletingBookings.has(booking.id) || editingBooking?.id === booking.id || savingDecisions.has(booking.id) || booking.decision === 'not_confirmed'" (click)="setBookingDecision(booking, 'not_confirmed')">Not confirm</button>
+                <a *ngIf="booking.decision === 'confirmed' && booking.quote && (booking.paidAmount || 0) < booking.quote.total" class="payment-request-link" [href]="paymentRequestUrl(booking)" target="_blank" rel="noopener noreferrer">Send payment request in WhatsApp</a>
+                <small *ngIf="booking.decision === 'confirmed'">Open WhatsApp and tap Send.</small>
+              </td>
+              <td data-label="Payments recorded by admin">
+                <strong>Received: {{ (booking.paidAmount || 0) | currency:'INR' }}</strong><br>
+                Due: {{ ((booking.quote?.total || 0) - (booking.paidAmount || 0)) | currency:'INR' }}
+                <p>{{ booking.paymentNote || 'No verification note' }}</p>
+                <small *ngIf="booking.paymentAt">Updated {{ booking.paymentAt | date:'medium' }}</small>
+              </td>
+              <td data-label="Actions">
+                <button type="button" class="ghost-btn" [disabled]="savingDecisions.has(booking.id) || deletingBookings.has(booking.id) || editingBooking !== null || paymentBooking !== null" (click)="editBooking(booking)">Edit</button>
+                <button type="button" class="ghost-btn" [disabled]="savingDecisions.has(booking.id) || deletingBookings.has(booking.id) || editingBooking !== null || paymentBooking !== null" (click)="deleteBooking(booking)">{{ deletingBookings.has(booking.id) ? 'Deleting...' : 'Delete' }}</button>
+                <button type="button" class="ghost-btn" [disabled]="!booking.quote || savingDecisions.has(booking.id) || deletingBookings.has(booking.id) || editingBooking !== null || paymentBooking !== null" (click)="paymentBooking = booking">Record payment</button>
+              </td>
+            </tr>
+            <tr *ngIf="!filteredBookings.length && !bookingsLoading && !bookingsError"><td colspan="19">No booking requests match this range and search.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="record-pagination"><button class="ghost-btn" [disabled]="bookingPage <= 1" (click)="bookingPage = bookingPage - 1">Previous</button><span>Page {{ bookingPage }} / {{ pages(filteredBookings.length) }}</span><button class="ghost-btn" [disabled]="bookingPage >= pages(filteredBookings.length)" (click)="bookingPage = bookingPage + 1">Next</button></div>
+    </section>
+
+
+    <section class="notification-strip" *ngIf="selectedView === 'overview' || selectedView === 'activity'">
+      <h3>Latest activity</h3><p *ngIf="!notifications.length">No activity recorded yet.</p>
+      <div class="notification-list"><div class="notification-item" *ngFor="let note of notifications"><strong>{{ note.title }}</strong><span>{{ note.message }}</span><small>{{ note.time | date:'medium' }}</small></div></div>
+    </section>
+    <section class="analytics-panel" *ngIf="selectedView === 'overview'">
+      <article class="chart-card wide"><div class="card-header"><h3>Observed visitor sessions</h3><div class="chart-interval"><button *ngFor="let value of intervals" type="button" [attr.aria-pressed]="interval === value" (click)="setIntervalView(value)">{{ value | titlecase }}</button></div></div><div class="chart-container"><canvas baseChart type="line" [data]="visitorTrendChartData" [options]="{responsive:true,maintainAspectRatio:false}"></canvas></div></article>
+      <article class="chart-card"><h3>Device mix</h3><div class="chart-container"><canvas baseChart type="doughnut" [data]="deviceChartData" [options]="{responsive:true,maintainAspectRatio:false}"></canvas></div></article>
+      <article class="chart-card"><h3>Booking requests</h3><div class="chart-container"><canvas baseChart type="bar" [data]="leadTrendChartData" [options]="{responsive:true,maintainAspectRatio:false}"></canvas></div></article>
+    </section>
+    <section class="table-section" *ngIf="selectedView === 'visitors'">
+      <div class="section-header"><h3>Observed sessions ({{ filteredVisitors.length }})</h3><button class="primary-btn" (click)="exportVisitorsCsv()">Export CSV</button></div>
+      <p>Random browser IDs are not verified identities. Recent means an event in the last 3 minutes. Session span is elapsed time between observed events; closing a tab is not reliably detectable.</p>
+      <div class="table-wrap"><table><thead><tr><th>Session / browser ID</th><th>First / last seen</th><th>Device / browser / OS</th><th>Time zone / language</th><th>Referrer</th><th>Pages / paths</th><th>Observed span</th><th>WhatsApp clicks</th><th>Status</th></tr></thead><tbody>
+        <tr *ngFor="let visitor of page(filteredVisitors, visitorPage)"><td data-label="Session / browser ID">{{ visitor.sessionId }}<br><small>{{ visitor.visitorId }}</small></td><td data-label="First / last seen">{{ visitor.firstSeen | date:'medium' }}<br>{{ visitor.lastSeen | date:'medium' }}</td><td data-label="Device / browser / OS">{{ visitor.device }} / {{ visitor.browser }} / {{ visitor.os }}</td><td data-label="Time zone / language">{{ visitor.timezone }} / {{ visitor.language }}</td><td data-label="Referrer">{{ visitor.source }}</td><td data-label="Pages / paths">{{ visitor.pagesViewed }}<br>{{ visitor.paths.join(', ') }}</td><td data-label="Observed span">{{ duration(visitor.elapsedSeconds) }}</td><td data-label="WhatsApp clicks">{{ visitor.whatsappClicks }}</td><td data-label="Status">{{ recent(visitor) ? 'Recent activity' : 'No recent activity' }}<br>{{ visitor.returning ? 'Returning browser' : 'New browser' }}</td></tr>
+        <tr *ngIf="!filteredVisitors.length"><td colspan="9">No visitor sessions recorded for these filters.</td></tr>
+      </tbody></table></div>
+      <div class="record-pagination"><button class="ghost-btn" [disabled]="visitorPage <= 1" (click)="visitorPage = visitorPage - 1">Previous</button><span>Page {{ visitorPage }} / {{ pages(filteredVisitors.length) }}</span><button class="ghost-btn" [disabled]="visitorPage >= pages(filteredVisitors.length)" (click)="visitorPage = visitorPage + 1">Next</button></div>
+    </section>
+    <section class="table-section" *ngIf="selectedView === 'leads'">
+      <div class="section-header"><h3>Booking leads ({{ filteredLeads.length }})</h3><button class="primary-btn" (click)="exportLeadsCsv()">Export CSV</button></div>
+      <p>Each saved booking request is a lead. Follow-up approval is separate from availability and payment. A WhatsApp click does not establish that a message was sent.</p>
+      <div class="table-wrap"><table><thead><tr><th>Guest / reference</th><th>Phone</th><th>Stay / dates</th><th>Submitted</th><th>WhatsApp link</th><th>Follow-up</th></tr></thead><tbody>
+        <tr *ngFor="let lead of page(filteredLeads, leadPage)"><td data-label="Guest / reference">{{ lead.name }}<br>{{ lead.reference }}</td><td data-label="Phone">{{ lead.phone }}</td><td data-label="Stay / dates">{{ lead.stay }}<br>{{ lead.checkIn }} to {{ lead.checkOut }}</td><td data-label="Submitted">{{ lead.createdAt | date:'medium' }}</td><td data-label="WhatsApp link">{{ whatsappClicked(lead.id) ? 'Click observed' : 'No click observed in loaded events' }}</td>
+        <td data-label="Follow-up" class="lead-followup"><ng-container *ngIf="leadDrafts[lead.id] as draft; else leadSummary"><select [(ngModel)]="draft.status" aria-label="Follow-up status" [disabled]="savingLeads.has(lead.id)"><option>Pending</option><option>Contacted</option><option>Approved</option><option>Closed</option></select><textarea [(ngModel)]="draft.notes" maxlength="500" aria-label="Follow-up notes" [disabled]="savingLeads.has(lead.id)"></textarea><button class="primary-btn" [disabled]="savingLeads.has(lead.id)" (click)="saveLead(lead)">{{ savingLeads.has(lead.id) ? 'Saving...' : 'Save follow-up' }}</button><button class="ghost-btn" [disabled]="savingLeads.has(lead.id)" (click)="cancelLead(lead.id)">Cancel</button></ng-container><ng-template #leadSummary><span class="status-badge">{{ lead.leadStatus || 'Pending' }}</span><p>{{ lead.leadNotes || 'No follow-up notes' }}</p><button class="ghost-btn" (click)="draftLead(lead)">Update follow-up</button></ng-template></td></tr>
+        <tr *ngIf="!filteredLeads.length"><td colspan="6">No leads match these filters.</td></tr>
+      </tbody></table></div>
+      <div class="record-pagination"><button class="ghost-btn" [disabled]="leadPage <= 1" (click)="leadPage = leadPage - 1">Previous</button><span>Page {{ leadPage }} / {{ pages(filteredLeads.length) }}</span><button class="ghost-btn" [disabled]="leadPage >= pages(filteredLeads.length)" (click)="leadPage = leadPage + 1">Next</button></div>
+    </section>
+    <section class="table-section" *ngIf="selectedView === 'geo'">
+      <h3>Visitor time zones</h3><p>These are browser-reported time zones, not verified cities or physical locations. IP addresses and GPS coordinates are not collected.</p>
+      <article class="chart-card"><div class="chart-container"><canvas baseChart type="bar" [data]="locationChartData" [options]="{responsive:true,maintainAspectRatio:false}"></canvas></div></article>
+      <div class="table-wrap"><table><thead><tr><th>Time zone</th><th>Sessions</th><th>Returning sessions</th><th>WhatsApp clicks</th></tr></thead><tbody><tr *ngFor="let row of timezoneRows"><td data-label="Time zone">{{ row.name }}</td><td data-label="Sessions">{{ row.sessions }}</td><td data-label="Returning sessions">{{ row.returning }}</td><td data-label="WhatsApp clicks">{{ row.clicks }}</td></tr><tr *ngIf="!timezoneRows.length"><td colspan="4">No time zone data recorded yet.</td></tr></tbody></table></div>
+    </section>
+    <section class="table-section" *ngIf="selectedView === 'activity'">
+      <div class="section-header"><h3>Website event details</h3><button class="primary-btn" (click)="exportActivityCsv()">Export CSV</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Time</th><th>Action</th><th>Path / reference</th><th>Session</th><th>Device / source</th></tr></thead><tbody><tr *ngFor="let event of page(filteredEvents, eventPage)"><td data-label="Time">{{ event.createdAt | date:'medium' }}</td><td data-label="Action">{{ actionLabel(event.kind) }}</td><td data-label="Path / reference">{{ event.path }}<br>{{ event.reference }}</td><td data-label="Session">{{ event.sessionId }}</td><td data-label="Device / source">{{ event.device }} / {{ event.browser }} / {{ event.source }}</td></tr><tr *ngIf="!filteredEvents.length"><td colspan="5">No events recorded for these filters.</td></tr></tbody></table></div>
+      <div class="record-pagination"><button class="ghost-btn" [disabled]="eventPage <= 1" (click)="eventPage = eventPage - 1">Previous</button><span>Page {{ eventPage }} / {{ pages(filteredEvents.length) }}</span><button class="ghost-btn" [disabled]="eventPage >= pages(filteredEvents.length)" (click)="eventPage = eventPage + 1">Next</button></div>
+      <h3>Admin history / latest 100 actions</h3><p>Actions below are saved atomically with booking changes. Deleted bookings retain only their reference and action in this history.</p>
+      <div class="table-wrap"><table><thead><tr><th>Time</th><th>Action</th><th>Booking reference</th></tr></thead><tbody><tr *ngFor="let action of audit"><td data-label="Time">{{ action.createdAt | date:'medium' }}</td><td data-label="Action">{{ actionLabel(action.action) }}</td><td data-label="Booking reference">{{ action.reference }}</td></tr><tr *ngIf="!audit.length"><td colspan="3">No admin changes recorded yet.</td></tr></tbody></table></div>
+    </section>
+    <section class="settings-card" *ngIf="selectedView === 'settings'">
+      <h3>Account and reporting</h3><p>Booking stream: {{ bookingStatus }} / Visitor stream: {{ usageStatus }} / Admin history: {{ auditStatus }}</p>
+      <p>Only your designated Firebase admin can read guest details, manage bookings, record payments and save follow-up notes.</p>
+      <p>Tracking records page views, form openings, successful saves, WhatsApp and phone-link clicks, and visible-session heartbeats every two minutes. Admin routes and browsers that disable tracking are excluded. Browser blocking or interrupted connections can leave gaps.</p>
+      <p>The data window is limited to protect Spark usage. This dashboard does not automatically verify bank payments, WhatsApp delivery or exact visitor location.</p>
+      <div class="topbar-actions"><button class="ghost-btn" (click)="toggleTheme()">Switch theme</button><button class="ghost-btn" [disabled]="resettingPassword" (click)="resetPassword()">{{ resettingPassword ? 'Sending...' : 'Send password reset email' }}</button><button class="primary-btn" (click)="authService.logout()">Sign out</button></div><p role="status">{{ settingsMessage }}</p>
+    </section>
+  </main>
+</div>

@@ -1,2 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 body:has(.booking-dialog[open]) { overflow: hidden; }
+
+/* Live admin controls stay scoped to the dashboard. */
+.dashboard-shell .live-status{padding:12px 16px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--accent)}
+.dashboard-shell .filters-panel input,.dashboard-shell .lead-followup select,.dashboard-shell .lead-followup textarea{box-sizing:border-box;width:100%;min-height:44px;min-width:0;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--bg);color:var(--text);font:inherit}
+.dashboard-shell .lead-followup{min-width:220px}.dashboard-shell .lead-followup :is(button,textarea){margin-top:8px}
+.dashboard-shell .record-pagination{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin:16px 0;font-size:12px}
+.dashboard-shell .chart-interval{display:flex;gap:6px;flex-wrap:wrap}.dashboard-shell .chart-interval button{min-height:40px;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:var(--text);padding:8px 10px}.dashboard-shell .chart-interval button[aria-pressed=true]{background:var(--accent);color:var(--ink)}
+.dashboard-shell td[data-label=Actions]{min-width:130px}.dashboard-shell td[data-label=Actions] button{display:block;margin-bottom:8px;width:100%}
+@media(max-width:760px){.dashboard-shell .lead-followup{min-width:0;grid-column:1/-1}.dashboard-shell .record-pagination{justify-content:center}.dashboard-shell .card-header{flex-wrap:wrap}.dashboard-shell .settings-card .topbar-actions{flex-wrap:wrap}.dashboard-shell .settings-card .topbar-actions button{flex:1 1 150px}}
+@media print{.dashboard-shell{display:block;--bg:#fff;--surface:#fff;--text:#111;--muted:#444;--line:#ccc;color-scheme:light}.dashboard-shell .sidebar,.dashboard-shell button,.dashboard-shell .filters-panel,.dashboard-shell .record-pagination,.dashboard-shell app-admin-booking-editor,.dashboard-shell app-admin-payment{display:none!important}.dashboard-shell .main-panel{padding:0}.dashboard-shell .table-wrap{overflow:visible}.dashboard-shell table{font-size:9px}.dashboard-shell :is(th,td){padding:5px}.dashboard-shell .chart-card{break-inside:avoid}}

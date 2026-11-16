@@ -6,16 +6,16 @@ describe('Booking amount calculation', () => {
     expect(quote.nights).toBe(3);
     expect(quote.adultTotal).toBe(89910);
     expect(quote.childTotal).toBe(42000);
-    expect(quote.total).toBe(131910);
-    expect(quote.advance).toBe(52764);
-    expect(quote.balance).toBe(79146);
+    expect(quote.total).toBe(132000);
+    expect(quote.advance).toBe(52800);
+    expect(quote.balance).toBe(79200);
   });
 
   it('uses the cottage rate and preserves paise in the advance and balance', () => {
     const quote = calculateBookingQuote('Cottage Stay (4-5 people)', '2026-11-02', '2026-11-03', 1, 1)!;
-    expect(quote.total).toBe(2199);
-    expect(quote.advance).toBe(879.6);
-    expect(quote.balance).toBe(1319.4);
+    expect(quote.total).toBe(2300);
+    expect(quote.advance).toBe(920);
+    expect(quote.balance).toBe(1380);
   });
 
   it('does not produce an amount for incomplete or invalid details', () => {

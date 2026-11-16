@@ -50,3 +50,7 @@ Thumbs.db
 # Firebase local deployment cache and logs
 /.firebase/
 firebase-debug*.log
+
+# Local Firestore emulator logs
+firestore-debug.log
+ui-debug.log

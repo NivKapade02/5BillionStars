@@ -1,6 +1,12 @@
 ﻿:host { display: block; }
 .navbar { position: fixed; top: 0; left: 0; width: 100%; z-index: 1100; padding: 16px 0; }
 .navbar .container { background: rgba(0, 0, 0, .65); backdrop-filter: blur(8px); }
+.navbar-brand { padding: 0; flex-shrink: 0; }
+.site-logo { display: block; width: 240px; max-width: 100%; height: auto; }
+@media (max-width: 575px) {
+  .navbar-brand { max-width: calc(100% - 72px); margin-right: 8px; }
+  .site-logo { width: 210px; }
+}
 .hero-section { padding: 144px 0 80px; height: min(100svh, 56.25vw); min-height: 620px; background: #211a15; isolation: isolate; }
 section[id] { scroll-margin-top: 132px; }
 @media (max-width: 991px) {

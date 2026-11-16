@@ -2,7 +2,7 @@ import { BOOKING_TERMS, STAY_PRICING } from './stay-pricing';
 
 export interface BookingQuote {
   nights: number; adultRate: number; childRate: number;
-  adultTotal: number; childTotal: number; total: number; advance: number; balance: number;
+  adultTotal: number; childTotal: number; networkHandlingTotal: number; total: number; advance: number; balance: number;
 }
 
 export function calculateBookingQuote(stay: string, checkIn: string, checkOut: string, adults: number | null, kids: number | null): BookingQuote | null {
@@ -13,7 +13,8 @@ export function calculateBookingQuote(stay: string, checkIn: string, checkOut: s
   if (nights < 1) return null;
   const adultTotal = adults * rate * nights;
   const childTotal = kids * BOOKING_TERMS.childRate * nights;
-  const total = adultTotal + childTotal;
+  const networkHandlingTotal = adults * BOOKING_TERMS.networkHandlingRate * nights;
+  const total = adultTotal + childTotal + networkHandlingTotal;
   const advance = Math.round(total * BOOKING_TERMS.advancePercent) / 100;
-  return { nights, adultRate: rate, childRate: BOOKING_TERMS.childRate, adultTotal, childTotal, total, advance, balance: Math.round((total - advance) * 100) / 100 };
+  return { nights, adultRate: rate, childRate: BOOKING_TERMS.childRate, adultTotal, childTotal, networkHandlingTotal, total, advance, balance: Math.round((total - advance) * 100) / 100 };
 }

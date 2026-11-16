@@ -1,3 +1,4 @@
+import { VisitorTrackingService } from './visitor-tracking.service';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { BookingComponent } from './booking.component';
@@ -21,6 +22,7 @@ import { AboutVideoComponent } from './about-video.component';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
+  constructor(private readonly tracking: VisitorTrackingService) {}
   menuOpen = false;
   bookingOpened = false;
   selectedStay = '';
@@ -40,6 +42,7 @@ export class HomeComponent {
     this.menuOpen = false;
     this.bookingOpened = true;
     this.bookingDialog.nativeElement.showModal();
+    this.tracking.record('booking_open');
   }
 
   closeBooking() {

@@ -5,3 +5,7 @@
 .booking-content{box-sizing:border-box;width:100%}.date-row>label{min-width:0}input,select,textarea{max-width:100%}.submit{min-height:48px}.submit:not(:disabled):hover{background:#117c3f}@media(max-width:600px){input,select,textarea{font-size:16px}label{margin-top:18px}.date-row{gap:12px}.phone-row{grid-template-columns:1fr}.phone-row .phone-field{flex-wrap:nowrap}.phone-row .phone-field select{flex:0 0 80px;width:80px;border-right:1px solid #ddd}.phone-row .phone-field input{flex:1;min-width:0;border-top:0}.booking-banner{margin-bottom:18px}}@media(max-width:360px){.booking-content{padding:16px 12px}.date-row{grid-template-columns:1fr}}
 
 .phone-row .phone-field select{flex:0 0 72px;width:72px;padding:8px 2px;font-size:12px}.phone-row .phone-field input{padding:8px 4px}.phone-row .country-flag{width:18px;margin-left:6px}
+
+.field-error{display:block;margin-top:6px;color:#b42318;font:12px/1.5 Arial,sans-serif}input[aria-invalid="true"],select[aria-invalid="true"],textarea[aria-invalid="true"]{border:1px solid #b42318}.phone-field:has([aria-invalid="true"]){border-color:#b42318}
+
+.phone-label{display:flex;align-items:center;gap:6px;color:#444}.phone-label .whatsapp-badge{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#13b956;color:white;box-shadow:0 0 0 3px #e0f5e8}.whatsapp-icon{display:block;width:15px;height:15px;flex:none;color:inherit}

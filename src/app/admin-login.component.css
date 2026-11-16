@@ -1,0 +1,107 @@
+.login-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at top, rgba(94, 234, 212, 0.18), transparent 30%), #07111f;
+  padding: 24px;
+}
+
+.login-panel {
+  width: min(100%, 440px);
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.42);
+}
+
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.brand-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  color: #041827;
+  font-weight: 800;
+  background: linear-gradient(135deg, #67e8f9, #a78bfa);
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+h1 {
+  margin: 6px 0 0;
+  font-size: 1.8rem;
+}
+
+h2 {
+  margin: 0 0 8px;
+  font-size: 2rem;
+}
+
+.subtitle {
+  margin: 0 0 28px;
+  color: rgba(148, 163, 184, 0.9);
+}
+
+form {
+  display: grid;
+  gap: 18px;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  color: #dbeafe;
+  font-size: 0.95rem;
+}
+
+input {
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.8);
+  color: #f8fafc;
+  padding: 12px 14px;
+  font-size: 1rem;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #03131d;
+  background: linear-gradient(135deg, #67e8f9, #c084fc);
+}
+
+.demo-note,
+.error-message {
+  margin-top: 18px;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+}
+
+.demo-note {
+  background: rgba(94, 234, 212, 0.08);
+  color: #a7f3d0;
+}
+
+.error-message {
+  background: rgba(248, 113, 113, 0.08);
+  color: #fecaca;
+}

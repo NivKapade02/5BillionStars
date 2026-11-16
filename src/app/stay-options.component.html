@@ -1,7 +1,7 @@
 ﻿<section id="stays" class="stay-section" aria-labelledby="stays-heading">
   <div class="stay-heading">
     <p>REST UNDER THE STARS</p>
-    <h2 id="stays-heading">Choose your stay</h2>
+    <h2 id="stays-heading">Choose Your Stay</h2>
   </div>
   <div class="stay-grid">
     @for (stay of stays; track stay.name) {
@@ -25,7 +25,7 @@
               <li><span class="amenity-name">{{ amenity }}</span><span class="included-badge">Included</span><span class="amenity-icon" aria-hidden="true"><i [class]="'bi ' + amenityIcons[index]"></i></span></li>
             }
           </ul>
-          <p class="price-note">All meals &amp; taxes included. Under 5: free. Ages 5–10: &#8377;700 per child per night. A 40% advance confirms your booking after availability is agreed with our team.</p>
+          <p class="price-note">All meals &amp; taxes included. Plus ?1 network handling per adult per night. Under 5: free. Ages 5–10: &#8377;700 per child per night. A 40% advance confirms your booking after availability is agreed with our team.</p>
           <button type="button" class="stay-book" (click)="bookStay.emit(stay.preference)" [attr.aria-label]="'Check availability for ' + stay.name">Check availability <span aria-hidden="true">&nearr;</span></button>
         </div>
       </article>

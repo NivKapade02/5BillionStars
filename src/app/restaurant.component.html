@@ -1,17 +1,54 @@
 <section id="section_33" class="restaurant-section" aria-labelledby="restaurant-heading">
   <div class="restaurant-shell">
-    <header class="restaurant-heading"><p class="homemade-highlight"><i class="bi-house-heart" aria-hidden="true"></i><strong>100% homemade cooking</strong></p><h2 id="restaurant-heading">Restaurant</h2><p>Authentic flavours. Homemade masalas. A taste to remember.</p></header>
-    <div class="thali-grid">
-      <article class="thali-card"><span class="food-label veg">Vegetarian</span><h3>Unlimited veg thali</h3><p>Homemade food, full of flavour.</p><strong class="thali-price">&#8377;300</strong></article>
-      <article class="thali-card"><span class="food-label nonveg">Non-vegetarian</span><h3>Unlimited chicken thali</h3><p>A hearty, authentic chicken meal.</p><strong class="thali-price">&#8377;350</strong></article>
+    <header class="restaurant-heading">
+      <h2 id="restaurant">Restaurant</h2>
+      <p class="eyebrow">Fresh from our kitchen</p>
+      <h2 id="restaurant-heading">Our Delicious <span>Foods</span></h2>
+      <p class="restaurant-intro">Authentic flavours. Homemade masalas.<br>A taste to remember by the lake.</p>
+      <p class="homemade-highlight"><i class="bi-house-heart" aria-hidden="true"></i> <strong>100% homemade cooking</strong></p>
+    </header>
+    <section class="bhakari-section" aria-labelledby="bhakari-heading">
+      <div class="bhakari-heading"><p class="eyebrow">Traditional Accompaniments</p><h3 id="bhakari-heading">Bhakari &amp; Rice Ghavana</h3><p>Ask our team about your favourites and availability.</p></div>
+      <ul class="bhakari-row">
+        <li><img src="/images/restaurant/ricce-bhakari.webp" alt="Rice Bhakari" width="100" height="100" loading="lazy"><div><h4>Rice Bhakari</h4><p>A traditional rice favourite</p></div></li>
+        <li><img src="/images/restaurant/jowar-bhakari.webp" alt="Jowar Bhakari" width="100" height="100" loading="lazy"><div><h4>Jowar Bhakari</h4><p>A rustic sorghum favourite</p></div></li>
+        <li><img src="/images/restaurant/bajara-bhakari.webp" alt="Bajra Bhakari" width="100" height="100" loading="lazy"><div><h4>Bajra Bhakari</h4><p>A hearty millet favourite</p></div></li>
+        <li><img src="/images/restaurant/ghavan.webp" alt="Rice Ghavana" width="100" height="100" loading="lazy"><div><h4>Rice Ghavana</h4><p>Light, delicate rice crepes</p></div></li>
+      </ul>
+    </section>
+    <div class="menu-filters" role="group" aria-label="Filter restaurant menu">
+      @for (category of categories; track category) {
+        <button type="button" [class.active]="selectedCategory === category" [attr.aria-pressed]="selectedCategory === category" (click)="selectCategory(category)">{{ category }}</button>
+      }
     </div>
-    <p class="restaurant-note">Restaurant thali prices are listed separately. All meals and taxes are already included in the camping stay package. Ask our team about prices and availability for other dishes or additional orders.</p>
-    <div class="menu-grid">
-      <article class="menu-card"><h3><i class="bi-basket" aria-hidden="true"></i> Kitchen favourites</h3><ul>@for (item of dishes; track item) { <li>{{ item }}</li> }</ul></article>
-      <article class="menu-card"><h3><i class="bi-sunrise" aria-hidden="true"></i> Breakfast &amp; bites</h3><ul>@for (item of breakfast; track item) { <li>{{ item }}</li> }</ul></article>
-      <article class="menu-card"><h3><i class="bi-cup-hot" aria-hidden="true"></i> Tea &amp; refreshments</h3><ul><li>Welcome special tea <span class="included">Included with your stay</span></li>@for (item of drinks; track item) { <li>{{ item }}</li> }</ul></article>
+    <div class="menu-carousel" role="region" aria-roledescription="carousel" aria-label="Restaurant menu" (mouseenter)="pointerPaused = true" (mouseleave)="pointerPaused = false" (focusin)="focusPaused = true" (focusout)="focusPaused = false">
+    <div class="carousel-controls">
+      <span class="carousel-status">{{ firstVisibleIndex + 1 }}&ndash;{{ lastVisibleIndex }} of {{ filteredMenu.length }} dishes</span>
+      <button type="button" (click)="slideMenu(-1)" aria-label="Previous menu dishes"><i class="bi-chevron-left" aria-hidden="true"></i></button>
+      <button type="button" (click)="autoplay = !autoplay" [attr.aria-label]="autoplay ? 'Pause automatic sliding' : 'Start automatic sliding'" [attr.aria-pressed]="autoplay"><i [class]="autoplay ? 'bi-pause-fill' : 'bi-play-fill'" aria-hidden="true"></i></button>
+      <button type="button" (click)="slideMenu(1)" aria-label="Next menu dishes"><i class="bi-chevron-right" aria-hidden="true"></i></button>
     </div>
-    <div class="homemade-panel"><div><p class="special-eyebrow">From our kitchen to your plate</p><h3>Rooted in local flavours</h3><p>Enjoy gavran-style cooking with our homemade masalas and distinctive, authentic flavours. Ask our team about Jain food and your preferred bhakari.</p></div><ul class="specials">@for (item of specials; track item) { <li><i class="bi-check-circle" aria-hidden="true"></i>{{ item }}</li> }</ul></div>
-    <a class="restaurant-contact" href="https://wa.me/918624908808?text=Hello%2C%20I%20would%20like%20to%20ask%20about%20your%20restaurant%20menu%20and%20food%20preferences." target="_blank" rel="noopener noreferrer"><i class="bi-whatsapp" aria-hidden="true"></i> Ask about the menu <span aria-hidden="true">↗</span></a>
+    <div #menuViewport class="menu-slider" (scroll)="updateSlidePosition()" (window:resize)="updateSlidePosition()" (keydown.arrowleft)="slideMenu(-1); $event.preventDefault()" (keydown.arrowright)="slideMenu(1); $event.preventDefault()" tabindex="0" aria-label="Menu dishes. Use left and right arrow keys to browse.">
+      @for (item of filteredMenu; track item.name) {
+        <article class="food-card">
+          <span class="food-badge">{{ item.badge }}</span>
+          <span class="food-diet" [class.nonveg]="!item.vegetarian" role="img" [attr.aria-label]="item.vegetarian ? 'Vegetarian' : 'Non-vegetarian'" [attr.title]="item.vegetarian ? 'Vegetarian' : (item.label === 'Contains egg' ? 'Non-vegetarian: contains egg' : 'Non-vegetarian')"><span></span></span>
+          <div class="food-image"><img [src]="item.image" [alt]="item.name" width="400" height="400" loading="lazy"></div>
+          <div class="food-content">
+            <p class="food-category">{{ item.label }}</p>
+            <h3>{{ item.name }}</h3>
+            <p class="food-description">{{ item.description }}</p>
+            <div class="food-footer">
+              @if (item.price !== null) { <p class="food-price"><span>PRICE</span> &#8377;{{ item.price }}</p> }
+              @else { <span class="availability">Ask for prices & availability</span> }
+              <a class="menu-enquiry" [href]="enquiryUrl(item.name)" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'Ask about ' + item.name"><i class="bi-arrow-up-right" aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+    </div>
+    <div class="restaurant-note"><i class="bi-info-circle" aria-hidden="true"></i><p>All meals and taxes are already included in the camping stay package. Thali prices above are for separate restaurant orders. Ask our team about prices, availability, additional orders, Jain food and your preferred bhakari.<span>Welcome special tea is included with your stay. Ask about milk, lemon juice, kokam juice, boiled eggs and our gavran-style specials. Menu photos are illustrative; preparation and accompaniments may vary.</span></p></div>
+    <a class="restaurant-contact" href="https://wa.me/918624908808?text=Hello%2C%20I%20would%20like%20to%20ask%20about%20your%20restaurant%20menu%20and%20food%20preferences." target="_blank" rel="noopener noreferrer"><i class="bi-whatsapp" aria-hidden="true"></i> Ask about the menu <span aria-hidden="true">&#8599;</span></a>
   </div>
 </section>

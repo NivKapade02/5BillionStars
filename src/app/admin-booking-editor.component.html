@@ -1,0 +1,23 @@
+<section class="editor" aria-labelledby="edit-booking-title">
+  <h3 #title tabindex="-1" id="edit-booking-title">Edit booking request</h3>
+  <p>Reference: {{ booking.reference }}</p>
+  <p>Saving recalculates the estimate and returns this request to Pending for availability review.</p>
+  <form #form="ngForm" (ngSubmit)="save()">
+    <fieldset [disabled]="saving">
+      <label>Guest name<input name="name" [(ngModel)]="draft.name" required minlength="3" maxlength="100" autocomplete="name"></label>
+      <label>WhatsApp number<input name="phone" [(ngModel)]="draft.phone" required type="tel" placeholder="+919876543210" autocomplete="tel"></label>
+      <label>Stay<select name="stay" [(ngModel)]="draft.stay" required><option value="Tent Stay (2-3 people)">Tent Stay (2-3 people)</option><option value="Cottage Stay (4-5 people)">Luxury Cottage Stay (4-5 people)</option></select></label>
+      <label>Check-in<input name="checkIn" [(ngModel)]="draft.checkIn" type="date" required></label>
+      <label>Check-out<input name="checkOut" [(ngModel)]="draft.checkOut" type="date" required></label>
+      <label>Members<input name="guests" [(ngModel)]="draft.guests" type="number" min="1" max="50" step="1" required></label>
+      <label>Adults<input name="adults" [(ngModel)]="draft.adults" type="number" min="1" max="50" step="1" required></label>
+      <label>Kids (5-10)<input name="kids" [(ngModel)]="draft.kids" type="number" min="0" max="50" step="1" required></label>
+      <label>Veg meals<input name="veg" [(ngModel)]="draft.veg" type="number" min="0" max="50" step="1" required></label>
+      <label>Non-veg meals<input name="nonVeg" [(ngModel)]="draft.nonVeg" type="number" min="0" max="50" step="1" required></label>
+      <label class="full">Comments<textarea name="notes" [(ngModel)]="draft.notes" maxlength="200" rows="3"></textarea></label>
+    </fieldset>
+    <p *ngIf="quote as q" class="estimate">Total: {{ q.total | currency:'INR' }} &middot; 40% advance: {{ q.advance | currency:'INR' }} &middot; Balance: {{ q.balance | currency:'INR' }}</p>
+    <p *ngIf="error" role="alert">{{ error }}</p>
+    <div class="actions"><button type="submit" [disabled]="saving || form.invalid">{{ saving ? 'Saving...' : 'Save changes' }}</button><button type="button" class="cancel" [disabled]="saving" (click)="cancelled.emit()">Cancel</button></div>
+  </form>
+</section>

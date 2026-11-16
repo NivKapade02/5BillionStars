@@ -164,3 +164,98 @@ test('HTTP booking submission reaches admin API and signed delivery callback upd
     db.close();
   }
 });
+
+
+test('manual requests persist full details without Meta and require admin authentication to list', async () => {
+  const { createBookingServer } = await import('./index.mjs');
+  const { once } = await import('node:events');
+  const { randomUUID } = await import('node:crypto');
+  const db = store();
+  const server = createBookingServer({ ADMIN_EMAIL: 'admin@test.com', ADMIN_PASSWORD: 'test-password', PUBLIC_ORIGIN: 'http://localhost:4200/' }, { db });
+  server.listen(0, '127.0.0.1'); await once(server, 'listening');
+  const base = `http://127.0.0.1:${server.address().port}`;
+  try {
+    const payload = { ...details, checkIn: '2099-01-01', checkOut: '2099-01-03', stay: 'Tent Stay (2-3 people)', adults: 2, kids: 0, veg: 1, nonVeg: 1 };
+    const headers = { 'Content-Type': 'application/json', 'Idempotency-Key': randomUUID() };
+    for (const origin of [base, 'http://localhost:4200']) {
+      const response = await fetch(base + '/api/booking-requests', { method: 'POST', headers: { ...headers, Origin: origin }, body: JSON.stringify(payload) });
+      assert.equal(response.status, 201);
+    }
+    assert.equal(db.prepare('SELECT COUNT(*) AS count FROM bookings').get().count, 1);
+    assert.equal(db.prepare('SELECT status FROM bookings').get().status, 'request');
+    const forbidden = await fetch(base + '/api/booking-requests', { method: 'POST', headers: { ...headers, Origin: 'https://unrelated.example' }, body: JSON.stringify(payload) });
+    assert.equal(forbidden.status, 403);
+    assert.equal((await fetch(base + '/api/admin/bookings')).status, 401);
+    const invalid = await fetch(base + '/api/admin/login', { method: 'POST', body: JSON.stringify({ email: 'admin@test.com', password: 'wrong' }) });
+    assert.equal(invalid.status, 401);
+    const login = await fetch(base + '/api/admin/login', { method: 'POST', body: JSON.stringify({ email: 'admin@test.com', password: 'test-password' }) });
+    assert.equal(login.status, 200);
+    const cookie = login.headers.get('set-cookie').split(';')[0];
+    const records = await (await fetch(base + '/api/admin/bookings', { headers: { Cookie: cookie } })).json();
+    assert.equal(records.bookings[0].name, payload.name);
+    assert.equal(records.bookings[0].reference, headers['Idempotency-Key']);
+    assert.equal(records.bookings[0].quote.total, 4000);
+    assert.equal(records.bookings[0].veg, 1);
+    const decisionUrl = base + '/api/admin/bookings/' + records.bookings[0].id + '/decision';
+    assert.equal((await fetch(decisionUrl, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ decision: 'confirmed' }) })).status, 401);
+    const decisionHeaders = { Cookie: cookie, 'Content-Type': 'application/json' };
+    assert.equal((await fetch(decisionUrl, { method: 'PATCH', headers: decisionHeaders, body: JSON.stringify({ decision: 'paid' }) })).status, 400);
+    const confirmed = await fetch(decisionUrl, { method: 'PATCH', headers: decisionHeaders, body: JSON.stringify({ decision: 'confirmed' }) });
+    assert.equal(confirmed.status, 200);
+    const confirmation = await confirmed.json();
+    const paymentUrl = new URL(confirmation.whatsappUrl);
+    assert.equal(paymentUrl.pathname, '/919876543210');
+    assert.match(paymentUrl.searchParams.get('text'), /GPay \/ PhonePe: 8624908808/);
+    assert.match(paymentUrl.searchParams.get('text'), /advance of INR 1600.00/);
+    assert.match(paymentUrl.searchParams.get('text'), /full amount of INR 4000.00/);
+    assert.match(paymentUrl.searchParams.get('text'), /after our team verifies your payment/);
+    const refreshed = await (await fetch(base + '/api/admin/bookings', { headers: { Cookie: cookie } })).json();
+    assert.equal(refreshed.bookings[0].decision, 'confirmed');
+    assert.equal(db.prepare('SELECT decision FROM booking_decisions').get().decision, 'confirmed');
+    const declined = await (await fetch(decisionUrl, { method: 'PATCH', headers: decisionHeaders, body: JSON.stringify({ decision: 'not_confirmed' }) })).json();
+    assert.equal(declined.decision, 'not_confirmed');
+    assert.equal(declined.whatsappUrl, '');
+    await fetch(base + '/api/admin/logout', { method: 'POST', headers: { Cookie: cookie } });
+    assert.equal((await fetch(base + '/api/admin/bookings', { headers: { Cookie: cookie } })).status, 401);
+  } finally { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); db.close(); }
+});
+
+test('a WhatsApp form submission notifies authenticated admin streams and appears in booking records', async () => {
+  const { createBookingServer } = await import('./index.mjs');
+  const { once } = await import('node:events');
+  const { randomUUID } = await import('node:crypto');
+  const db = store();
+  const server = createBookingServer({ ADMIN_EMAIL: 'admin@test.com', ADMIN_PASSWORD: 'test-password' }, { db });
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const controller = new AbortController();
+  try {
+    assert.equal((await fetch(base + '/api/admin/bookings/events')).status, 401);
+    const login = await fetch(base + '/api/admin/login', { method: 'POST', body: JSON.stringify({ email: 'admin@test.com', password: 'test-password' }) });
+    const cookie = login.headers.get('set-cookie').split(';')[0];
+    const events = await fetch(base + '/api/admin/bookings/events', { headers: { Cookie: cookie }, signal: controller.signal });
+    assert.equal(events.headers.get('content-type'), 'text/event-stream');
+    const reader = events.body.getReader();
+    const decoder = new TextDecoder();
+    assert.match(decoder.decode((await reader.read()).value), /event: bookings-changed/);
+    const key = randomUUID();
+    const payload = { ...details, checkIn: '2099-01-01', checkOut: '2099-01-03', stay: 'Tent Stay (2-3 people)', adults: 2, kids: 0, veg: 1, nonVeg: 1 };
+    const pendingEvent = reader.read();
+    const response = await fetch(base + '/api/booking-requests', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': key }, body: JSON.stringify(payload) });
+    assert.equal(response.status, 201);
+    assert.match(decoder.decode((await pendingEvent).value), /event: bookings-changed/);
+    const records = await (await fetch(base + '/api/admin/bookings', { headers: { Cookie: cookie } })).json();
+    assert.equal(records.bookings.length, 1);
+    assert.equal(records.bookings[0].reference, key);
+    assert.equal(records.bookings[0].name, payload.name);
+    assert.equal(records.bookings[0].decision, 'pending');
+    await fetch(base + '/api/admin/logout', { method: 'POST', headers: { Cookie: cookie } });
+    assert.equal((await reader.read()).done, true);
+  } finally {
+    controller.abort();
+    server.closeAllConnections();
+    await new Promise(resolve => server.close(resolve));
+    db.close();
+  }
+});

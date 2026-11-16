@@ -26,7 +26,7 @@ export class StayOptionsComponent {
       ]
     },
     {
-      name: 'Cottage Stay', heading: 'Cottage Stay', capacity: '4-5 people', preference: 'Cottage Stay (4-5 people)',
+      name: 'Luxury Cottage Stay', heading: 'Luxury Cottage Stay', capacity: '4-5 people', preference: 'Cottage Stay (4-5 people)',
       price: STAY_PRICING.cottage,
       image: 'images/stay-options/cottage-stay.jpg', alt: 'A-frame cottage exterior in daylight',
       tagline: 'Golden evenings. Cosy nights. Beautiful mornings.',

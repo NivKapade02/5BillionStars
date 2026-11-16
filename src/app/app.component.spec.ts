@@ -1,10 +1,12 @@
 import { TestBed } from '@angular/core/testing';
+import { VisitorTrackingService } from './visitor-tracking.service';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
+      providers: [{ provide: VisitorTrackingService, useValue: { start: () => {} } }],
     }).compileComponents();
   });
 

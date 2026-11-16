@@ -30,6 +30,10 @@ export function openStore(path) {
     attempts INTEGER NOT NULL DEFAULT 0, next_attempt INTEGER NOT NULL DEFAULT 0,
     last_error TEXT, status_time INTEGER NOT NULL DEFAULT 0
   );`);
+  db.exec(`CREATE TABLE IF NOT EXISTS booking_decisions (
+    booking_id TEXT PRIMARY KEY REFERENCES bookings(id), decision TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );`);
   // A terminated request may have reached Meta. Keep it for manual reconciliation.
   db.prepare("UPDATE bookings SET status='unknown', last_error='Server restarted during send; reconcile before retrying' WHERE status='sending'").run();
   return db;

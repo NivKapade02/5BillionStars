@@ -58,6 +58,7 @@ export async function createReceiptImage(details: ReceiptImageDetails): Promise<
   row(`Adults: ${details.adults} × ${money(q.adultRate)} × ${q.nights} nights`, money(q.adultTotal));
   row(`Children 5–10: ${details.kids} × ${money(q.childRate)} × ${q.nights} nights`, money(q.childTotal));
   row(`Children under 5: ${details.underFive}`, 'Free');
+  row('Network handling: INR 1/adult/night', money(q.networkHandlingTotal));
   row('Total · meals & taxes included', money(q.total), true);
   context.fillStyle = '#bc6c25'; context.fillRect(28, y - 12, 544, 66);
   y += 26;

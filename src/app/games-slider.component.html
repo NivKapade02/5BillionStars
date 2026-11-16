@@ -1,0 +1,18 @@
+﻿<section class="games-panel" aria-labelledby="games-heading" (mouseenter)="hovered = true" (mouseleave)="hovered = false" (focusin)="focused = true" (focusout)="focused = false">
+  <header class="games-header">
+    <div><p class="games-eyebrow">A little friendly competition</p><h3 id="games-heading">Let the Games Begin</h3><p>Bring your group together for outdoor play and indoor favourites.</p></div>
+    <div class="game-controls" role="group" aria-label="Game slider controls">
+      <button type="button" (click)="slide(-1)" aria-label="Previous games"><i class="bi-chevron-left" aria-hidden="true"></i></button>
+      <button type="button" (click)="autoplay = !autoplay" [attr.aria-label]="autoplay ? 'Pause automatic game sliding' : 'Start automatic game sliding'" [attr.aria-pressed]="autoplay"><i [class]="autoplay ? 'bi-pause-fill' : 'bi-play-fill'" aria-hidden="true"></i></button>
+      <button type="button" (click)="slide(1)" aria-label="Next games"><i class="bi-chevron-right" aria-hidden="true"></i></button>
+    </div>
+  </header>
+  <div role="region" aria-roledescription="carousel" aria-label="Campsite games">
+    <div #viewport class="game-track" tabindex="0" aria-label="Game cards. Use left and right arrow keys to browse." (keydown.arrowleft)="slide(-1); $event.preventDefault()" (keydown.arrowright)="slide(1); $event.preventDefault()">
+      @for (game of games; track game.file) {
+        <article class="game-card"><img [src]="'assets/images/games/' + game.file" [alt]="game.name" width="400" height="320" loading="lazy"><div class="game-caption"><span>{{ game.type }} games</span><h4>{{ game.name }}</h4></div></article>
+      }
+    </div>
+  </div>
+  <p class="games-note">Also available: Cross. Find your favourite game and bring your group together.</p>
+</section>
