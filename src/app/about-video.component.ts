@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
     <div class="player" role="group" aria-label="Campsite video">
       <video #video preload="none" playsinline [poster]="poster" (volumechange)="syncVolume(video)"
         tabindex="0" role="button" [attr.aria-label]="playing ? 'Stop campsite video' : 'Play campsite video'" (click)="toggle(video)" (keydown.enter)="toggle(video)" (keydown.space)="$event.preventDefault(); toggle(video)" (play)="playing = true" (pause)="playing = false" (ended)="playing = false" (error)="error = 'This video could not load. Please try again later.'">
-        <source src="/video/Website%20Carsuole%20.mp4" type="video/mp4">
+        <source src="/video/Website%20Carsuole.mp4" type="video/mp4">
       </video>
       @if (!started) { <img class="thumbnail" src="/images/about-video-thumbnail-display.jpg" alt="Sunset and Pawana Lake skyview at 5 Billion Stars" loading="lazy" decoding="async" (load)="poster = '/images/about-video-thumbnail-display.jpg'" (error)="thumbnail.hidden = true" #thumbnail> }
       <button class="play-toggle" [class.hidden]="playing" [attr.tabindex]="playing ? -1 : 0" [attr.aria-hidden]="playing" type="button" (click)="toggle(video)" [attr.aria-label]="playing ? 'Stop campsite video' : 'Play campsite video'">
@@ -36,7 +36,7 @@ import { Component } from '@angular/core';
   `
 })
 export class AboutVideoComponent {
-  poster = '/images/camping/lakeside-tents.jpg';
+  poster = '';
   started = false;
   volume = 1;
   muted = false;
