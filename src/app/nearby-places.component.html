@@ -1,0 +1,25 @@
+<section id="nearby-places" class="nearby-section" aria-labelledby="nearby-heading">
+  <div class="nearby-shell">
+    <header class="nearby-heading">
+      <p class="eyebrow">Explore around your stay</p>
+      <h2 id="nearby-heading">Nearby Places</h2>
+      <p>Discover forts, lakes, watersports and family adventures around Pawana.<br>Plan your next stop from 5 Billion Stars Camping.</p>
+    </header>
+    <div class="places-grid">
+      @for (place of places; track place.image) {
+        <article class="place-card">
+          <div class="place-image"><img [src]="imageUrl(place.image)" [alt]="place.name" width="600" height="400" loading="lazy" decoding="async"></div>
+          <div class="place-content">
+            <h3>{{ place.name }}</h3>
+            <p><i class="bi-geo-alt" aria-hidden="true"></i> {{ place.location }}</p>
+            <p class="travel-time"><i class="bi-clock" aria-hidden="true"></i> Approx. {{ place.travelTime }} drive from camping</p>
+            @if (place.trek) { <p class="travel-detail">Drive to the base; trekking time is additional.</p> }
+            <a [href]="mapUrl(place.query)" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'View ' + place.name + ' on Google Maps (opens in a new tab)'">View location <i class="bi-arrow-up-right" aria-hidden="true"></i></a>
+            <a class="place-directions" [href]="directionsUrl(place.query)" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'Get driving directions from camping to ' + place.name + ' (opens in a new tab)'">Directions from camping <i class="bi-signpost-2" aria-hidden="true"></i></a>
+          </div>
+        </article>
+      }
+    </div>
+    <p class="travel-note">Travel times are approximate planning estimates, not live route times. Traffic, road conditions and the chosen access point can change your journey. Check Google Maps before leaving; walking and trekking time is additional.</p>
+  </div>
+</section>

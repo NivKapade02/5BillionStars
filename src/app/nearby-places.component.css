@@ -1,0 +1,26 @@
+:host{display:block;font-family:var(--body-font-family,Arial,sans-serif)}
+.nearby-section{padding:72px 24px;background:#fffdf9;scroll-margin-top:132px;color:#35251c}
+.nearby-shell{max-width:1200px;margin:auto}
+.nearby-heading{text-align:center;margin-bottom:32px}
+.nearby-heading .eyebrow{margin:0 0 10px;color:#99531a;font-size:13px;font-weight:700}
+.nearby-heading h2{margin:0 0 16px;color:#35251c;font-size:clamp(28px,4vw,40px);font-weight:700}
+.nearby-heading>p:last-child{margin:0;color:#67584b;font-size:14px;line-height:1.8}
+.places-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.place-card{overflow:hidden;border:1px solid #e9ddcd;border-radius:18px;background:#fff;display:flex;flex-direction:column}
+.place-image{aspect-ratio:3/2;overflow:hidden;background:#f3ece1}
+.place-image img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .25s}
+.place-card:hover .place-image img{transform:scale(1.04)}
+.place-content{padding:22px;display:flex;flex-direction:column;flex:1}
+.place-content h3{margin:0 0 10px;color:#35251c;font-size:21px;font-weight:700;line-height:1.35}
+.place-content p{margin:0 0 16px;color:#67584b;font-size:13px;line-height:1.6}
+.place-content p i{color:#99531a;margin-right:4px}
+.place-content .travel-time{align-self:flex-start;background:#f8f2e9;border-radius:8px;padding:8px 10px;color:#794619;font-weight:600;margin-bottom:12px}
+.place-content .travel-detail{font-size:12px;margin-bottom:12px}
+.place-content .place-directions{margin-top:0;border-top:0;padding-top:0;font-size:13px}
+.travel-note{margin:24px auto 0;max-width:900px;text-align:center;color:#67584b;font-size:12px;line-height:1.8}
+.place-content a{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;margin-top:auto;border-top:1px solid #f0e7db;padding-top:12px;color:#99531a;font-size:14px;font-weight:700;text-decoration:none}
+.place-content a:hover{color:#713a10;text-decoration:underline}
+.place-content a:focus-visible{outline:3px solid #99531a;outline-offset:4px;border-radius:3px}
+@media(max-width:900px){.places-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}}
+@media(max-width:600px){.nearby-section{padding:48px 16px;scroll-margin-top:100px}.places-grid{grid-template-columns:1fr}.place-content{padding:20px}}
+@media(prefers-reduced-motion:reduce){.place-image img{transition:none}.place-card:hover .place-image img{transform:none}}

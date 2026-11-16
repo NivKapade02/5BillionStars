@@ -29,6 +29,11 @@
                 "glob": "**/*",
                 "input": "src/assets/images/games",
                 "output": "assets/images/games"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/images/nearplaces",
+                "output": "assets/images/nearplaces"
               }
             ],
             "styles": [
@@ -93,6 +98,11 @@
                 "glob": "**/*",
                 "input": "src/assets/images/games",
                 "output": "assets/images/games"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/images/nearplaces",
+                "output": "assets/images/nearplaces"
               }
             ],
             "styles": [

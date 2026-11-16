@@ -13,11 +13,12 @@ import { SiteFooterComponent } from './site-footer.component';
 import { ScrollTopComponent } from './scroll-top.component';
 import { SectionLinkDirective } from './section-link.directive';
 import { AboutVideoComponent } from './about-video.component';
+import { NearbyPlacesComponent } from './nearby-places.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, AboutVideoComponent, SectionLinkDirective, BookingComponent, StayOptionsComponent, PhotoGalleryComponent, HeroBannerComponent, CampingScheduleComponent, GoogleReviewsComponent, BookingGuideComponent, RestaurantComponent, SiteFooterComponent, ScrollTopComponent],
+  imports: [RouterLink, AboutVideoComponent, SectionLinkDirective, BookingComponent, StayOptionsComponent, PhotoGalleryComponent, HeroBannerComponent, CampingScheduleComponent, NearbyPlacesComponent, GoogleReviewsComponent, BookingGuideComponent, RestaurantComponent, SiteFooterComponent, ScrollTopComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

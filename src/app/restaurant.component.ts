@@ -41,7 +41,9 @@ export class RestaurantComponent implements AfterViewInit, OnDestroy {
     const viewport = this.menuViewport?.nativeElement;
     const card = viewport?.querySelector<HTMLElement>('.food-card');
     if (!viewport || !card) return;
-    const step = card.offsetWidth + parseFloat(getComputedStyle(viewport).columnGap);
+    const gap = parseFloat(getComputedStyle(viewport).columnGap) || 0;
+    const step = card.getBoundingClientRect().width + gap;
+    if (step <= 0) return;
     this.visibleCount = Math.max(1, Math.round((viewport.clientWidth + step - card.offsetWidth) / step));
     this.firstVisibleIndex = Math.round(viewport.scrollLeft / step);
   }
@@ -50,15 +52,19 @@ export class RestaurantComponent implements AfterViewInit, OnDestroy {
     const viewport = this.menuViewport?.nativeElement;
     const card = viewport?.querySelector<HTMLElement>('.food-card');
     if (!viewport || !card) return;
-    const gap = parseFloat(getComputedStyle(viewport).columnGap);
-    const step = card.offsetWidth + gap;
+    const gap = parseFloat(getComputedStyle(viewport).columnGap) || 0;
+    const step = card.getBoundingClientRect().width + gap;
+    if (step <= 0) return;
     const count = Math.max(1, Math.round((viewport.clientWidth + gap) / step));
     const end = viewport.scrollWidth - viewport.clientWidth;
     if (end < 1) return;
+    const currentIndex = Math.round(viewport.scrollLeft / step);
     const left = direction > 0
-      ? (viewport.scrollLeft >= end - 2 ? 0 : Math.min(end, viewport.scrollLeft + count * step))
-      : (viewport.scrollLeft <= 2 ? end : Math.max(0, viewport.scrollLeft - count * step));
-    viewport.scrollTo({ left, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+      ? (viewport.scrollLeft >= end - 2 ? 0 : Math.min(end, (currentIndex + count) * step))
+      : (viewport.scrollLeft <= 2 ? end : Math.max(0, (currentIndex - count) * step));
+    // Avoid mobile smooth-scroll / scroll-snap conflicts when tapping either arrow.
+    const instant = window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    viewport.scrollTo({ left, behavior: instant ? 'instant' : 'smooth' });
   }
 
   get lastVisibleIndex() { return Math.min(this.filteredMenu.length, this.firstVisibleIndex + this.visibleCount); }
