@@ -1,6 +1,8 @@
 ﻿import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { NgZone, Optional } from '@angular/core';
 @Component({ selector: 'app-games-slider', standalone: true, templateUrl: './games-slider.component.html', styleUrl: './games-slider.component.css' })
 export class GamesSliderComponent implements AfterViewInit, OnDestroy {
+  constructor(@Optional() private readonly zone: NgZone | null = null) {}
   @ViewChild('viewport') private viewport?: ElementRef<HTMLDivElement>;
   private timer?: ReturnType<typeof setInterval>;
   autoplay = true;
@@ -22,10 +24,14 @@ export class GamesSliderComponent implements AfterViewInit, OnDestroy {
     { name: 'Jenga', file: 'zenga.webp', type: 'Indoor' }
   ];
   ngAfterViewInit() {
+    if (typeof window === 'undefined') return;
     this.autoplay = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    this.timer = setInterval(() => {
-      if (this.autoplay && !this.hovered && !this.focused && !document.hidden) this.slide(1);
+    const start = () => setInterval(() => {
+      if (this.autoplay && !this.hovered && !this.focused && !document.hidden) {
+        this.zone ? this.zone.run(() => this.slide(1)) : this.slide(1);
+      }
     }, 4500);
+    this.timer = this.zone ? this.zone.runOutsideAngular(start) : start();
   }
   ngOnDestroy() { clearInterval(this.timer); }
   slide(direction: number) {

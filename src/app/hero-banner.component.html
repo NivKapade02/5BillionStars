@@ -1,7 +1,9 @@
 ﻿<div class="banner-images" aria-hidden="true">
   @for (slide of slides; track slide.src; let index = $index) {
     <div class="banner-frame" [class.active]="index === activeIndex" [class.previous]="index === previousIndex" [class.zooming]="index === activeIndex || index === previousIndex">
-      <img [src]="slide.src" alt="" width="1920" height="1080" [attr.fetchpriority]="index === 0 ? 'high' : 'low'" decoding="async">
+      @if (index === activeIndex || index === previousIndex || index === (activeIndex + 1) % slides.length) {
+        <img [src]="slide.src" alt="" width="1920" height="1080" [attr.fetchpriority]="index === 0 ? 'high' : 'low'" decoding="async">
+      }
     </div>
   }
   <div class="banner-shade"></div>

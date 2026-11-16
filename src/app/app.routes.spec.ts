@@ -93,6 +93,7 @@ describe('Camping website and booking dialog', () => {
     harness.detectChanges();
     await harness.fixture.whenStable();
     const home = harness.routeDebugElement!.componentInstance as HomeComponent;
+    harness.detectChanges();
     const form = home.bookingForm!;
     form.stayPreference = 'Tent Stay (2-3 people)';
     form.booking = { ...form.booking, adults: 2, kids: 0, veg: 1, nonVeg: 1, firstName: 'Website', lastName: 'Guest', phone: '9876543210', checkIn: '2099-01-01', checkOut: '2099-01-02', guests: 2, notes: 'Test request' };
@@ -127,6 +128,7 @@ describe('Camping website and booking dialog', () => {
     const harness=await RouterTestingHarness.create('/');
     const home=harness.routeDebugElement!.componentInstance as HomeComponent;
     home.openBooking('Tent Stay (2-3 people)');harness.detectChanges();
+    await harness.fixture.whenStable(); harness.detectChanges();
     const form=home.bookingForm!;
     form.stayPreference='Cottage Stay (4-5 people)';form.whatsappUrl='https://wa.me/918624908808?text=earlier';
     home.openBooking('Tent Stay (2-3 people)');harness.detectChanges();
@@ -142,6 +144,7 @@ describe('Camping website and booking dialog', () => {
     expect(cards[1].textContent).toContain('4-5 people');
     cards[0].querySelector<HTMLButtonElement>('.stay-book')!.click();
     harness.detectChanges();
+    await harness.fixture.whenStable(); harness.detectChanges();
     expect(home.bookingDialog.nativeElement.open).toBeTrue();
     expect(home.bookingForm!.stayPreference).toBe('Tent Stay (2-3 people)');
     home.bookingForm!.reference = 'earlier-tent-request';
@@ -149,7 +152,7 @@ describe('Camping website and booking dialog', () => {
     home.closeBooking();
     cards[1].querySelector<HTMLButtonElement>('.stay-book')!.click();
     harness.detectChanges();
-    expect(home.bookingForm!.stayPreference).toBe('Luxury Cottage Stay (4-5 people)');
+    expect(home.bookingForm!.stayPreference).toBe('Cottage Stay (4-5 people)');
     expect(home.bookingForm!.reference).toBe('');
     expect(home.bookingForm!.whatsappUrl).toBe('');
     expect(TestBed.inject(Router).url).toBe('/');

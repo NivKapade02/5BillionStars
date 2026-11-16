@@ -19,13 +19,14 @@ export class HeroBannerComponent implements OnInit, OnDestroy {
   previousIndex: number | null = null;
   playing = true;
   private readonly zone = inject(NgZone);
-  private readonly motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  private readonly motionQuery = typeof window === 'undefined' ? null : window.matchMedia('(prefers-reduced-motion: reduce)');
   private timer?: number;
   private readonly onMotionChange = (event: MediaQueryListEvent) => {
     if (event.matches) this.pause();
   };
 
   ngOnInit() {
+    if (!this.motionQuery) return;
     this.playing = !this.motionQuery.matches;
     this.motionQuery.addEventListener('change', this.onMotionChange);
     if (this.playing) this.startTimer();
@@ -33,7 +34,7 @@ export class HeroBannerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.stopTimer();
-    this.motionQuery.removeEventListener('change', this.onMotionChange);
+    this.motionQuery?.removeEventListener('change', this.onMotionChange);
   }
 
   advance() {

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { BaseChartDirective } from 'ng2-charts';
+import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import type { ChartConfiguration } from 'chart.js';
 import type { Unsubscribe } from 'firebase/firestore';
 import { AdminBookingEditorComponent } from './admin-booking-editor.component';
@@ -13,6 +13,7 @@ import type { UsageEvent } from './visitor-tracking.service';
 import { bucketDate, indiaDate, safeCsvCell, visitorSessions, VisitorSession } from './dashboard-analytics';
 
 @Component({ selector: 'app-admin-dashboard', standalone: true,
+  providers: [provideCharts(withDefaultRegisterables())],
   imports: [CommonModule, FormsModule, BaseChartDirective, AdminBookingEditorComponent, AdminPaymentComponent],
   templateUrl: './admin-dashboard.component.html', styleUrl: './admin-dashboard.component.css' })
 export class AdminDashboardComponent implements OnInit, OnDestroy {

@@ -4,6 +4,7 @@
   "scripts": {
     "optimize:media": "node scripts/optimize-media.mjs",
     "verify:media": "node scripts/optimize-media.mjs --verify",
+    "verify:seo": "node scripts/verify-seo.mjs",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
@@ -22,7 +23,9 @@
     "@angular/forms": "^19.2.15",
     "@angular/platform-browser": "^19.2.15",
     "@angular/platform-browser-dynamic": "^19.2.15",
+    "@angular/platform-server": "^19.2.15",
     "@angular/router": "^19.2.15",
+    "@angular/ssr": "^19.2.19",
     "@primeuix/themes": "^2.0.2",
     "bootstrap": "^5.3.8",
     "chart.js": "^4.6.1",

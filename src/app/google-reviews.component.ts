@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
+import { NgZone, Optional } from '@angular/core';
 interface GuestReview { author: string; rating: 4 | 5; text: string; dateLabel?: string; }
 
 @Component({
@@ -9,6 +10,7 @@ interface GuestReview { author: string; rating: 4 | 5; text: string; dateLabel?:
   styleUrl: './google-reviews.component.css'
 })
 export class GoogleReviewsComponent implements OnInit, OnDestroy {
+  constructor(@Optional() private readonly zone: NgZone | null = null) {}
   @ViewChild('reviewsViewport') private reviewsViewport?: ElementRef<HTMLDivElement>;
   private slideTimer?: ReturnType<typeof setInterval>;
   autoplay = true;
@@ -22,10 +24,14 @@ export class GoogleReviewsComponent implements OnInit, OnDestroy {
   readonly expanded = new Set<GuestReview>();
 
   async ngOnInit() {
+    if (typeof window === 'undefined') return;
     this.autoplay = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    this.slideTimer = setInterval(() => {
-      if (this.autoplay && !this.pointerPaused && !this.focusPaused && !this.expanded.size && !document.hidden) this.slideReviews(1);
+    const start = () => setInterval(() => {
+      if (this.autoplay && !this.pointerPaused && !this.focusPaused && !this.expanded.size && !document.hidden) {
+        this.zone ? this.zone.run(() => this.slideReviews(1)) : this.slideReviews(1);
+      }
     }, 5000);
+    this.slideTimer = this.zone ? this.zone.runOutsideAngular(start) : start();
     try {
       const response = await fetch('google-reviews.json', { cache: 'no-cache' });
       if (!response.ok) return;

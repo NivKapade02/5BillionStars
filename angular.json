@@ -16,6 +16,8 @@
             "outputPath": "dist/5-billion-stars",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "server": "src/main.server.ts",
+            "outputMode": "static",
             "polyfills": [
               "zone.js"
             ],
@@ -37,6 +39,9 @@
               }
             ],
             "styles": [
+              "public/css/bootstrap.min.css",
+              "public/css/bootstrap-icons.css",
+              "public/css/tooplate-barista.css",
               "src/styles.css"
             ],
             "scripts": []

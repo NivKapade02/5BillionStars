@@ -10,20 +10,21 @@ import { GALLERY_PHOTOS, GalleryCategory } from './gallery-photos';
 export class PhotoGalleryComponent implements OnInit, OnDestroy {
   private readonly zone = inject(NgZone);
   private readonly element = inject(ElementRef<HTMLElement>);
-  private readonly motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-  playing = !this.motionQuery.matches;
+  private readonly motionQuery = typeof window === 'undefined' ? null : window.matchMedia('(prefers-reduced-motion: reduce)');
+  playing = !this.motionQuery?.matches;
   videoPlaying = false;
   private timer?: number;
   private readonly onMotionChange = (event: MediaQueryListEvent) => { if (event.matches) { this.playing = false; this.stopTimer(); } };
 
   ngOnInit() {
+    if (!this.motionQuery) return;
     this.motionQuery.addEventListener('change', this.onMotionChange);
     if (this.playing) this.startTimer();
   }
 
   ngOnDestroy() {
     this.stopTimer();
-    this.motionQuery.removeEventListener('change', this.onMotionChange);
+    this.motionQuery?.removeEventListener('change', this.onMotionChange);
   }
 
   togglePlayback() {

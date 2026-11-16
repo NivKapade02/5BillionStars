@@ -28,7 +28,7 @@ export class HomeComponent {
   bookingOpened = false;
   selectedStay = '';
   @ViewChild('bookingDialog', { static: true }) bookingDialog!: ElementRef<HTMLDialogElement>;
-  @ViewChild(BookingComponent) bookingForm?: BookingComponent;
+  @ViewChild('bookingForm') bookingForm?: BookingComponent;
 
   openBooking(stay?: string) {
     if (this.bookingForm?.submitting) return;

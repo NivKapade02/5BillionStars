@@ -21,3 +21,14 @@ let client: ReturnType<typeof initialize> | undefined;
 export function getFirebase() {
   return client ??= initialize().catch(error => { client = undefined; throw error; });
 }
+
+// Public telemetry only writes documents: it does not need Auth or realtime listeners.
+async function initializeUsage() {
+  const [appSdk, firestoreSdk] = await Promise.all([import('firebase/app'), import('firebase/firestore/lite')]);
+  const app = appSdk.getApps().length ? appSdk.getApp() : appSdk.initializeApp(firebaseConfig);
+  return { db: firestoreSdk.getFirestore(app), firestoreSdk };
+}
+let usageClient: ReturnType<typeof initializeUsage> | undefined;
+export function getUsageFirebase() {
+  return usageClient ??= initializeUsage().catch(error => { usageClient = undefined; throw error; });
+}

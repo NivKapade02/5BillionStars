@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 
+import { NgZone, Optional } from '@angular/core';
+
 interface RestaurantDish {
   name: string;
   category: string;
@@ -13,6 +15,7 @@ interface RestaurantDish {
 
 @Component({ selector: 'app-restaurant', standalone: true, templateUrl: './restaurant.component.html', styleUrl: './restaurant.component.css' })
 export class RestaurantComponent implements AfterViewInit, OnDestroy {
+  constructor(@Optional() private readonly zone: NgZone | null = null) {}
   @ViewChild('menuViewport') private menuViewport?: ElementRef<HTMLDivElement>;
   private slideTimer?: ReturnType<typeof setInterval>;
   autoplay = true;
@@ -22,11 +25,15 @@ export class RestaurantComponent implements AfterViewInit, OnDestroy {
   visibleCount = 3;
 
   ngAfterViewInit() {
+    if (typeof window === 'undefined') return;
     this.autoplay = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     queueMicrotask(() => this.updateSlidePosition());
-    this.slideTimer = setInterval(() => {
-      if (this.autoplay && !this.pointerPaused && !this.focusPaused && !document.hidden) this.slideMenu(1);
+    const start = () => setInterval(() => {
+      if (this.autoplay && !this.pointerPaused && !this.focusPaused && !document.hidden) {
+        this.zone ? this.zone.run(() => this.slideMenu(1)) : this.slideMenu(1);
+      }
     }, 4500);
+    this.slideTimer = this.zone ? this.zone.runOutsideAngular(start) : start();
   }
 
   ngOnDestroy() { clearInterval(this.slideTimer); }

@@ -45,6 +45,16 @@ describe('Homepage banner slideshow', () => {
     expect(root.querySelectorAll('.banner-dot.selected').length).toBe(1);
   });
 
+  it('loads only the visible banner and its next slide initially', () => {
+    const fixture = TestBed.createComponent(HeroBannerComponent);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    expect(root.querySelectorAll('.banner-frame img').length).toBe(2);
+    callback(); fixture.detectChanges();
+    expect(root.querySelectorAll('.banner-frame img').length).toBe(3);
+    expect(root.querySelector('.banner-frame.active img')?.getAttribute('src')).toBe('/images/banner/sunset.jpg');
+  });
+
   it('starts paused for visitors who request reduced motion', () => {
     motion.matches = true;
     const fixture = TestBed.createComponent(HeroBannerComponent);

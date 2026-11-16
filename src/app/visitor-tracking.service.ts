@@ -1,7 +1,7 @@
 import { Injectable, NgZone, OnDestroy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { getFirebase } from './firebase-client';
+import { getUsageFirebase } from './firebase-client';
 
 export type TrackingKind = 'page_view' | 'booking_open' | 'booking_submitted' | 'whatsapp_click' | 'phone_click' | 'heartbeat';
 export interface UsageEvent {
@@ -21,7 +21,8 @@ export function detectClient(userAgent: string) {
 @Injectable({ providedIn: 'root' })
 export class UsageEventWriter {
   async write(details: Omit<UsageEvent, 'id' | 'createdAt'>, allowed: () => boolean): Promise<void> {
-    const { db, firestoreSdk: sdk } = await getFirebase();
+    if (!allowed()) return;
+    const { db, firestoreSdk: sdk } = await getUsageFirebase();
     if (!allowed()) return;
     await sdk.setDoc(sdk.doc(db, 'usageEvents', crypto.randomUUID()), { ...details, createdAt: sdk.serverTimestamp() });
   }
@@ -40,7 +41,7 @@ export class VisitorTrackingService implements OnDestroy {
   private lastPage = '';
   private lastPageAt = 0;
   constructor(private readonly router: Router, private readonly zone: NgZone, private readonly writer: UsageEventWriter) {}
-  get browserDisabled(): boolean { return navigator.doNotTrack === '1' || (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl === true; }
+  get browserDisabled(): boolean { return typeof window === 'undefined' || navigator.doNotTrack === '1' || (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl === true; }
   get enabled(): boolean {
     if (this.browserDisabled) return false;
     try { return localStorage.getItem('5bs-usage-tracking') !== 'off'; } catch { return false; }
@@ -53,7 +54,7 @@ export class VisitorTrackingService implements OnDestroy {
     } else this.record('page_view');
   }
   start(): void {
-    if (this.running) return;
+    if (this.running || typeof window === 'undefined') return;
     this.running = true;
     try { this.source = document.referrer ? new URL(document.referrer).hostname.slice(0, 120) : 'Direct'; } catch { this.source = 'Direct'; }
     this.routeSubscription = this.router.events.subscribe(event => {
@@ -110,6 +111,7 @@ export class VisitorTrackingService implements OnDestroy {
       .catch(() => { /* Optional telemetry must never prevent a booking or navigation. */ });
   }
   ngOnDestroy(): void {
+    if (typeof window === 'undefined') return;
     this.running = false;
     this.routeSubscription?.unsubscribe();
     if (this.heartbeat) clearInterval(this.heartbeat);

@@ -1,6 +1,3 @@
-﻿<link rel="stylesheet" href="/css/bootstrap.min.css">
-<link rel="stylesheet" href="/css/bootstrap-icons.css">
-<link rel="stylesheet" href="/css/tooplate-barista.css">
 <main>
   <nav class="navbar navbar-expand-xxl">
       <div class="container">
@@ -132,7 +129,9 @@
 <dialog #bookingDialog class="booking-dialog" aria-label="Book your stay on WhatsApp" (cancel)="cancelBooking($event)">
   <button type="button" class="booking-close" (click)="closeBooking()" [disabled]="bookingForm?.submitting ?? false" aria-label="Close booking form">&times;</button>
   @if (bookingOpened) {
-    <app-booking [embedded]="true" [stayPreference]="selectedStay" />
+    @defer (when bookingOpened) {
+      <app-booking #bookingForm [embedded]="true" [stayPreference]="selectedStay" />
+    } @placeholder { <p role="status">Loading booking form…</p> }
   }
 </dialog>
 
