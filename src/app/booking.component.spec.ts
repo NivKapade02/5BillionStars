@@ -38,6 +38,21 @@ describe('WhatsApp booking requests saved before WhatsApp handoff', async () => 
     expect(component.reference).toBe(reference);
     expect(component.whatsappUrl).toContain('https://wa.me/');
   });
+
+  it('defaults to regular and saves event selection in the record and WhatsApp request', async () => {
+    expect(component.bookingType).toBe('regular');
+    await component.submit(validForm);
+    expect(component.savedBookingMessage).toContain('Booking type: Regular booking');
+    expect(store.save.calls.mostRecent().args[1].bookingType).toBe('regular');
+    const reference = component.reference;
+    const total = component.quote!.total;
+    component.bookingType = 'event';
+    await component.submit(validForm);
+    expect(component.reference).not.toBe(reference);
+    expect(component.savedBookingMessage).toContain('Booking type: Event booking');
+    expect(store.save.calls.mostRecent().args[1].bookingType).toBe('event');
+    expect(component.quote!.total).toBe(total);
+  });
   it('rejects past dates, invalid phones and inconsistent guest or meal counts', async () => {
     component.booking.checkIn='2000-01-01';await component.submit(validForm);expect(component.error).toContain('today');
     component.booking={...validBooking,phone:'123'};await component.submit(validForm);expect(component.error).toContain('mobile');
@@ -59,6 +74,20 @@ describe('WhatsApp booking requests saved before WhatsApp handoff', async () => 
     const fetcher=store.save;await TestBed.configureTestingModule({imports:[BookingComponent],providers:[{provide:FirebaseBookingService,useValue:store}]}).compileComponents();
     const fixture=TestBed.createComponent(BookingComponent);fixture.detectChanges();await fixture.whenStable();fixture.detectChanges();
     const root=fixture.nativeElement as HTMLElement;
+    const regularRadio = root.querySelector<HTMLInputElement>('input[name="bookingType"][value="regular"]')!;
+    const eventRadio = root.querySelector<HTMLInputElement>('input[name="bookingType"][value="event"]')!;
+    expect(regularRadio.type).toBe('radio');
+    expect(regularRadio.checked).toBeTrue();
+    expect(eventRadio.checked).toBeFalse();
+    expect(root.querySelector('.event-examples')).toBeNull();
+    expect(eventRadio.compareDocumentPosition(root.querySelector('[name="stayPreference"]')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    eventRadio.click(); fixture.detectChanges();
+    expect(fixture.componentInstance.bookingType).toBe('event');
+    expect(eventRadio.checked).toBeTrue();
+    expect(regularRadio.checked).toBeFalse();
+    expect(root.querySelector('.booking-type-group')?.textContent).toContain('31st December, Holi');
+    regularRadio.click(); fixture.detectChanges();
+    expect(root.querySelector('.event-examples')).toBeNull();
     expect(root.querySelectorAll('[name="guests"]').length).toBe(1);
     expect(root.querySelector('[name="phone"]')?.closest('.phone-row')).toBe(root.querySelector('[name="guests"]')?.closest('.phone-row'));
     expect(root.querySelector('[name="alternativePhone"]')).toBeNull();expect(root.querySelector('[name="underFive"]')).toBeNull();

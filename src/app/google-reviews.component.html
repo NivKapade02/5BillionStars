@@ -4,7 +4,7 @@
       <div><h2 id="google-reviews-heading">Customer testimonials on Google</h2>
         @if (rating !== null) { <p class="rating-summary"><span class="summary-stars" aria-hidden="true"><span class="empty-stars">★★★★★</span><span class="filled-stars" [style.width.%]="rating * 20">★★★★★</span></span><span>{{ rating }} rating of {{ totalReviews }} reviews · checked {{ verifiedAt }}</span></p> }
       </div>
-      <a class="review-button" [href]="mapsUrl" target="_blank" rel="noopener noreferrer">Review us on Google</a>
+      <a class="review-button" [href]="mapsUrl" target="_blank" rel="noopener noreferrer">Read all Google reviews</a>
     </header>
     @if (reviews.length) {
       <div class="review-carousel" role="region" aria-roledescription="carousel" aria-label="Guest reviews" (mouseenter)="pointerPaused = true" (mouseleave)="pointerPaused = false" (focusin)="focusPaused = true" (focusout)="focusPaused = false">

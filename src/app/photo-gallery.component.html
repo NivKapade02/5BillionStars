@@ -1,4 +1,4 @@
-﻿<section id="section_3" class="photo-gallery" aria-labelledby="gallery-heading" aria-roledescription="carousel">
+<section id="section_3" class="photo-gallery" aria-labelledby="gallery-heading" aria-roledescription="carousel">
   <div class="gallery-shell">
     <header class="gallery-heading">
       <p>Moments at 5 Billion Stars</p>
@@ -13,15 +13,33 @@
       <button type="button" [attr.aria-pressed]="filter === 'groups'" (click)="setFilter('groups')">Group Moments</button>
       <button type="button" class="gallery-playback" [attr.aria-label]="playing ? 'Pause gallery slideshow' : 'Play gallery slideshow'" (click)="togglePlayback()"><span aria-hidden="true">{{ playing ? '⏸' : '▶' }}</span> {{ playing ? 'Pause slideshow' : 'Play slideshow' }}</button>
     </div>
+    <div class="bento-gallery" [class.scene-even]="transitionVersion % 2 === 0" [class.scene-odd]="transitionVersion % 2 !== 0" [attr.data-tone]="scene.tone">
+    <div class="bento-main">
     <div class="photo-stage" tabindex="0" aria-label="Photo and video gallery. Use left and right arrow keys to browse." (keydown)="onKeydown($event)" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
       @if (activePhoto.kind === 'video') {
         <video class="main-photo" [src]="activePhoto.src" [poster]="activePhoto.poster ?? activePhoto.thumbnail" [attr.aria-label]="activePhoto.alt" (play)="videoPlaying = true" (pause)="videoPlaying = false" (ended)="videoPlaying = false" controls playsinline preload="none"></video>
       } @else {
-        <img class="main-photo" [src]="activePhoto.src" [alt]="activePhoto.alt" width="1200" height="800" loading="lazy" decoding="async" draggable="false">
+        <picture class="gallery-picture"><source media="(max-width: 900px)" [attr.srcset]="activePhoto.smallSrc"><img class="main-photo" [src]="activePhoto.src" [alt]="activePhoto.alt" width="1200" height="800" loading="lazy" decoding="async" draggable="false"></picture>
       }
-      <button type="button" class="gallery-arrow previous" (click)="previous()" aria-label="Previous gallery item">&#8249;</button>
-      <button type="button" class="gallery-arrow next" (click)="next()" aria-label="Next gallery item">&#8250;</button>
+      <button type="button" class="gallery-arrow previous" (click)="previousSet()" aria-label="Previous five gallery images">&#8249;</button>
+      <button type="button" class="gallery-arrow next" (click)="nextSet()" aria-label="Next five gallery images">&#8250;</button>
       @if (activePhoto.kind !== 'video') { <div class="photo-caption"><h3>{{ activePhoto.title }}</h3></div> }
+    </div>
+    <div class="bento-pair">
+      <div class="bento-story"><span class="bento-eyebrow">Pawana Lake · Maharashtra</span><h3>{{ scene.title }}</h3><p>{{ scene.description }}</p></div>
+      <button type="button" class="bento-photo" (click)="show(activeIndex + 1)" [attr.aria-label]="'Show ' + preview(1).title"><img [src]="preview(1).kind === 'video' ? (preview(1).poster ?? preview(1).thumbnail) : (preview(1).smallSrc ?? preview(1).src)" [alt]="preview(1).alt" width="600" height="400" loading="lazy"><span>{{ preview(1).title }}</span></button>
+    </div>
+    <div class="bento-navigation"><button type="button" class="bento-explore" (click)="openDetail()">Explore this moment</button><button type="button" (click)="previousSet()">Previous</button><button type="button" (click)="nextSet()">Next</button></div>
+    </div>
+    <div class="bento-column">
+      <div class="bento-story"><h3>Explore</h3><p>{{ scene.explore }}</p></div>
+      <button type="button" class="bento-photo bento-tall" (click)="show(activeIndex + 2)" [attr.aria-label]="'Show ' + preview(2).title"><img [src]="preview(2).kind === 'video' ? (preview(2).poster ?? preview(2).thumbnail) : (preview(2).smallSrc ?? preview(2).src)" [alt]="preview(2).alt" width="600" height="800" loading="lazy"><span>{{ preview(2).title }}</span></button>
+      <div class="bento-story"><h3>Stay awhile</h3><p>{{ scene.stay }}</p></div>
+    </div>
+    <div class="bento-column">
+      <button type="button" class="bento-photo bento-tall" (click)="show(activeIndex + 3)" [attr.aria-label]="'Show ' + preview(3).title"><img [src]="preview(3).kind === 'video' ? (preview(3).poster ?? preview(3).thumbnail) : (preview(3).smallSrc ?? preview(3).src)" [alt]="preview(3).alt" width="600" height="800" loading="lazy"><span>{{ preview(3).title }}</span></button>
+      <button type="button" class="bento-photo bento-cuisine" (click)="show(activeIndex + 4)" [attr.aria-label]="'Show ' + preview(4).title"><img [src]="preview(4).kind === 'video' ? (preview(4).poster ?? preview(4).thumbnail) : (preview(4).smallSrc ?? preview(4).src)" [alt]="preview(4).alt" width="600" height="400" loading="lazy"><span>{{ preview(4).title }}</span></button>
+    </div>
     </div>
     <p class="gallery-status" role="status" [attr.aria-live]="playing ? 'off' : 'polite'">{{ activeIndex + 1 }} / {{ photos.length }} <span>{{ activePhoto.title }}</span></p>
     <div class="thumbnail-rail" aria-label="Choose a gallery photo or video">
@@ -34,4 +52,18 @@
     </div>
     <p class="gallery-hint">Swipe, use the arrows, or choose a moment below. Tap play to watch a video.</p>
   </div>
+  <dialog #galleryDetail class="gallery-detail" aria-label="Expanded campsite gallery" (close)="onDetailClosed()" (keydown)="onKeydown($event)">
+    @if (detailOpen) {
+      <div class="detail-scene" [class.has-video]="activePhoto.kind === 'video'">
+        @if (activePhoto.kind === 'video') {
+          <video class="detail-image" [src]="activePhoto.src" [poster]="activePhoto.poster ?? activePhoto.thumbnail" controls playsinline preload="none" [attr.aria-label]="activePhoto.alt"></video>
+        } @else {
+          <img class="detail-image" [src]="activePhoto.src" [alt]="activePhoto.alt" width="1200" height="800">
+        }
+        <button class="detail-close" type="button" (click)="closeDetail()" autofocus aria-label="Close expanded gallery">&#215;</button>
+        <div class="detail-title"><span>5 Billion Stars · Pawana Lake</span><h2>{{ activePhoto.title }}</h2><div class="detail-controls"><button type="button" (click)="previous()" aria-label="Previous gallery moment">Previous</button><button type="button" (click)="next()" aria-label="Next gallery moment">Next</button></div></div>
+        <aside class="detail-panel"><p class="bento-eyebrow">Make a little time for this</p><h3>{{ scene.title }}</h3><p>{{ scene.description }}</p><div><h4>Explore</h4><p>{{ scene.explore }}</p></div><div><h4>Stay</h4><p>{{ scene.stay }}</p></div><div><h4>Homemade meals</h4><p>Tea, snacks, barbecue, dinner and breakfast are included with your camping stay.</p></div><a href="#stays" (click)="closeDetail()">Explore our stays</a></aside>
+      </div>
+    }
+  </dialog>
 </section>

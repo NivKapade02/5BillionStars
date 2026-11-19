@@ -34,6 +34,20 @@ test('guests can submit and repeat an identical request without reading it', asy
   await assertFails(deleteDoc(ref));
 });
 
+test('accepts regular and event booking types while rejecting invalid types and guest changes', async () => {
+  const db = env.unauthenticatedContext().firestore();
+  for (const bookingType of ['regular', 'event']) {
+    const reference = crypto.randomUUID();
+    const ref = doc(db, 'bookingRequests', reference);
+    await assertSucceeds(setDoc(ref, { ...payload(), reference, bookingType }));
+    await assertFails(updateDoc(ref, { bookingType: bookingType === 'event' ? 'regular' : 'event' }));
+  }
+  for (const bookingType of ['other', '', true, 1, null]) {
+    const reference = crypto.randomUUID();
+    await assertFails(setDoc(doc(db, 'bookingRequests', reference), { ...payload(), reference, bookingType }));
+  }
+});
+
 test('only the configured admin can read and update decisions', async () => {
   await assertSucceeds(setDoc(booking(env.unauthenticatedContext()), payload()));
   const other = booking(env.authenticatedContext('another-user'));

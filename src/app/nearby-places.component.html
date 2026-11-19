@@ -5,7 +5,7 @@
       <h2 id="nearby-heading">Nearby Places</h2>
       <p>Discover forts, lakes, watersports and family adventures around Pawana.<br>Plan your next stop from 5 Billion Stars Camping.</p>
     </header>
-    <div class="places-grid">
+    <div class="places-grid" id="nearby-slides" #nearbySlides tabindex="0" role="region" aria-roledescription="carousel" aria-label="Nearby places. Swipe or use arrow keys to browse.">
       @for (place of places; track place.image) {
         <article class="place-card">
           <div class="place-image"><img [src]="imageUrl(place.image)" [alt]="place.name" width="600" height="400" loading="lazy" decoding="async"></div>
@@ -13,6 +13,7 @@
             <h3>{{ place.name }}</h3>
             <p><i class="bi-geo-alt" aria-hidden="true"></i> {{ place.location }}</p>
             <p class="travel-time"><i class="bi-clock" aria-hidden="true"></i> Approx. {{ place.travelTime }} drive from camping</p>
+            @if (place.externalActivity) { <p class="travel-detail"><strong>Separate charges.</strong> Offered by nearby operators, not by our campsite; not included in your stay.</p> }
             @if (place.trek) { <p class="travel-detail">Drive to the base; trekking time is additional.</p> }
             <a [href]="mapUrl(place.query)" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'View ' + place.name + ' on Google Maps (opens in a new tab)'">View location <i class="bi-arrow-up-right" aria-hidden="true"></i></a>
             <a class="place-directions" [href]="directionsUrl(place.query)" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'Get driving directions from camping to ' + place.name + ' (opens in a new tab)'">Directions from camping <i class="bi-signpost-2" aria-hidden="true"></i></a>
@@ -20,6 +21,44 @@
         </article>
       }
     </div>
+    <div class="slider-controls nearby-controls">
+      <button type="button" aria-label="Previous nearby place" aria-controls="nearby-slides" (click)="slideCards(nearbySlides, -1)"><i class="bi-chevron-left" aria-hidden="true"></i></button>
+      <span>Explore all {{ places.length }} nearby places</span>
+      <button type="button" [attr.aria-label]="nearbyAutoplayPaused ? 'Play nearby places slideshow' : 'Pause nearby places slideshow'" [attr.aria-pressed]="nearbyAutoplayPaused" (click)="nearbyAutoplayPaused = !nearbyAutoplayPaused"><i [class]="nearbyAutoplayPaused ? 'bi-play-fill' : 'bi-pause-fill'" aria-hidden="true"></i></button>
+      <button type="button" aria-label="Next nearby place" aria-controls="nearby-slides" (click)="slideCards(nearbySlides, 1)"><i class="bi-chevron-right" aria-hidden="true"></i></button>
+    </div>
     <p class="travel-note">Travel times are approximate planning estimates, not live route times. Traffic, road conditions and the chosen access point can change your journey. Check Google Maps before leaving; walking and trekking time is additional.</p>
+  </div>
+</section>
+<section id="stargazing" class="stargazing-section" aria-labelledby="stargazing-heading">
+  <div class="stargazing-shell">
+    <header class="stargazing-heading">
+      <p class="stargazing-eyebrow">Look up. There's a whole universe.</p>
+      <h2 id="stargazing-heading">Stargazing at 5 Billion Stars</h2>
+      <p>From lunar landscapes to distant galaxies, discover the wonders above our campsite.</p>
+    </header>
+    <div class="stargazing-layout">
+      <figure class="stargazing-show-card">
+        <img src="/images/stargazing-telescope.webp" alt="A man using a black Celestron telescope overlooking Pawana Lake and its mountains beneath the Milky Way" width="1200" height="800" loading="lazy" decoding="async">
+        <figcaption><span>A little closer to the cosmos</span><p>Your night under 5 billion stars.</p></figcaption>
+      </figure>
+      <div class="stargazing-slider" role="region" aria-roledescription="carousel" aria-label="Telescope viewing targets">
+      <div id="stargazing-slides" class="stargazing-targets" #stargazingSlides tabindex="0" aria-label="Viewing target cards. Swipe or use arrow keys to browse.">
+        @for (target of stargazingTargets; track target.image; let index = $index) {
+          <article class="stargazing-target" role="group" aria-roledescription="slide" [attr.aria-label]="(index + 1) + ' of ' + stargazingTargets.length + ': ' + target.name">
+            <img class="stargazing-target-image" [src]="'/images/stargazing/' + target.image" [alt]="target.name" width="800" height="600" loading="lazy" decoding="async">
+            <div class="stargazing-target-content"><span class="stargazing-category">{{ target.category }}</span><h3>{{ target.name }}</h3><p>{{ target.description }}</p></div>
+          </article>
+        }
+      </div>
+      <div class="slider-controls">
+        <button type="button" aria-label="Previous viewing target" aria-controls="stargazing-slides" (click)="slideCards(stargazingSlides, -1)"><i class="bi-chevron-left" aria-hidden="true"></i></button>
+        <span>Swipe to explore all {{ stargazingTargets.length }} targets</span>
+        <button type="button" [attr.aria-label]="autoplayPaused ? 'Play slideshow' : 'Pause slideshow'" [attr.aria-pressed]="autoplayPaused" (click)="autoplayPaused = !autoplayPaused"><i [class]="autoplayPaused ? 'bi-play-fill' : 'bi-pause-fill'" aria-hidden="true"></i></button>
+        <button type="button" aria-label="Next viewing target" aria-controls="stargazing-slides" (click)="slideCards(stargazingSlides, 1)"><i class="bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      </div>
+    </div>
+    <p class="stargazing-note">Images illustrate the viewing targets; views through a telescope will differ. What you can see depends on the season, weather, sky conditions and telescope in use. Never point a telescope at the Sun without a suitable solar filter.</p>
   </div>
 </section>

@@ -1,10 +1,10 @@
 export type GalleryCategory = 'dance' | 'games' | 'groups';
-export interface GalleryPhoto { kind: 'photo' | 'video'; category?: GalleryCategory; src: string; thumbnail: string; poster?: string; title: string; alt: string; }
+export interface GalleryPhoto { kind: 'photo' | 'video'; category?: GalleryCategory; src: string; smallSrc?: string; thumbnail: string; poster?: string; title: string; alt: string; }
 
 const PHOTO_TITLES: readonly string[] = [
   "Lantern-lit gazebo overlooking the lake",
   "Pink evening skies over Pawana Lake",
-  "Garden paths and lakeside tents",
+  "Garden paths and lakeview tents",
   "A green tent with a lake view",
   "A-frame cottage in the sunshine",
   "Golden sunset over the lake",
@@ -22,7 +22,7 @@ const PHOTO_TITLES: readonly string[] = [
   "Barbecue skewers on the grill",
   "Green tents ready for guests",
   "Garden flowers overlooking the lake",
-  "Yellow blooms and a lakeside sunset",
+  "Yellow blooms and a lakeview sunset",
   "Flowers in the campsite garden",
   "A quiet moment inside the tent",
   "Guests gathering beneath the lights",
@@ -31,13 +31,13 @@ const PHOTO_TITLES: readonly string[] = [
   "Barbecue cooking over hot coals",
   "Preparing the evening barbecue",
   "A tent pitched in the sunshine",
-  "Hillside gardens and camping views",
+  "Campsite gardens and camping views",
   "Flowering trees beside the gazebo",
   "The garden gazebo by day",
   "Pawana Lake through the flowers",
-  "A path through the hillside garden",
+  "A path through the campsite garden",
   "Pink flowers framing the lake",
-  "A colourful lakeside garden",
+  "A colourful lakeview garden",
   "Colourful steps up to the gazebo",
   "Open-air seating above the garden",
   "Flower-lined paths and lake views",
@@ -54,7 +54,7 @@ const PHOTO_TITLES: readonly string[] = [
   "A glowing triangle beneath the stars",
   "The illuminated star and garden lights",
   "Evening lights across the grounds",
-  "A hillside row of green tents",
+  "A row of green tents",
   "The gazebo ready for an evening outdoors",
   "A softly lit garden walkway",
   "The campsite above the lake at dusk",
@@ -82,7 +82,7 @@ const PHOTO_TITLES: readonly string[] = [
   "A star-lit campsite portrait",
   "Sunset through the window",
   "A cosy moment inside a green tent",
-  "The lakeside gazebo in the garden",
+  "The lakeview gazebo in the garden",
   "Friends enjoying the gazebo view",
   "Cottages glowing after dark",
   "A look inside a campsite washroom",
@@ -110,12 +110,12 @@ const PHOTO_TITLES: readonly string[] = [
   "The lake beneath a pink evening sky",
   "Dusk settling over the backwaters",
   "Evening views from the campsite",
-  "Warm light across the lakeside hills",
+  "Warm light across the lakeview hills",
   "Pawana Lake at the end of the day",
   "Lake and mountain views from the grounds",
   "A wide view across Pawana Lake",
   "Tents overlooking the water",
-  "Green hillside above the lake",
+  "Green scenery above the lake",
   "The campsite lit up at dusk",
   "A glowing star against the evening sky",
   "At the DJ table",
@@ -125,13 +125,13 @@ const PHOTO_TITLES: readonly string[] = [
   "A group photo under colourful lights",
   "Friends posing beneath the glowing star",
   "A portrait beside the star installation",
-  "A peaceful lake and hillside view",
+  "A peaceful lake and mountain view",
   "A group gathering by the lake",
   "The view along the campsite approach",
   "Garden flowers framing the water",
   "The outdoor recreation area",
   "A cottage beside the garden path",
-  "Trees and green tents on the hillside",
+  "Trees and green tents around the campsite",
   "An A-frame cottage exterior",
   "Cricket with friends on the grounds",
   "The sun setting beyond the lake",
@@ -142,13 +142,13 @@ const PHOTO_TITLES: readonly string[] = [
   "The lake beyond the garden railing",
   "Cottage roofs and garden greenery",
   "Green tents beneath the trees",
-  "A cottage walkway on the hillside",
+  "A cottage walkway around the campsite",
   "A row of A-frame cottages",
   "The cottage row in daylight",
   "Bedding inside a green tent",
   "A closer look at the tent bedding",
   "A tent on the open camping ground",
-  "Tents and cottages across the hillside",
+  "Tents and cottages around the campsite",
   "A visitor outside the cottage window",
   "A cottage entrance in warm daylight",
   "Cricket action at the campsite",
@@ -165,7 +165,7 @@ const PHOTO_TITLES: readonly string[] = [
   "Bedding in the A-frame cottage",
   "The view from a cottage entrance",
   "A cosy cottage bed",
-  "Inside a hillside cottage",
+  "Inside a cottage",
   "Looking out from the cottage bed",
   "A brightly outlined cottage at night",
   "A green tent beneath the sunset sky",
@@ -178,7 +178,7 @@ const PHOTO_TITLES: readonly string[] = [
   "A close view of the illuminated cottages",
   "Warm lights along the cottage row",
   "A row of cottages shining at night",
-  "Cottages glowing on the hillside",
+  "Cottages glowing around the campsite",
   "The star and swing lit for the evening",
   "Green lights along the garden path",
   "A night walk beside the cottages"
@@ -201,7 +201,7 @@ const VIDEO_TITLES: readonly string[] = [
   "Sunset across Pawana Lake",
   "Gather around the bonfire",
   "A look around the camping grounds",
-  "The lakeside gazebo at dusk",
+  "The lakeview gazebo at dusk",
   "A garden gazebo with a lake view",
   "An evening gathering outdoors"
 ];
@@ -241,7 +241,8 @@ const ROOT = '/images/gallery/collection/';
 export const GALLERY_PHOTOS: readonly GalleryPhoto[] = [
   ...PHOTO_TITLES.map((title, index): GalleryPhoto => {
     const number = String(index + 1).padStart(3, '0');
-    return { kind: 'photo', category: ACTIVITIES['photo-' + number], src: ROOT + 'display/photo-' + number + '.jpg', thumbnail: ROOT + 'thumbs/photo-' + number + '.jpg', title, alt: title + ' at 5 Billion Stars, Pawana Lake' };
+    const src = ROOT + 'display/photo-' + number + '.webp';
+    return { kind: 'photo', category: ACTIVITIES['photo-' + number], src, smallSrc: ROOT + 'display/photo-' + number + '-800.webp', thumbnail: ROOT + 'thumbs/photo-' + number + '.webp', title, alt: title + ' at 5 Billion Stars, Pawana Lake' };
   }),
   ...VIDEO_TITLES.map((title, index): GalleryPhoto => {
     const number = String(index + 1).padStart(2, '0');

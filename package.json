@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "optimize:media": "node scripts/optimize-media.mjs",
+    "optimize:images": "node scripts/optimize-media.mjs --images-only && node scripts/optimize-gallery-images.mjs",
     "verify:media": "node scripts/optimize-media.mjs --verify",
     "verify:seo": "node scripts/verify-seo.mjs",
     "ng": "ng",

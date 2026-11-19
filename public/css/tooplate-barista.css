@@ -685,7 +685,7 @@ strong {
   OUR MENU              
 -----------------------------------------*/
 .menu-section {
-  background-image: url('../images/camping/lakeside-dining.jpg');
+  background-image: url('../images/camping/lakeview-dining.jpg');
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -1201,7 +1201,7 @@ strong {
 
 /* Campsite photography selected from the owner's local photo collection. */
 .barista-section .img-fluid { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; }
-.about-section .ratio { background: url('../images/camping/lakeside-tents.jpg') center / cover no-repeat; overflow: hidden; }
+.about-section .ratio { background: url('../images/camping/lakeview-tents.jpg') center / cover no-repeat; overflow: hidden; }
 .activity-icon { display: inline-flex; flex: 0 0 65px; align-items: center; justify-content: center; background: #ffffff18; color: #fff; font-size: 30px; }
 
 /* Labelled activity photographs in the gallery. */

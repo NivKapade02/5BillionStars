@@ -1,7 +1,7 @@
-﻿<section id="stays" class="stay-section" aria-labelledby="stays-heading">
+<section id="stays" class="stay-section" aria-labelledby="stays-heading">
   <div class="stay-heading">
     <p>REST UNDER THE STARS</p>
-    <h2 id="stays-heading">Choose Your Stay</h2>
+    <h2 id="stays-heading">Tents &amp; Cottages with Pawana Lake Views</h2>
   </div>
   <div class="stay-grid">
     @for (stay of stays; track stay.name) {
@@ -16,16 +16,19 @@
           <p class="stay-eyebrow">Rest under the stars</p>
           <h3>{{ stay.heading }}</h3>
           <p class="stay-capacity"><i class="bi-people" aria-hidden="true"></i> {{ stay.capacity }}</p>
-          <div class="stay-price"><span class="regular-price"><span class="visually-hidden">Regular price </span><s>&#8377;{{ stay.price.regular }}</s></span> <strong>&#8377;{{ stay.price.offer }}</strong><span class="price-unit">per person per night</span><span class="price-saving">Save &#8377;{{ stay.price.regular - stay.price.offer }}</span></div>
+          @if (stay.bathroomNote) { <p class="price-note">{{ stay.bathroomNote }}</p> }
+          <div class="stay-price"><span class="regular-price"><span class="visually-hidden">Regular price </span><s>{{ stay.price.regular | currency:'INR':'symbol':'1.0-0' }}</s></span> <strong>{{ stay.price.offer | currency:'INR':'symbol':'1.0-0' }}/-</strong><span class="price-unit">per adult per night</span><span class="price-saving">Save &#8377;{{ stay.price.regular - stay.price.offer }}</span></div>
           <p class="stay-tagline">{{ stay.tagline }}</p>
           <p class="stay-description">{{ stay.description }}</p>
-          <h4 class="included-heading">Included with your stay</h4>
+          <details class="stay-inclusions">
+          <summary class="included-heading"><span>Included with your stay<span class="visually-hidden"> in {{ stay.name }}</span></span><i class="bi-chevron-down" aria-hidden="true"></i></summary>
           <ul class="stay-amenities">
             @for (amenity of stay.amenities; track amenity; let index = $index) {
               <li><span class="amenity-name">{{ amenity }}</span><span class="included-badge">Included</span><span class="amenity-icon" aria-hidden="true"><i [class]="'bi ' + amenityIcons[index]"></i></span></li>
             }
           </ul>
-          <p class="price-note">All meals &amp; taxes included. Plus ?1 network handling per adult per night. Under 5: free. Ages 5–10: &#8377;700 per child per night. A 40% advance confirms your booking after availability is agreed with our team.</p>
+          </details>
+          <p class="price-note">All meals &amp; taxes included. Plus &#8377;{{ terms.networkHandlingRate }} handling per adult per night. Under 5: free. Ages 5–10: &#8377;{{ terms.childRate }} per child per night. Pay {{ terms.advancePercent }}% only after our team confirms availability and your final quote.</p>
           <button type="button" class="stay-book" (click)="bookStay.emit(stay.preference)" [attr.aria-label]="'Check availability for ' + stay.name">Check availability <span aria-hidden="true">&nearr;</span></button>
         </div>
       </article>

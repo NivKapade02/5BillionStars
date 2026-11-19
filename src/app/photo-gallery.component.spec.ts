@@ -13,12 +13,12 @@ describe('Photo gallery slider', () => {
     const root = fixture.nativeElement as HTMLElement;
     root.querySelector<HTMLButtonElement>('.next')!.click();
     fixture.detectChanges();
-    expect(root.querySelector('img.main-photo')?.getAttribute('src')).toBe(component.photos[1].src);
-    expect(root.querySelector('[role="status"]')?.textContent).toContain('2 / ' + component.photos.length);
+    expect(root.querySelector('img.main-photo')?.getAttribute('src')).toBe(component.photos[5].src);
+    expect(root.querySelector('[role="status"]')?.textContent).toContain('6 / ' + component.photos.length);
     root.querySelector<HTMLButtonElement>('.previous')!.click();
     root.querySelector<HTMLButtonElement>('.previous')!.click();
     fixture.detectChanges();
-    expect(component.activeIndex).toBe(component.photos.length - 1);
+    expect(component.activeIndex).toBe(component.photos.length - 5);
     root.querySelector<HTMLButtonElement>('.next')!.click();
     expect(component.activeIndex).toBe(0);
   });
@@ -32,6 +32,23 @@ describe('Photo gallery slider', () => {
     expect(fixture.componentInstance.activeIndex).toBe(8);
     expect(root.querySelector('.thumbnail.selected')?.getAttribute('aria-current')).toBe('true');
     expect(root.querySelector('img.main-photo')?.getAttribute('alt')).toBe(fixture.componentInstance.photos[8].alt);
+  });
+
+  it('opens an expanded scene, browses photos there and returns to the gallery', () => {
+    const fixture = TestBed.createComponent(PhotoGalleryComponent);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>('.bento-explore')!.click();
+    fixture.detectChanges();
+    const dialog = root.querySelector<HTMLDialogElement>('.gallery-detail')!;
+    expect(dialog.open).toBeTrue();
+    expect(dialog.querySelector('img.detail-image')?.getAttribute('src')).toBe(fixture.componentInstance.photos[0].src);
+    dialog.querySelectorAll<HTMLButtonElement>('.detail-controls button')[1].click();
+    fixture.detectChanges();
+    expect(dialog.querySelector('img.detail-image')?.getAttribute('src')).toBe(fixture.componentInstance.photos[1].src);
+    dialog.querySelector<HTMLButtonElement>('.detail-close')!.click();
+    expect(dialog.open).toBeFalse();
+    fixture.destroy();
   });
 
   it('supports arrow, Home and End keys without intercepting vertical page navigation', () => {
@@ -59,6 +76,9 @@ describe('Photo gallery slider', () => {
     fixture.detectChanges();
     expect(interval.calls.mostRecent().args[1]).toBe(5000);
     tick(); expect(fixture.componentInstance.activeIndex).toBe(1);
+    fixture.componentInstance.detailOpen = true;
+    tick(); expect(fixture.componentInstance.activeIndex).toBe(1);
+    fixture.componentInstance.detailOpen = false;
     fixture.componentInstance.videoPlaying = true;
     tick(); expect(fixture.componentInstance.activeIndex).toBe(1);
     fixture.componentInstance.videoPlaying = false;

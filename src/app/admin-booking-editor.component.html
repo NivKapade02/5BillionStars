@@ -4,6 +4,7 @@
   <p>Saving recalculates the estimate and returns this request to Pending for availability review.</p>
   <form #form="ngForm" (ngSubmit)="save()">
     <fieldset [disabled]="saving">
+      <label>Booking type<select name="bookingType" [(ngModel)]="draft.bookingType" required><option value="regular">Regular booking</option><option value="event">Event booking</option></select></label>
       <label>Guest name<input name="name" [(ngModel)]="draft.name" required minlength="3" maxlength="100" autocomplete="name"></label>
       <label>WhatsApp number<input name="phone" [(ngModel)]="draft.phone" required type="tel" placeholder="+919876543210" autocomplete="tel"></label>
       <label>Stay<select name="stay" [(ngModel)]="draft.stay" required><option value="Tent Stay (2-3 people)">Tent Stay (2-3 people)</option><option value="Cottage Stay (4-5 people)">Luxury Cottage Stay (4-5 people)</option></select></label>

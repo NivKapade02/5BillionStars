@@ -84,6 +84,21 @@ describe('Camping website and booking dialog', () => {
     expect(home.querySelector('#section_1')).not.toBeNull();
   });
 
+  it('shows stay prices, handling disclosure, washroom expectations and separate activity charges before booking', async () => {
+    const harness = await RouterTestingHarness.create('/');
+    const root = harness.routeNativeElement!;
+    expect(root.querySelector('.hero-rates')?.textContent).toContain('999');
+    expect(root.querySelector('.hero-rates')?.textContent).toContain('1,599');
+    expect(root.querySelector('.hero-price-note')?.textContent).toContain('handling per adult per night');
+    const cards = root.querySelectorAll('.stay-card');
+    expect(cards[0].querySelector('.stay-price strong')?.textContent).toContain('999');
+    expect(cards[1].querySelector('.stay-price strong')?.textContent).toContain('1,599');
+    expect(cards[1].textContent).toContain('Toilets beside the cottages; not attached inside.');
+    const boating = Array.from(root.querySelectorAll('.place-card')).find(card => card.querySelector('h3')?.textContent === 'Boating');
+    expect(boating?.textContent).toContain('not included in your stay');
+    expect(root.querySelector('app-google-reviews')!.compareDocumentPosition(root.querySelector('app-photo-gallery')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it('saves the request before preparing the visitor WhatsApp message', async () => {
 
     const replace = jasmine.createSpy('replace');

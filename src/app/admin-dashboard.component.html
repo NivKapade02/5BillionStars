@@ -47,7 +47,7 @@
           <tbody>
             <tr *ngFor="let booking of page(filteredBookings, bookingPage)">
               <td data-label="Reference">{{ booking.reference }}</td><td data-label="Submitted">{{ booking.createdAt | date:'medium' }}</td>
-              <td data-label="Guest">{{ booking.name }}</td><td data-label="WhatsApp">{{ booking.phone }}</td><td data-label="Stay">{{ booking.stay || 'N/A' }}</td>
+              <td data-label="Guest">{{ booking.name }}</td><td data-label="WhatsApp">{{ booking.phone }}</td><td data-label="Stay">{{ booking.stay || 'N/A' }}<br><small>{{ booking.bookingType === 'event' ? 'Event booking' : 'Regular booking' }}</small></td>
               <td data-label="Check-in">{{ booking.checkIn }}</td><td data-label="Check-out">{{ booking.checkOut }}</td><td data-label="Members">{{ booking.guests }}</td>
               <td data-label="Adults">{{ booking.adults }}</td><td data-label="Kids (5-10)">{{ booking.kids }}</td><td data-label="Veg">{{ booking.veg }}</td><td data-label="Non-veg">{{ booking.nonVeg }}</td>
               <td data-label="Total">{{ booking.quote ? (booking.quote.total | currency:'INR') : 'N/A' }}</td>
@@ -57,8 +57,8 @@
                 <span class="status-badge">{{ booking.decision === 'confirmed' ? 'Availability confirmed - awaiting payment' : booking.decision === 'not_confirmed' ? 'Not confirmed' : 'Pending' }}</span>
                 <button type="button" class="approve-btn" [disabled]="deletingBookings.has(booking.id) || editingBooking?.id === booking.id || savingDecisions.has(booking.id) || !booking.quote || booking.decision === 'confirmed'" (click)="setBookingDecision(booking, 'confirmed')">Confirm booking</button>
                 <button type="button" class="ghost-btn" [disabled]="deletingBookings.has(booking.id) || editingBooking?.id === booking.id || savingDecisions.has(booking.id) || booking.decision === 'not_confirmed'" (click)="setBookingDecision(booking, 'not_confirmed')">Not confirm</button>
-                <a *ngIf="booking.decision === 'confirmed' && booking.quote && (booking.paidAmount || 0) < booking.quote.total" class="payment-request-link" [href]="paymentRequestUrl(booking)" target="_blank" rel="noopener noreferrer">Send payment request in WhatsApp</a>
-                <small *ngIf="booking.decision === 'confirmed'">Open WhatsApp and tap Send.</small>
+                <a *ngIf="booking.decision === 'confirmed' && booking.quote && (booking.paidAmount || 0) < booking.quote.total" class="payment-request-link" [href]="paymentRequestUrl(booking)" (click)="openCustomerWhatsApp($event, paymentRequestUrl(booking))" target="_blank" rel="noopener noreferrer">Send payment request via WhatsApp Business</a>
+                <small *ngIf="booking.decision === 'confirmed'">On Android, opens WhatsApp Business. Check the customer and tap Send.</small>
               </td>
               <td data-label="Payments recorded by admin">
                 <strong>Received: {{ (booking.paidAmount || 0) | currency:'INR' }}</strong><br>

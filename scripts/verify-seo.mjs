@@ -25,6 +25,22 @@ assert.ok(script, 'Campsite JSON-LD');
 const schema = JSON.parse(script[1]);
 assert.equal(schema['@type'], 'Campground');
 assert.equal(schema.telephone, '+91-8624908808');
+assert.match(home, /<title>Pawna \(Pawana\) Lake Camping/, 'Both lake spellings in title');
+assert.match(home, /<h1[^>]*>[\s\S]*?Pawana Lake View Camping[\s\S]*?<\/h1>/, 'Accurate setting in visible main heading');
+assert.match(schema.description, /Pawna Lake/);
+assert.match(schema.description, /Pawana Lake/);
+const faqScript = home.match(/<script[^>]*id="campsite-faq-schema"[^>]*>([\s\S]*?)<\/script>/);
+assert.ok(faqScript, 'Answer markup in initial HTML');
+const faqSchema = JSON.parse(faqScript[1]);
+assert.equal(faqSchema['@type'], 'FAQPage');
+assert.equal(faqSchema.mainEntity.length, 4);
+const visibleAnswers = home.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '')
+  .replaceAll('&amp;', '&').replaceAll('&#39;', "'").replaceAll('&quot;', '"');
+for (const question of faqSchema.mainEntity) {
+  assert.ok(visibleAnswers.includes(question.name), 'Schema question also appears in visible content');
+  assert.ok(visibleAnswers.includes(question.acceptedAnswer.text), 'Schema answer also appears in visible content');
+}
+assert.ok(!policies.includes('id="campsite-faq-schema"'), 'No homepage FAQs on policy route');
 assert.ok(!policies.includes('id="campsite-schema"'), 'No unrelated business markup on policy page');
 assert.ok(!shell.includes('id="section_1"'), 'Client routes receive an empty hydration shell');
 for (const file of ['robots.txt', 'sitemap.xml', 'video/Website Carsuole.mp4']) await fs.access(path.join(output, file));

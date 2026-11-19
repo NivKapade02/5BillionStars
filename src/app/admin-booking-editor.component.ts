@@ -21,7 +21,7 @@ export class AdminBookingEditorComponent implements OnChanges, AfterViewInit {
   ngOnChanges(): void {
     const b = this.booking;
     this.draft = { name: b.name, phone: b.phone, stay: b.stay, checkIn: b.checkIn, checkOut: b.checkOut,
-      guests: b.guests, adults: b.adults, kids: b.kids, veg: b.veg, nonVeg: b.nonVeg, notes: b.notes };
+      guests: b.guests, adults: b.adults, kids: b.kids, veg: b.veg, nonVeg: b.nonVeg, notes: b.notes, bookingType: b.bookingType ?? 'regular' };
     this.error = '';
   }
   get quote() { const d = this.draft; return calculateBookingQuote(d.stay, d.checkIn, d.checkOut, d.adults, d.kids); }

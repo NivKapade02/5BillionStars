@@ -11,6 +11,7 @@ import { FirebaseBookingService, AdminBooking } from './firebase-booking.service
 import { AdminActivityService, AdminActivity, LiveStatus } from './admin-activity.service';
 import type { UsageEvent } from './visitor-tracking.service';
 import { bucketDate, indiaDate, safeCsvCell, visitorSessions, VisitorSession } from './dashboard-analytics';
+import { businessWhatsAppLink } from './business-whatsapp-link';
 
 @Component({ selector: 'app-admin-dashboard', standalone: true,
   providers: [provideCharts(withDefaultRegisterables())],
@@ -109,6 +110,15 @@ GPay / PhonePe: 8624908808
 Estimated balance after the 40% advance: ${money(booking.quote.balance)}
 Share your payment screenshot and reference here. Booking is confirmed after our team verifies payment.`;
     return 'https://wa.me/' + booking.phone.replace(/\D/g, '') + '?text=' + encodeURIComponent(message);
+  }
+
+  openCustomerWhatsApp(event: MouseEvent, webUrl: string): void {
+    if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || !webUrl) return;
+    const target = businessWhatsAppLink(webUrl, navigator.userAgent);
+    if (target === webUrl) return;
+    // Keep the app launch synchronous with the tap so Android allows it.
+    event.preventDefault();
+    window.location.assign(target);
   }
 
 

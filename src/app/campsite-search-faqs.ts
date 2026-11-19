@@ -1,0 +1,9 @@
+import { ADULT_NIGHT_TOTALS, BOOKING_TERMS, STAY_PRICING } from './stay-pricing';
+
+// Shared by visible FAQs and JSON-LD so answers and prices stay consistent.
+export const CAMPSITE_SEARCH_FAQS = [
+  { question: 'Are Pawna Lake and Pawana Lake the same place?', answer: 'Yes. Pawna Lake and Pawana Lake refer to the same lake in Maharashtra near Lonavala, in Pune district. 5 Billion Stars Camping & Agro Tourism is a campsite overlooking the lake, with Sahyadri mountain, sunset and fort views near Tikona Fort.' },
+  { question: 'Where is 5 Billion Stars Pawna Lake camping located?', answer: '5 Billion Stars Camping & Agro Tourism is overlooking Pawana Lake and the Sahyadri mountains at Gevhande Vasahat, off Paud–Lonavala Road near Tikona Fort, Pawana Lake, Pune district, Maharashtra 410406. The campsite approach is a 100-metre cement road from Paud–Lonavala Road. Use our Google Maps location for directions from Pune, Mumbai or Lonavala; travel time depends on your route and traffic.' },
+  { question: 'What do Pawna Lake tent and cottage stays cost at 5 Billion Stars?', answer: `Tent Stay is ₹${STAY_PRICING.tent.offer} and Cottage Stay is ₹${STAY_PRICING.cottage.offer} per adult per night, including meals and taxes. A separate ₹${BOOKING_TERMS.networkHandlingRate} handling charge per adult per night makes the totals ₹${ADULT_NIGHT_TOTALS.tent} and ₹${ADULT_NIGHT_TOTALS.cottage}. Tents accommodate 2–3 people and cottages 4–5 people. These are per-adult prices, not whole-unit prices. Confirm your dates, availability and final group quote with our team before paying.` },
+  { question: 'What evening activities can we ask about at this Pawana campsite?', answer: 'Ask our team about stargazing and projector-screen movie nights, live cricket screenings or karaoke planned for your stay. Stargazing depends on the season, weather, sky conditions and telescope in use. Confirm the evening programme for your dates before booking.' }
+] as const;

@@ -24,6 +24,7 @@ service cloud.firestore {
       return d.name is string && d.name.size() >= 3 && d.name.size() <= 100
         && d.phone is string && d.phone.matches('^[+][1-9][0-9]{7,14}$')
         && d.notes is string && d.notes.size() <= 200
+        && (!d.keys().hasAny(['bookingType']) || d.bookingType in ['regular', 'event'])
         && d.stay in ['Tent Stay (2-3 people)', 'Cottage Stay (4-5 people)']
         && count(d.guests, 1) && count(d.adults, 1) && count(d.kids, 0)
         && count(d.veg, 0) && count(d.nonVeg, 0)
@@ -36,7 +37,7 @@ service cloud.firestore {
     }
     function validCreate(d, id) {
       return d.keys().hasAll(['reference', 'name', 'phone', 'checkIn', 'checkOut', 'guests', 'adults', 'kids', 'veg', 'nonVeg', 'stay', 'notes', 'createdAt', 'decision', 'quote'])
-        && d.keys().hasOnly(['reference', 'name', 'phone', 'checkIn', 'checkOut', 'guests', 'adults', 'kids', 'veg', 'nonVeg', 'stay', 'notes', 'createdAt', 'decision', 'quote'])
+        && d.keys().hasOnly(['reference', 'name', 'phone', 'checkIn', 'checkOut', 'guests', 'adults', 'kids', 'veg', 'nonVeg', 'stay', 'notes', 'createdAt', 'decision', 'quote', 'bookingType'])
         && id.matches('^[a-f0-9-]{36}$') && d.reference == id
         && d.createdAt is timestamp
         && d.createdAt >= request.time - duration.value(15, 'm')
@@ -46,7 +47,7 @@ service cloud.firestore {
     }
     function validEdit() {
       let d = request.resource.data;
-      return d.diff(resource.data).affectedKeys().hasOnly(['name', 'phone', 'stay', 'checkIn', 'checkOut', 'guests', 'adults', 'kids', 'veg', 'nonVeg', 'notes', 'quote', 'decision', 'decisionAt', 'updatedAt'])
+      return d.diff(resource.data).affectedKeys().hasOnly(['name', 'phone', 'stay', 'checkIn', 'checkOut', 'guests', 'adults', 'kids', 'veg', 'nonVeg', 'notes', 'bookingType', 'quote', 'decision', 'decisionAt', 'updatedAt'])
         && d.decision == 'pending' && !d.keys().hasAny(['decisionAt'])
         && d.updatedAt == request.time && validDetails(d)
         && (!d.keys().hasAny(['paidAmount']) || d.paidAmount <= d.quote.total);

@@ -1,0 +1,31 @@
+<section id="campsite-entertainment" class="entertainment-section" aria-labelledby="entertainment-heading">
+  <div class="entertainment-shell">
+    <header class="entertainment-heading">
+      <p class="entertainment-eyebrow">The evening has its own plans</p>
+      <h2 id="entertainment-heading">Movies, Live Cricket &amp; Karaoke</h2>
+      <p>A projector, a big screen and good company. Make an evening of it at 5 Billion Stars.</p>
+    </header>
+    <div class="entertainment-layout">
+      <div class="screen-scene">
+        <div class="camp-screen" aria-live="polite">
+          <img class="projector-image" [src]="'/images/projector/' + selected.image" [alt]="selected.alt" width="960" height="540" loading="lazy" decoding="async">
+        </div>
+        <div class="screen-stand" aria-hidden="true"></div>
+        <p class="screen-caption"><i class="bi-projector" aria-hidden="true"></i> Projector &amp; screen at our campsite</p>
+      </div>
+      <div class="entertainment-content">
+        <div class="experience-options" role="group" aria-label="Explore campsite entertainment">
+          @for (experience of experiences; track experience.name; let index = $index) {
+            <button type="button" [class.selected]="selectedIndex === index" [attr.aria-pressed]="selectedIndex === index" aria-controls="entertainment-description" (click)="selectedIndex = index"><i [class]="experience.icon" aria-hidden="true"></i>{{ experience.name }}</button>
+          }
+        </div>
+        <div id="entertainment-description" class="experience-description" aria-live="polite">
+          <h3>{{ selected.title }}</h3>
+          <p>{{ selected.description }}</p>
+        </div>
+        <p class="entertainment-note">Ask our team which movie, match screening or karaoke session is planned for your stay.</p>
+        <a class="entertainment-enquiry" href="https://wa.me/918624908808?text=Hello%2C%20what%20movie%2C%20live%20cricket%20or%20karaoke%20is%20planned%20during%20our%20stay%20at%205%20Billion%20Stars%3F" target="_blank" rel="noopener noreferrer"><i class="bi-whatsapp" aria-hidden="true"></i> Ask what's on <span class="visually-hidden">(opens in a new tab)</span></a>
+      </div>
+    </div>
+  </div>
+</section>

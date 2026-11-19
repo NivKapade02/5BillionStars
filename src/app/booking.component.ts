@@ -20,8 +20,8 @@ export class BookingComponent {
   @Input() embedded = false;
   @Input() stayPreference = '';
   readonly stayOptions = [
-    { value: 'Tent Stay (2-3 people)', label: 'Tent Stay · 2–3 people · ₹999/person/night' },
-    { value: 'Cottage Stay (4-5 people)', label: 'Cottage Stay · 4–5 people · ₹1599/person/night' }
+    { value: 'Tent Stay (2-3 people)', label: `Tent Stay · 2–3 people · ₹${STAY_PRICING.tent.offer.toLocaleString('en-IN')}/adult/night` },
+    { value: 'Cottage Stay (4-5 people)', label: `Cottage Stay · 4–5 people · ₹${STAY_PRICING.cottage.offer.toLocaleString('en-IN')}/adult/night` }
   ];
   readonly today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
   readonly memberCounts = Array.from({ length: 50 }, (_, index) => index + 1);
@@ -32,6 +32,8 @@ export class BookingComponent {
     { code: '+61', name: 'Australia', flag: 'au' }, { code: '+65', name: 'Singapore', flag: 'sg' }
   ];
   whatsappCountry = '+91';
+  bookingType: 'regular' | 'event' = 'regular';
+  get bookingTypeLabel() { return this.bookingType === 'event' ? 'Event booking' : 'Regular booking'; }
   booking = {
     firstName: '', lastName: '', phone: '', checkIn: '', checkOut: '',
     guests: null as number | null, adults: null as number | null, kids: null as number | null,
@@ -124,7 +126,7 @@ export class BookingComponent {
     this.error = this.validationError;
     if (this.error) return;
     const b = this.booking, q = this.quote!;
-    const details = JSON.stringify({ ...b, stay: this.stayPreference, whatsappCountry: this.whatsappCountry });
+    const details = JSON.stringify({ ...b, bookingType: this.bookingType, stay: this.stayPreference, whatsappCountry: this.whatsappCountry });
     if (!this.reference || details !== this.submittedDetails) {
       this.reference = crypto.randomUUID();
       this.submissionCreatedAt = new Date().toISOString();
@@ -153,6 +155,7 @@ export class BookingComponent {
       'Request reference:', this.reference, divider,
       'Name: ' + plainText(b.firstName) + ' ' + plainText(b.lastName),
       'Guest WhatsApp: ' + this.normalizedGuestPhone,
+      'Booking type: ' + this.bookingTypeLabel,
       'Stay: ' + this.stayPreference,
       'Check-in: ' + b.checkIn, 'Check-out: ' + b.checkOut,
       'Nights: ' + q.nights, 'Guests: ' + b.guests,
@@ -188,7 +191,7 @@ export class BookingComponent {
       await this.bookingStore.save(this.reference, {
         name: b.firstName.trim() + ' ' + b.lastName.trim(), phone: this.normalizedGuestPhone,
         checkIn: b.checkIn, checkOut: b.checkOut, guests: b.guests!, adults: b.adults!, kids: b.kids!,
-        veg: b.veg!, nonVeg: b.nonVeg!, stay: this.stayPreference, notes: b.notes.trim()
+        veg: b.veg!, nonVeg: b.nonVeg!, stay: this.stayPreference, notes: b.notes.trim(), bookingType: this.bookingType
       }, this.submissionCreatedAt);
       this.whatsappUrl = this.contactUrl + '?text=' + encodeURIComponent(message);
     } catch {

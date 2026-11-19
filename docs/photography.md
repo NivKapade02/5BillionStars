@@ -9,14 +9,14 @@ Food and activity decorations without matching source photos use icons instead o
 | I:\5BS Photo\gallery_02 (16).jpg | images/camping/pawna-lake-dusk.jpg | 1920 x 863 | 125 KB |
 | I:\5BS Photo\gallery_02 (3).JPG | images/camping/sunset-over-lake.jpg | 1200 x 800 | 62 KB |
 | I:\5BS Photo\gallery_02 (8).JPG | images/camping/lake-and-tikona.jpg | 1200 x 800 | 109 KB |
-| I:\5BS Photo\gallery_02 (52).jpg | images/camping/lakeside-tents.jpg | 1200 x 677 | 113 KB |
+| I:\5BS Photo\gallery_02 (52).jpg | images/camping/lakeview-tents.jpg | 1200 x 677 | 113 KB |
 | I:\5BS Photo\gallery_02 (42).JPG | images/camping/sunset-gazebo.jpg | 1200 x 800 | 112 KB |
 | I:\5BS Photo\gallery_02 (25).JPG | images/camping/illuminated-campsite.jpg | 1200 x 800 | 83 KB |
 | I:\5BS Photo\gallery_02 (53).jpg | images/camping/garden-path.jpg | 1200 x 677 | 224 KB |
 | I:\5BS Photo\gallery_02 (23).JPG | images/camping/red-star-lights.jpg | 1200 x 800 | 61 KB |
 | I:\5BS Photo\gallery_02 (64).JPG | images/camping/friends-at-campsite.jpg | 1200 x 800 | 161 KB |
 | I:\5BS Photo\gallery_02 (55).jpg | images/camping/twilight-camping.jpg | 1200 x 675 | 159 KB |
-| I:\5BS Photo\gallery_02 (41).JPG | images/camping/lakeside-dining.jpg | 1200 x 800 | 112 KB |
+| I:\5BS Photo\gallery_02 (41).JPG | images/camping/lakeview-dining.jpg | 1200 x 800 | 112 KB |
 | I:\5BS Photo\gallery_02 (57).JPG | images/camping/camping-guests.jpg | 480 x 320 | 26 KB |
 | I:\5BS Photo\gallery_02 (60).JPG | images/camping/evening-celebration.jpg | 900 x 600 | 91 KB |
 | I:\5BS Photo\gallery_02 (1).JPG | images/camping/group-dining.jpg | 900 x 600 | 91 KB |
@@ -59,7 +59,7 @@ Five local original photos are resized to at most 1920px wide (without upscaling
 | gazebo.jpg | I:\5BS Photo\gallery_02 (51).jpg |
 | sunset.jpg | I:\5BS Photo\gallery_02 (37).JPG |
 | garden.jpg | I:\5BS Photo\gallery_02 (54).jpg |
-| lakeside-tent.jpg | I:\Canon Camera\Camera1\IMG_9550.JPG |
+| lakeview-tent.jpg | I:\Canon Camera\Camera1\IMG_9550.JPG |
 | cottages-at-night.jpg | I:\Canon Camera\Camera1\IMG_9585.JPG |
 
 Tent Stay main photo: public/images/stays/tent-lake-front.jpg, exported from I:\Canon Camera\Camera1\IMG_9422.JPG (the user-supplied green tent and lake photo). Replaces the poster-inspired background on the stay card.

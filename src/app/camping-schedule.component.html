@@ -1,10 +1,10 @@
-﻿<section id="section_4" class="camping-schedule" aria-labelledby="schedule-heading">
+<section id="section_4" class="camping-schedule" aria-labelledby="schedule-heading">
   <div class="schedule-shell">
     <header class="schedule-heading">
       <p class="schedule-eyebrow">A little adventure. A lot of memories.</p>
       <h2 id="schedule-heading">Your Camping <span>Journey</span></h2>
-      <p class="schedule-intro">Follow the moments, from lakeside sunsets to slow mornings.</p>
-      <div class="stay-summary"><span><i class="bi-box-arrow-in-right" aria-hidden="true"></i> Check-in <strong>4:30 PM</strong></span><span class="summary-night"><i class="bi-moon-stars" aria-hidden="true"></i> One night by the lake</span><span><i class="bi-box-arrow-right" aria-hidden="true"></i> Check-out <strong>11:00 AM</strong></span></div>
+      <p class="schedule-intro">Follow the moments, from lakeview sunsets to slow mornings.</p>
+      <div class="stay-summary"><span><i class="bi-box-arrow-in-right" aria-hidden="true"></i> Check-in <strong>4:00 PM</strong></span><span class="summary-night"><i class="bi-moon-stars" aria-hidden="true"></i> One night by the lake</span><span><i class="bi-box-arrow-right" aria-hidden="true"></i> Check-out <strong>11:00 AM</strong></span></div>
     </header>
     @for (day of days; track day.label) {
       <section class="schedule-day" [attr.aria-label]="day.label + ': ' + day.subtitle">
@@ -13,7 +13,7 @@
           @for (event of day.events; track event.step) {
             <li class="schedule-step">
               <div class="event-photo"><img [src]="event.image" [alt]="event.alt" width="600" height="420" loading="lazy"><span class="photo-caption"><i [class]="event.icon" aria-hidden="true"></i>{{ day.label }} &middot; {{ event.time }}</span></div>
-              <span class="step-marker" aria-hidden="true">{{ event.step }}</span>
+              <span class="step-marker" aria-hidden="true"><span>{{ event.time.split(' ')[0] }}</span><span class="marker-period">{{ event.time.split(' ')[1] }}</span></span>
               <div class="event-content">
                 <time [attr.datetime]="event.datetime"><i class="bi-clock" aria-hidden="true"></i>{{ event.time }}</time>
                 <h4>{{ event.title }}</h4>

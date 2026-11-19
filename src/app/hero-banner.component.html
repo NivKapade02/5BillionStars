@@ -8,6 +8,12 @@
   }
   <div class="banner-shade"></div>
 </div>
+<!-- @if (slides[activeIndex].src === '/images/stargazing-telescope.webp') {
+  <div class="banner-caption">
+    <span>A little closer to the cosmos</span>
+    <p>Your night under 5 billion stars.</p>
+  </div>
+} -->
 <div class="banner-controls" role="group" aria-label="Banner slideshow controls">
   <button type="button" class="playback" (click)="togglePlayback()" [attr.aria-label]="playing ? 'Pause banner slideshow' : 'Play banner slideshow'" [attr.title]="playing ? 'Pause slideshow' : 'Play slideshow'">
     <span aria-hidden="true">{{ playing ? '⏸' : '▶' }}</span>

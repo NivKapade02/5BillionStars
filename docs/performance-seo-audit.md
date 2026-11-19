@@ -70,8 +70,10 @@ inspect the two public URLs, and measure mobile LCP, INP and CLS on the real
 hosting environment. Keep visible pricing, FAQ answers and campsite contact
 details accurate when making future content changes.
 
-Public reviews still load from the review feed in the browser; no review ratings
-were added to structured data. There is no special AI schema or indexing promise.
+Supplied customer review cards now pre-render in the initial HTML and refresh
+from the review feed in the browser. If refreshing fails, the supplied cards stay
+visible. No review ratings were added to structured data. There is no special AI
+schema or indexing promise.
 Readable pre-rendered answers and accurate business identity support discovery.
 
 References:

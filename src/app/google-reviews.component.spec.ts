@@ -22,15 +22,23 @@ describe('Google guest reviews', () => {
     expect(fixture.nativeElement.querySelector('.selection-note').textContent).toContain('Featured 4- and 5-star');
   });
 
-  it('keeps Google links available without showing fictional reviews when loading fails', async () => {
+  it('keeps supplied customer cards visible when refreshing the feed fails', async () => {
     spyOn(window, 'fetch').and.rejectWith(new Error('Offline'));
     const fixture = TestBed.createComponent(GoogleReviewsComponent);
     await fixture.componentInstance.ngOnInit();
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.google-invitation')).not.toBeNull();
-    expect(fixture.nativeElement.querySelectorAll('.review-card').length).toBe(0);
+    expect(fixture.nativeElement.querySelector('.google-invitation')).toBeNull();
+    expect(fixture.nativeElement.querySelectorAll('.review-card').length).toBeGreaterThan(0);
+    expect(fixture.nativeElement.querySelector('.review-author').textContent).toContain('Ashis kumar Dash');
     const link = fixture.nativeElement.querySelector('.review-button') as HTMLAnchorElement;
     expect(link.href).toContain('google.com/maps?cid=');
+  });
+
+  it('has customer cards available before browser initialization', () => {
+    const component = new GoogleReviewsComponent();
+    expect(component.reviews.length).toBeGreaterThan(0);
+    expect(component.reviews[0].author).toBe('Ashis kumar Dash');
+    expect(component.rating).toBeNull();
   });
 
   it('hides aggregate rating/count when the verification date has not been supplied',async()=>{

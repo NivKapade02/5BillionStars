@@ -14,16 +14,21 @@ import { ScrollTopComponent } from './scroll-top.component';
 import { SectionLinkDirective } from './section-link.directive';
 import { AboutVideoComponent } from './about-video.component';
 import { NearbyPlacesComponent } from './nearby-places.component';
+import { CampsiteEntertainmentComponent } from './campsite-entertainment.component';
+import { CurrencyPipe } from '@angular/common';
+import { STAY_PRICING, BOOKING_TERMS } from './stay-pricing';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, AboutVideoComponent, SectionLinkDirective, BookingComponent, StayOptionsComponent, PhotoGalleryComponent, HeroBannerComponent, CampingScheduleComponent, NearbyPlacesComponent, GoogleReviewsComponent, BookingGuideComponent, RestaurantComponent, SiteFooterComponent, ScrollTopComponent],
+  imports: [CurrencyPipe, RouterLink, AboutVideoComponent, SectionLinkDirective, BookingComponent, StayOptionsComponent, PhotoGalleryComponent, HeroBannerComponent, CampingScheduleComponent, NearbyPlacesComponent, CampsiteEntertainmentComponent, GoogleReviewsComponent, BookingGuideComponent, RestaurantComponent, SiteFooterComponent, ScrollTopComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
   constructor(private readonly tracking: VisitorTrackingService) {}
+  readonly pricing = STAY_PRICING;
+  readonly terms = BOOKING_TERMS;
   menuOpen = false;
   bookingOpened = false;
   selectedStay = '';

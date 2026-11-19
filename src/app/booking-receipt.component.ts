@@ -15,10 +15,10 @@ import { createReceiptImage } from './receipt-image';
         <div><dt>Adults · {{ adults }} × {{ quote.adultRate | currency:'INR' }} × {{ quote.nights }} nights</dt><dd>{{ quote.adultTotal | currency:'INR' }}</dd></div>
         <div><dt>Children 5–10 · {{ kids }} × {{ quote.childRate | currency:'INR' }} × {{ quote.nights }} nights</dt><dd>{{ quote.childTotal | currency:'INR' }}</dd></div>
         <div><dt>Children under 5 · {{ underFive }}</dt><dd>Free</dd></div>
-        <div><dt>Network handling ? ?1 per adult per night</dt><dd>{{ quote.networkHandlingTotal | currency:'INR' }}</dd></div>
+        <div><dt>Handling · &#8377;1 per adult per night</dt><dd>{{ quote.networkHandlingTotal | currency:'INR' }}</dd></div>
         <div class="total"><dt>Total · meals & taxes included</dt><dd>{{ quote.total | currency:'INR' }}</dd></div>
       </dl>
-      <div class="advance"><span>40% advance to pay</span><strong>{{ quote.advance | currency:'INR' }}</strong></div>
+      <div class="advance"><span>40% advance after team approval</span><strong>{{ quote.advance | currency:'INR' }}</strong></div>
       <p class="balance">Remaining balance: <strong>{{ quote.balance | currency:'INR' }}</strong></p>
 
     </section>

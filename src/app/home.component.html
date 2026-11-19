@@ -39,14 +39,16 @@
           <div class="row align-items-center">
 
               <div class="col-lg-6 col-12 mx-auto">
-                  <em ><h3 class="text-white mb-2 pb-lg-2">Sunset & Pawana Lake SkyView</h3> </em>
-                  <h1> 5 Billion Stars</h1>
+                  <p class="hero-location">Pawana Lake Skyviews · Near Tikona Fort</p>
+                  <h1><span class="hero-destination">Pawana Lake View Camping</span>5 Billion Stars</h1>
 
-                  <p class="text-white mb-4 pb-lg-2">
-                      Camping <em>&</em> Agro Tourism.
-                  </p>
+                  <p class="hero-promise">Overlooking Pawana Lake and the Sahyadri hills,<br>with sunset and fort views.</p>
+                  <div class="hero-rates"><span>Tent <strong>{{ pricing.tent.offer | currency:'INR':'symbol':'1.0-0' }}/-</strong></span><span>Cottage <strong>{{ pricing.cottage.offer | currency:'INR':'symbol':'1.0-0' }}/-</strong></span></div>
+                  <p class="hero-price-note">Per adult per night. Meals &amp; taxes included. Plus &#8377;{{ terms.networkHandlingRate }} handling per adult per night.</p>
 
                   <button type="button" class="btn custom-btn me-2 mb-2" (click)="openBooking()"><strong>Check Availability</strong></button>
+                  <a appSectionLink class="hero-review-link" href="#google-reviews">Read guest reviews <span aria-hidden="true">↗</span></a>
+                  <p class="hero-reassurance">Confirm dates &amp; your group price with our team before paying.</p>
               </div>
 
           </div>
@@ -55,6 +57,11 @@
       <app-hero-banner />
   </section>
 
+  <ul class="stay-facts" aria-label="At a glance">
+    <li><i class="bi-cup-hot" aria-hidden="true"></i><span><strong>Homemade meals</strong>Tea, Snacks, BBQ, Dinner &amp; Breakfast</span></li>
+    <li><i class="bi-car-front" aria-hidden="true"></i><span><strong>Plan an easy arrival</strong>Parking &amp; Hot Water available</span></li>
+    <li><i class="bi-clock" aria-hidden="true"></i><span><strong>Stay overnight</strong>Check-in 4:00 PM · Check-out 11:00 AM</span></li>
+  </ul>
   <app-stay-options (bookStay)="openBooking($event)" />
 
   <section class="about-section section-padding" id="section_2">
@@ -71,9 +78,9 @@
 
                   <h2 class="text-white mb-3">5 Billion Stars</h2>
 
-                  <p class="text-white">5 Billion Stars Camping &amp; Agro Tourism offers tent and cottage stays overlooking Pawana Lake, near Tikona Fort.</p>
+                  <p class="text-white">5 Billion Stars Camping &amp; Agro Tourism is a campsite overlooking Pawana Lake, also known as Pawna Lake, with Sahyadri mountain, sunset and fort views. Enjoy lake-view tent and A-frame cottage stays near Tikona Fort in Pune district, Maharashtra. Plan a camping getaway from Pune, Mumbai or Lonavala.</p>
                   <p class="text-white">Browse real campsite photographs, see the overnight schedule, and choose a stay for your group. Tent accommodation is for 2–3 people; cottage accommodation is for 4–5 people. Prices are per person.</p>
-                  <p class="text-white">Our team welcomes you to a campsite with 11 clean and hygienic washrooms, hot water, fans in the cottages and ample parking. The approach is a 100-metre cement road from Paud–Lonavala Road.</p>
+                  <p class="text-white">Toilets are located beside the cottages, not attached inside. Hot water, fans in the cottages and ample parking are available. The approach is a 100-metre cement road from Paud–Lonavala Road.</p>
                   <p class="text-white">All meals and taxes are included in your stay price. Confirm your dates and group total with our team, pay a 40% advance, and receive your booking confirmation.</p>
                   <a href="tel:+918624908808" class="campsite-call"><i class="bi-telephone-fill" aria-hidden="true"></i><span>Call the campsite <strong>+91 8624908808</strong></span></a>
               </div>
@@ -82,14 +89,15 @@
       </div>
   </section>
 
+  <app-google-reviews />
   <app-photo-gallery />
 
   <app-restaurant />
 
   <app-camping-schedule />
+  <app-campsite-entertainment />
   <app-nearby-places />
   <app-booking-guide />
-  <app-google-reviews />
 
   <section class="contact-section section-padding" id="section_5">
       <div class="container">
@@ -104,6 +112,12 @@
                   <iframe title="5 Billion Stars campsite location on Google Maps" class="google-map" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3780.65929692232!2d73.503226!3d18.634388!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2a77c92f69653%3A0xa2e9f51509b0642!2s5%20Billion%20Stars%20Camping%20%26%20Agro%20Tourism!5e0!3m2!1sen!2sin!10v1732454024171!5m2!1sen!2sin" width="100%" height="560" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>  
 
                 </div>
+
+              <div class="visit-booking col-12">
+                <h3>Ready for a night by Pawana Lake?</h3>
+                <p>Share your dates and group size. Our team will confirm availability and your full quote before you pay.</p>
+                <button type="button" class="conversion-cta" (click)="openBooking()">Check dates &amp; group price</button>
+              </div>
 
           </div>
       </div>
@@ -121,7 +135,7 @@
   <a class="social-float instagram-float" href="https://www.instagram.com/5_billion_stars/" target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram" title="Instagram">
     <i class="bi-instagram" aria-hidden="true"></i>
   </a>
-  <button type="button" class="social-float booking-float" (click)="openBooking()" aria-label="Request and manage your stay" title="Book on WhatsApp">
+  <button type="button" class="social-float booking-float" (click)="openBooking()" aria-label="Check availability and prepare a WhatsApp request" title="Check availability">
     <i class="bi-whatsapp" aria-hidden="true"></i>
   </button>
 </div>

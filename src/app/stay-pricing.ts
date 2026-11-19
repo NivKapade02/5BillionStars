@@ -5,3 +5,8 @@
 
 export const BOOKING_TERMS = { advancePercent: 40, networkHandlingRate: 1, childRate: 700, paymentNumber: '8624908808', contact: 'our team' } as const;
 
+export const ADULT_NIGHT_TOTALS = {
+  tent: STAY_PRICING.tent.offer + BOOKING_TERMS.networkHandlingRate,
+  cottage: STAY_PRICING.cottage.offer + BOOKING_TERMS.networkHandlingRate
+} as const;
+

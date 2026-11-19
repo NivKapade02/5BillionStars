@@ -1,6 +1,7 @@
 import { Meta, Title } from '@angular/platform-browser';
 import { RouterStateSnapshot } from '@angular/router';
 import { SeoTitleStrategy } from './seo-title.strategy';
+import { CAMPSITE_SEARCH_FAQS } from './campsite-search-faqs';
 
 describe('Public page search metadata', () => {
   let page: Document;
@@ -14,13 +15,18 @@ describe('Public page search metadata', () => {
 
   it('publishes a canonical homepage and valid campsite identity', () => {
     strategy.updateTitle(route('home'));
-    expect(page.title).toContain('Pawana Lake Camping');
+    expect(page.title).toContain('Pawna (Pawana) Lake Camping');
     expect(page.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe('https://5billionstars.com/');
     expect(page.querySelector('meta[name="robots"]')?.getAttribute('content')).toContain('index, follow');
     const schema = JSON.parse(page.getElementById('campsite-schema')!.textContent!);
     expect(schema['@type']).toBe('Campground');
     expect(schema.telephone).toBe('+91-8624908808');
     expect(schema.aggregateRating).toBeUndefined();
+    expect(schema.description).toContain('Pawna Lake');
+    expect(schema.description).toContain('Pawana Lake');
+    const faq = JSON.parse(page.getElementById('campsite-faq-schema')!.textContent!);
+    expect(faq['@type']).toBe('FAQPage');
+    expect(faq.mainEntity.map((item: { name: string; acceptedAnswer: { text: string } }) => ({ question: item.name, answer: item.acceptedAnswer.text }))).toEqual([...CAMPSITE_SEARCH_FAQS]);
   });
 
   it('replaces route metadata without retaining homepage markup or duplicating canonicals', () => {
@@ -28,10 +34,12 @@ describe('Public page search metadata', () => {
     strategy.updateTitle(route('policies'));
     expect(page.title).toContain('Booking Terms');
     expect(page.getElementById('campsite-schema')).toBeNull();
+    expect(page.getElementById('campsite-faq-schema')).toBeNull();
     expect(page.querySelectorAll('link[rel="canonical"]').length).toBe(1);
     expect(page.querySelector('meta[property="og:url"]')?.getAttribute('content')).toBe('https://5billionstars.com/policies');
     strategy.updateTitle(route('home'));
     expect(page.querySelectorAll('#campsite-schema').length).toBe(1);
+    expect(page.querySelectorAll('#campsite-faq-schema').length).toBe(1);
   });
 
   it('keeps admin and booking request pages out of search results', () => {

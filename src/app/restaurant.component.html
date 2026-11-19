@@ -4,7 +4,7 @@
       <h2 id="restaurant">Restaurant</h2>
       <p class="eyebrow">Fresh from our kitchen</p>
       <h2 id="restaurant-heading">Our Delicious <span>Foods</span></h2>
-      <p class="restaurant-intro">Authentic flavours. Homemade masalas.<br>A taste to remember by the lake.</p>
+      <p class="restaurant-intro">Homemade meals are included with your camping stay.<br>Menu prices below apply to separate restaurant orders.</p>
       <p class="homemade-highlight"><i class="bi-house-heart" aria-hidden="true"></i> <strong>100% homemade cooking</strong></p>
     </header>
     <section class="bhakari-section" aria-labelledby="bhakari-heading">
@@ -33,7 +33,7 @@
         <article class="food-card">
           <span class="food-badge">{{ item.badge }}</span>
           <span class="food-diet" [class.nonveg]="!item.vegetarian" role="img" [attr.aria-label]="item.vegetarian ? 'Vegetarian' : 'Non-vegetarian'" [attr.title]="item.vegetarian ? 'Vegetarian' : (item.label === 'Contains egg' ? 'Non-vegetarian: contains egg' : 'Non-vegetarian')"><span></span></span>
-          <div class="food-image"><img [src]="item.image" [alt]="item.name" width="400" height="400" loading="lazy"></div>
+          <div class="food-image" [class.omelette-background]="item.name === 'Egg  Omelette'"><img [src]="item.image" [alt]="item.name" width="400" height="400" loading="lazy"></div>
           <div class="food-content">
             <p class="food-category">{{ item.label }}</p>
             <h3>{{ item.name }}</h3>

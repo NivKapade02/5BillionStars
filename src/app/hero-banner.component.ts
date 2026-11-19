@@ -1,4 +1,4 @@
-﻿import { Component, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
 
 @Component({
   selector: 'app-hero-banner',
@@ -9,11 +9,12 @@
 })
 export class HeroBannerComponent implements OnInit, OnDestroy {
   readonly slides = [
-    { src: '/images/banner/gazebo.jpg', label: 'Lake-view gazebo' },
-    { src: '/images/banner/sunset.jpg', label: 'Sunset over Pawana Lake' },
-    { src: '/images/banner/garden.jpg', label: 'Lakeside tents and gardens' },
-    { src: '/images/banner/lakeside-tent.jpg', label: 'Lakeside tent at dusk' },
-    { src: '/images/banner/cottages-at-night.jpg', label: 'Illuminated cottages at night' }
+    { src: '/images/banner/gazebo.webp', label: 'Lake-view gazebo' },
+    { src: '/images/banner/sunset.webp', label: 'Sunset over Pawana Lake' },
+    { src: '/images/banner/garden.webp', label: 'lakeview tents and gardens' },
+    { src: '/images/banner/lakeview-tent.webp', label: 'lakeview tent at dusk' },
+    { src: '/images/banner/cottages-at-night.webp', label: 'Illuminated cottages at night' },
+    { src: '/images/stargazing-telescope.webp', label: 'Your night under 5 billion stars' }
   ];
   activeIndex = 0;
   previousIndex: number | null = null;

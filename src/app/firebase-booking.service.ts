@@ -9,6 +9,7 @@ export interface BookingRequest {
   name: string; phone: string; checkIn: string; checkOut: string;
   guests: number; adults: number; kids: number; veg: number; nonVeg: number;
   stay: string; notes: string;
+  bookingType?: 'regular' | 'event';
 }
 export interface AdminBooking extends BookingRequest {
   id: string; reference: string; createdAt: string;
@@ -109,6 +110,7 @@ export class FirebaseBookingService {
 }
 
 export function bookingValidationError(d: BookingRequest): string {
+  if (d.bookingType !== undefined && d.bookingType !== 'regular' && d.bookingType !== 'event') return 'Choose a regular or event booking.';
   if (d.name.trim().length < 3 || d.name.trim().length > 100) return 'Enter a guest name between 3 and 100 characters.';
   if (!/^\+[1-9][0-9]{7,14}$/.test(d.phone)) return 'Enter the WhatsApp number with its country code, for example +919876543210.';
   if (![d.guests, d.adults, d.kids, d.veg, d.nonVeg].every(n => Number.isInteger(n) && n >= 0 && n <= 50)
